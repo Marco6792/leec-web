@@ -1,4 +1,4 @@
-import { desc, eq, count, sql } from "drizzle-orm";
+import { desc, eq, count } from "drizzle-orm";
 import { db } from "@/db";
 import {
   collaborationRequests,

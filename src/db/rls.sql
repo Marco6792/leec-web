@@ -214,3 +214,142 @@ create policy "System can insert notifications"
 create policy "Users can mark own notifications as read"
   on notifications for update
   using (user_id = auth.uid());
+
+-- ============================================================================
+-- TRAINING SESSIONS
+-- ============================================================================
+
+create policy "Anyone can view published training sessions"
+  on training_sessions for select
+  using (published = true);
+
+create policy "Lab members can view all lab training sessions"
+  on training_sessions for select
+  using (is_lab_member(lab_id));
+
+create policy "Lab supervisors can create training sessions"
+  on training_sessions for insert
+  with check (creator_id = auth.uid());
+
+create policy "Lab supervisors can update own sessions"
+  on training_sessions for update
+  using (creator_id = auth.uid());
+
+create policy "Lab directors can manage all training sessions"
+  on training_sessions for all
+  using (has_lab_role(lab_id, 'director'));
+
+-- ============================================================================
+-- TRAINING ENROLLMENTS
+-- ============================================================================
+
+create policy "Users can view own enrollments"
+  on training_enrollments for select
+  using (user_id = auth.uid());
+
+create policy "Session supervisors can view enrollments"
+  on training_enrollments for select
+  using (exists (
+    select 1 from training_sessions
+    where training_sessions.id = training_enrollments.session_id
+    and training_sessions.creator_id = auth.uid()
+  ));
+
+create policy "Users can enroll in open sessions"
+  on training_enrollments for insert
+  with check (
+    user_id = auth.uid()
+    and exists (
+      select 1 from training_sessions
+      where training_sessions.id = training_enrollments.session_id
+      and training_sessions.status = 'open'
+    )
+  );
+
+create policy "Session supervisors can manage enrollments"
+  on training_enrollments for update
+  using (exists (
+    select 1 from training_sessions
+    where training_sessions.id = training_enrollments.session_id
+    and training_sessions.creator_id = auth.uid()
+  ));
+
+-- ============================================================================
+-- TRAINING ASSESSMENTS
+-- ============================================================================
+
+create policy "Enrolled users can view assessments"
+  on training_assessments for select
+  using (exists (
+    select 1 from training_enrollments
+    where training_enrollments.session_id = training_assessments.session_id
+    and training_enrollments.user_id = auth.uid()
+  ));
+
+create policy "Session supervisors can manage assessments"
+  on training_assessments for all
+  using (exists (
+    select 1 from training_sessions
+    where training_sessions.id = training_assessments.session_id
+    and training_sessions.creator_id = auth.uid()
+  ));
+
+-- ============================================================================
+-- COLLABORATION REQUESTS
+-- ============================================================================
+
+create policy "Users can view own collaboration requests"
+  on collaboration_requests for select
+  using (from_user_id = auth.uid());
+
+create policy "Lab admins can view all collaboration requests"
+  on collaboration_requests for select
+  using (is_any_lab_admin());
+
+create policy "Users can create collaboration requests"
+  on collaboration_requests for insert
+  with check (from_user_id = auth.uid());
+
+create policy "Lab admins can manage collaboration requests"
+  on collaboration_requests for update
+  using (is_any_lab_admin());
+
+-- ============================================================================
+-- COLLABORATION PROJECTS
+-- ============================================================================
+
+create policy "Anyone can view public collaboration projects"
+  on collaboration_projects for select
+  using (is_public = true);
+
+create policy "Lab members can view all collaboration projects"
+  on collaboration_projects for select
+  using (is_lab_member(lab_id));
+
+create policy "Lab admins can manage collaboration projects"
+  on collaboration_projects for all
+  using (is_any_lab_admin());
+
+-- ============================================================================
+-- COLLABORATION MILESTONES
+-- ============================================================================
+
+create policy "Anyone can view public milestones"
+  on collaboration_milestones for select
+  using (is_public = true);
+
+create policy "Project members can manage milestones"
+  on collaboration_milestones for all
+  using (exists (
+    select 1 from collaboration_projects
+    where collaboration_projects.id = collaboration_milestones.project_id
+    and has_lab_role(collaboration_projects.lab_id, 'director')
+  ));
+
+-- ============================================================================
+-- COLLABORATION IP DISCLOSURES
+-- ============================================================================
+
+create policy "Lab admins can manage IP disclosures"
+  on collaboration_ip_disclosures for all
+  using (is_any_lab_admin());

@@ -1,9 +1,10 @@
-import { desc, eq, count } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { trainingSessions, trainingEnrollments } from "@/db/schema";
+import { trainingSessions } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
 import { validateTrainingSession, deleteTrainingSession } from "../actions";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDeleteButton } from "./confirm-delete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -132,17 +133,9 @@ export default async function ValidationQueuePage() {
                     >
                       Edit
                     </a>
-                    <form action={deleteTrainingSession.bind(null, session.id)}>
-                      <button
-                        type="submit"
-                        className="rounded-lg border border-rose-200 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:hover:bg-rose-950/30 transition-colors"
-                        onClick={(e: React.MouseEvent) => {
-                          if (!confirm("Delete this session?")) e.preventDefault();
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </form>
+                    <ConfirmDeleteButton
+                      action={deleteTrainingSession.bind(null, session.id)}
+                    />
                   </div>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import { trainingSessions, trainingEnrollments } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
 import { TrainingView } from "./training-view";
 import { FilterSelect } from "../_components/filter-select";
-import { sql, count } from "drizzle-orm";
+import { count } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 

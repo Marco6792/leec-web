@@ -46,6 +46,7 @@ const navItems = [
   { href: "/equipment", label: "Equipment" },
   { href: "/training", label: "Training" },
   { href: "/news", label: "News" },
+  { href: "/events", label: "Events" },
   { href: "/contact", label: "Contact" },
 ];
 
