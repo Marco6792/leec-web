@@ -1,0 +1,98 @@
+import { desc, eq } from "drizzle-orm";
+import { db } from "@/db";
+import { news } from "@/db/schema";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+export const dynamic = "force-dynamic";
+
+export default async function NewsPage() {
+  const articles = await db
+    .select({
+      id: news.id,
+      title: news.title,
+      excerpt: news.excerpt,
+      content: news.content,
+      imageUrl: news.imageUrl,
+      publishedAt: news.publishedAt,
+      pinned: news.pinned,
+      tags: news.tags,
+    })
+    .from(news)
+    .where(eq(news.published, true))
+    .orderBy(desc(news.pinned), desc(news.publishedAt));
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+      <Badge variant="outline" className="mb-6">News</Badge>
+      <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
+        Latest News
+      </h1>
+      <p className="text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12">
+        Recent developments and coverage from our laboratory.
+      </p>
+
+      <Separator className="mb-12" />
+
+      {articles.length === 0 ? (
+        <p className="text-muted-foreground text-center py-12">
+          No news articles published yet.
+        </p>
+      ) : (
+        <div className="space-y-6">
+          {articles.map((item) => (
+            <div
+              key={item.id}
+              className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200"
+            >
+              <div className="md:flex">
+                {item.imageUrl && (
+                  <div className="md:w-1/3 aspect-video md:aspect-auto overflow-hidden">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <div className={`p-5 ${item.imageUrl ? "md:w-2/3" : "md:w-full"}`}>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                    {item.publishedAt && (
+                      <span>{new Date(item.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                    )}
+                    {item.pinned && (
+                      <>
+                        <span className="text-border">|</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-medium">Pinned</span>
+                      </>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 group-hover:text-foreground/80 transition-colors leading-snug">
+                    {item.title}
+                  </h3>
+                  {item.excerpt && (
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {item.excerpt}
+                    </p>
+                  )}
+                  {item.tags && item.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
