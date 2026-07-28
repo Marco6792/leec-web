@@ -87,7 +87,20 @@ export default async function EventsPage() {
   );
 }
 
-function EventCard({ event }: { event: typeof events.$inferSelect }) {
+interface EventCardData {
+  id: string;
+  title: string;
+  description: string | null;
+  eventType: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  location: string | null;
+  isOnline: boolean | null;
+  meetingUrl: string | null;
+  registrationUrl: string | null;
+}
+
+function EventCard({ event }: { event: EventCardData }) {
   const dateStr = new Date(event.startDate).toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",

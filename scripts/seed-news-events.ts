@@ -141,7 +141,7 @@ async function seed() {
       title: "LEEC Inauguration Ceremony",
       description:
         "Official inauguration of the Laboratory of Electrical Engineering and Computing at the University of Buea, with representatives from the French Embassy and INSA Lyon.",
-      eventType: "conference",
+      eventType: "conference" as const,
       startDate: new Date("2026-05-29"),
       endDate: new Date("2026-05-29"),
       location: "University of Buea, Cameroon",
@@ -153,7 +153,7 @@ async function seed() {
       title: "Seminar: Advances in Power Electronics for Renewable Energy",
       description:
         "Prof. Jean-Marie Dupont from INSA Lyon presents recent advances in wide-bandgap power semiconductor devices and their applications in renewable energy systems.",
-      eventType: "seminar",
+      eventType: "seminar" as const,
       startDate: new Date("2026-09-15"),
       endDate: new Date("2026-09-15"),
       location: "LEEC Conference Room",
@@ -167,7 +167,7 @@ async function seed() {
       title: "Workshop: Introduction to Electromagnetic NDT Techniques",
       description:
         "A hands-on workshop covering the fundamentals of electromagnetic non-destructive testing, including eddy current and magnetic flux leakage methods.",
-      eventType: "workshop",
+      eventType: "workshop" as const,
       startDate: new Date("2026-10-10"),
       endDate: new Date("2026-10-12"),
       location: "LEEC Laboratory, Engineering Building",
@@ -179,7 +179,7 @@ async function seed() {
       title: "Ph.D. Defense: Energy Harvesting Systems for IoT Applications",
       description:
         "Candidate Alice Nkeng presents her doctoral research on novel energy harvesting techniques for powering wireless IoT sensor networks.",
-      eventType: "defense",
+      eventType: "defense" as const,
       startDate: new Date("2026-11-20"),
       location: "LEEC Conference Room",
       published: true,
@@ -190,7 +190,7 @@ async function seed() {
       title: "LEEC Annual Research Symposium 2026",
       description:
         "The annual symposium showcasing research成果 from all LEEC research groups, featuring invited talks, poster sessions, and networking opportunities.",
-      eventType: "conference",
+      eventType: "conference" as const,
       startDate: new Date("2026-12-05"),
       endDate: new Date("2026-12-06"),
       location: "University of Buea Main Auditorium",
@@ -202,7 +202,7 @@ async function seed() {
       title: "Industry-Academia Meet: Power Sector Collaboration",
       description:
         "A networking event bringing together industry partners and researchers to discuss collaboration opportunities in the power and energy sector.",
-      eventType: "meeting",
+      eventType: "meeting" as const,
       startDate: new Date("2026-07-25"),
       location: "LEEC Conference Room",
       published: true,
