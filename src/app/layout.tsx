@@ -28,7 +28,7 @@ export default function RootLayout({
       className={`${fontSans.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col ">
+      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

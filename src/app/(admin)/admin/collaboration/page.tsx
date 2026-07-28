@@ -23,7 +23,6 @@ export default async function AdminCollaborationPage({
     .select({
       id: collaborationRequests.id,
       organizationName: collaborationRequests.organizationName,
-      contactEmail: collaborationRequests.organizationName,
       requestType: collaborationRequests.requestType,
       status: collaborationRequests.status,
       createdAt: collaborationRequests.createdAt,
@@ -110,9 +109,8 @@ export default async function AdminCollaborationPage({
                   <h3 className="font-medium text-sm">
                     {req.organizationName ?? "Unknown Organization"}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {req.requestType?.replace(/_/g, " ")} &middot;{" "}
-                    {req.contactEmail ?? "No email"}
+                  <p className="text-xs text-muted-foreground mt-0.5 capitalize">
+                    {req.requestType?.replace(/_/g, " ") ?? "Request"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Submitted{" "}

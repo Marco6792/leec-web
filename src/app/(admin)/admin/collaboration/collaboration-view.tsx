@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 interface RequestRow {
   id: string;
   organizationName: string | null;
-  contactEmail: string | null;
   requestType: string | null;
   status: string | null;
   createdAt: Date;
