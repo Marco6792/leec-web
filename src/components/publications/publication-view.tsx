@@ -10,6 +10,7 @@ import {
   ExternalLink,
   BookOpen,
   FileText,
+  Download,
   Mic,
   GraduationCap,
   Newspaper,
@@ -29,6 +30,7 @@ import {
   ChevronUp,
   Send,
   Eye,
+  Maximize2,
 } from "lucide-react";
 
 export interface Author {
@@ -432,40 +434,49 @@ export function PublicationView({
             </div>
           )}
 
-          {/* PDF Banner */}
+          {/* PDF Viewer */}
           {publication.pdfUrl && (
-            <a
-              href={publication.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/pdf flex items-center gap-4 p-5 rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 transition-all duration-200"
-            >
-              <div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="size-7 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <path d="M10 12h1.5a1.5 1.5 0 0 1 0 3H10v-3zm0 0v6" />
-                  <path d="M16 12l1.5 3 1.5-3" />
-                </svg>
+            <div className="rounded-2xl border overflow-hidden">
+              {/* Toolbar */}
+              <div className="flex items-center gap-3 p-4 bg-muted/50 border-b">
+                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <FileText className="size-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">Full Paper</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {publication.pdfUrl.split("/").pop()}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={publication.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium hover:bg-muted transition-colors"
+                  >
+                    <Maximize2 className="size-3.5" /> Open in New Tab
+                  </a>
+                  <a
+                    href={publication.pdfUrl}
+                    download
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    <Download className="size-3.5" /> Download PDF
+                  </a>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm group-hover/pdf:text-primary transition-colors">
-                  Download Full Text PDF
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {publication.openAccess
-                    ? "Open Access"
-                    : "View publication PDF"}
-                </p>
+
+              {/* Embedded PDF */}
+              <div className="bg-muted/20">
+                <iframe
+                  src={publication.pdfUrl}
+                  title={`${publication.title} — Full paper`}
+                  className="w-full h-[520px] sm:h-[640px] border-0 bg-white"
+                />
               </div>
-              <ExternalLink className="h-5 w-5 text-muted-foreground group-hover/pdf:text-primary transition-colors shrink-0" />
-            </a>
+            </div>
           )}
 
           {/* Other Links */}
