@@ -19,6 +19,7 @@ const equipmentSchema = z.object({
   model: z.string().optional(),
   serialNumber: z.string().optional(),
   specifications: z.string().optional(),
+  usage: z.string().optional(),
   location: z.string().optional(),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   status: z

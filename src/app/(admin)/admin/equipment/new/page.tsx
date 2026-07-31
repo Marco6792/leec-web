@@ -145,6 +145,16 @@ export default async function NewEquipmentPage({
                 className={textareaClass}
               />
             </FormField>
+
+            <FormField label="Usage / Applications" name="usage" helpText="How the equipment is used and how to request access. Shown on the public detail page.">
+              <textarea
+                id="usage"
+                name="usage"
+                rows={4}
+                placeholder="Primary use, typical procedure, access conditions..."
+                className={textareaClass}
+              />
+            </FormField>
           </CardContent>
         </Card>
 

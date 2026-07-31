@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export async function EquipmentShowcase() {
   const equipmentList = await db
     .select({
+      slug: equipment.slug,
       name: equipment.name,
       description: equipment.description,
       imageUrl: equipment.imageUrl,
@@ -42,8 +43,8 @@ export async function EquipmentShowcase() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {equipmentList.map((item) => (
             <Link
-              key={item.name}
-              href="/equipment"
+              key={item.slug}
+              href={`/equipment/${item.slug}`}
               className="group rounded-xl border overflow-hidden hover:shadow-md transition-all duration-200 block"
             >
               <div className="aspect-video overflow-hidden">

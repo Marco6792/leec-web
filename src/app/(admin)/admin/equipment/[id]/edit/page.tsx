@@ -176,6 +176,19 @@ export default async function EditEquipmentPage({
                 className={textareaClass}
               />
             </FormField>
+
+            <FormField label="Usage / Applications" name="usage">
+              <textarea
+                id="usage"
+                name="usage"
+                rows={4}
+                defaultValue={item.usage ?? ""}
+                className={textareaClass}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                How the equipment is used and how to request access. Shown on the public detail page.
+              </p>
+            </FormField>
           </CardContent>
         </Card>
 

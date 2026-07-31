@@ -1,4 +1,5 @@
 import { asc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { db } from "@/db";
 import { equipment } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,7 @@ export default async function EquipmentPage() {
   const equipmentList = await db
     .select({
       id: equipment.id,
+      slug: equipment.slug,
       name: equipment.name,
       description: equipment.description,
       category: equipment.category,
@@ -49,9 +51,10 @@ export default async function EquipmentPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {equipmentList.map((item) => (
-          <div
+          <Link
             key={item.id}
-            className="group rounded-xl border overflow-hidden hover:shadow-md transition-all duration-200"
+            href={`/equipment/${item.slug}`}
+            className="group rounded-xl border overflow-hidden hover:shadow-md transition-all duration-200 block"
           >
             <div className="aspect-video overflow-hidden">
               <img
@@ -72,7 +75,9 @@ export default async function EquipmentPage() {
                   </span>
                 )}
               </div>
-              <h3 className="font-semibold text-lg mb-2">{item.name}</h3>
+              <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                {item.name}
+              </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
               {item.specifications && (
                 <p className="text-xs text-muted-foreground/70 mt-3 border-t pt-3">
@@ -80,7 +85,7 @@ export default async function EquipmentPage() {
                 </p>
               )}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
