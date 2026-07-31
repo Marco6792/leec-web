@@ -29,8 +29,9 @@ export function Hero() {
 
           {/* Subtitle */}
           <p className="text-lg sm:text-xl text-white/70 max-w-xl leading-relaxed mb-10">
-            Advancing African engineering through cutting-edge research,
-            world-class facilities, and international collaboration.
+            Research in Engineering Sciences for the Local Community. Advancing
+            African engineering through cutting-edge research, world-class
+            facilities, and international collaboration.
           </p>
 
           {/* CTAs */}

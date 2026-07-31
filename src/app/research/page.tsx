@@ -2,31 +2,35 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, Zap, Radio, Cpu, Waves } from "lucide-react";
+import { ArrowRight, Cpu, Zap, Waves, Leaf } from "lucide-react";
 
 const areas = [
   {
+    title: "Power Electronics & Energy Management",
+    description:
+      "Battery management systems for solar photovoltaic generation, power grid preventive maintenance, and low-cost power conversion.",
+    icon: Cpu,
+    href: "/research/power-electronics",
+  },
+  {
     title: "Electromagnetic NDT",
-    description: "Non-destructive testing using magnetic needle probe, Barkhausen noise, and eddy current methods for material characterization and quality control.",
+    description:
+      "Non-destructive testing and material characterization using magnetic needle probes, Barkhausen noise, and eddy current methods.",
     icon: Waves,
     href: "/research/electromagnetic-ndt",
   },
   {
-    title: "Power Electronics",
-    description: "Design and control of power converters, electrical machines, and energy management systems for efficient power conversion and motor drives.",
+    title: "Electrical Energy Harvesting",
+    description:
+      "Energy harvesting from organic wastes, water distribution systems, and ambient radio, TV and telephone signals.",
     icon: Zap,
-    href: "/research/power-electronics",
-  },
-  {
-    title: "Energy Harvesting",
-    description: "RF energy harvesting rectennas and microbial fuel cells for autonomous low-power electricity generation from ambient sources.",
-    icon: Radio,
     href: "/research/energy-harvesting",
   },
   {
-    title: "Sensors & IoT",
-    description: "Smart sensor development, IoT systems, and embedded computing for monitoring, control, and data acquisition in engineering applications.",
-    icon: Cpu,
+    title: "Sensors, IoT & Smart Agriculture",
+    description:
+      "Sensor nodes for soil classification, pesticide monitoring, leak detection in water networks, and smart attendance systems.",
+    icon: Leaf,
     href: "/research/sensors-iot",
   },
 ];
@@ -34,12 +38,15 @@ const areas = [
 export default function ResearchPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-      <Badge variant="outline" className="mb-6">Research</Badge>
+      <Badge variant="outline" className="mb-6">
+        Research
+      </Badge>
       <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
         Research Areas
       </h1>
       <p className="text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12">
-        Four core research domains driving innovation in electrical engineering and computing.
+        Research in Engineering Sciences for the Local Community, with focus on
+        electrical energy, smart agriculture, and telecommunications.
       </p>
 
       <Separator className="mb-12" />

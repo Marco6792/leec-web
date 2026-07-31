@@ -1,9 +1,9 @@
 export function StatsBar() {
   const stats = [
-    { value: "50+", label: "Publications" },
-    { value: "12+", label: "Active Projects" },
-    { value: "6", label: "International Partners" },
-    { value: "25+", label: "Researchers" },
+    { value: "70+", label: "International Papers" },
+    { value: "11", label: "PhD Theses Defended" },
+    { value: "90+", label: "Master Dissertations" },
+    { value: "21", label: "Researchers" },
   ];
 
   return (

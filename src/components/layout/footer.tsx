@@ -69,8 +69,8 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 shrink-0" />
-                <a href="mailto:leec@ubuea.cm" className="hover:text-foreground transition-colors">
-                  leec@ubuea.cm
+                <a href="mailto:leec01.ub@gmail.com" className="hover:text-foreground transition-colors">
+                  leec01.ub@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">

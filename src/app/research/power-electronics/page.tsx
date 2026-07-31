@@ -14,10 +14,11 @@ export default function PowerElectronicsPage() {
       </Link>
       <Badge variant="outline" className="mb-6">Research</Badge>
       <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
-        Power Electronics
+        Power Electronics & Energy Management
       </h1>
       <p className="text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12">
-        Design and control of power converters, electrical machines, and energy management systems.
+        Low-cost power electronics and control for solar photovoltaic energy
+        generation, battery management, and power grid preventive maintenance.
       </p>
 
       <Separator className="mb-12" />
@@ -26,7 +27,11 @@ export default function PowerElectronicsPage() {
         <div>
           <h2 className="text-2xl font-bold mb-4">Overview</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Our power electronics research covers the design, modeling, and control of power conversion systems for renewable energy integration, electric vehicles, and industrial applications.
+            Our power electronics research addresses the role of power
+            electronics and control in low-cost energy production. This includes
+            battery management systems for solar photovoltaic generation,
+            energy management strategies, and preventive maintenance of power
+            grids — from PCB implementation to full test benches.
           </p>
         </div>
         <div>
@@ -34,15 +39,18 @@ export default function PowerElectronicsPage() {
           <ul className="space-y-3 text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-              Power Converters — DC-DC, DC-AC, and AC-AC topologies
+              Battery Management Systems — low-cost solutions for solar
+              photovoltaic energy storage
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-              Electrical Machines — motor drives and generator control
+              Power Grid & Preventive Maintenance — condition monitoring and
+              reliability of power systems
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-              Energy Management — smart grid and microgrid systems
+              Energy Management — PCB implementation and test-bench validation
+              of conversion and control systems
             </li>
           </ul>
         </div>

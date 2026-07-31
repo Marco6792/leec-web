@@ -4,24 +4,49 @@ import { Separator } from "@/components/ui/separator";
 
 const team = [
   {
-    name: "Dr. Anita Mvo",
-    role: "Head of Laboratory",
-    description: "Research in electromagnetic non-destructive testing and magnetic materials characterization.",
+    name: "Prof. Pierre Tsafack",
+    role: "Director",
+    description: "Full Professor of Electronic Engineering, founder and director of the LEEC Research Laboratory.",
   },
   {
-    name: "Dr. Tsafack Pilo",
+    name: "Mongshi Anita",
     role: "Researcher",
-    description: "Power electronics, energy management systems, and renewable energy integration.",
+    description: "Electromagnetic NDT, material characterization and magnetic measurement techniques.",
   },
   {
-    name: "Prof. Sorelle Nguefack",
-    role: "Principal Investigator",
-    description: "Electrical engineering and computing, biomedical signal processing.",
-  },
-  {
-    name: "Dr. Tchidjieu Yves",
+    name: "Tene Yves Deffo",
     role: "Researcher",
-    description: "Sensors, IoT systems, and embedded computing for industrial applications.",
+    description: "Electromagnetic non-destructive testing and corrosion detection in steels.",
+  },
+  {
+    name: "Nguedjang Sorelle",
+    role: "Researcher",
+    description: "Magnetic NDT methods and structural health monitoring.",
+  },
+  {
+    name: "Toutsop Borel",
+    role: "Researcher",
+    description: "Electromagnetic instrumentation and magnetic sensor design.",
+  },
+  {
+    name: "F. Ajamah",
+    role: "Researcher",
+    description: "Energy harvesting from water distribution systems and micro hydropower.",
+  },
+  {
+    name: "N. Kamdjou",
+    role: "Researcher",
+    description: "Microbial fuel cells and energy harvesting from organic wastes.",
+  },
+  {
+    name: "Mangeh E.",
+    role: "Researcher",
+    description: "Smart agriculture: sensor nodes for soil classification and pesticide monitoring.",
+  },
+  {
+    name: "Nkemeni V.",
+    role: "Researcher",
+    description: "Sensor systems and IoT applications for agriculture and telecommunication.",
   },
 ];
 

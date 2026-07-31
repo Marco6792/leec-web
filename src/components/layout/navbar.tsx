@@ -14,6 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { createClient } from "@/lib/supabase/client";
 import { signout } from "@/lib/auth/actions";
@@ -195,17 +196,14 @@ export function Navbar() {
             {user ? (
               <div className="hidden sm:flex relative group">
                 <Link href={profileHref}>
-                  <Button variant="ghost" size="icon" className="size-9 rounded-full overflow-hidden cursor-pointer">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt={fullName} className="size-full object-cover" />
-                    ) : (
-                      <span className="text-sm font-semibold">
-                        {fullName
-                          ? fullName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
-                          : "U"}
-                      </span>
-                    )}
-                  </Button>
+                  <Avatar className="size-9 cursor-pointer">
+                    <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
+                    <AvatarFallback className="text-sm font-semibold">
+                      {fullName
+                        ? fullName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+                        : "U"}
+                    </AvatarFallback>
+                  </Avatar>
                 </Link>
                 <div className="absolute right-0 top-full mt-1 w-48 rounded-xl border bg-background shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="p-2 space-y-1">
@@ -304,15 +302,14 @@ export function Navbar() {
                   <div className="px-3 py-2 text-sm font-medium truncate">{fullName || user.email}</div>
                   <Link href={profileHref} onClick={() => setIsOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full gap-3 cursor-pointer justify-start">
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt={fullName} className="size-6 rounded-full object-cover" />
-                      ) : (
-                        <span className="size-6 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                      <Avatar size="sm">
+                        <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
+                        <AvatarFallback>
                           {fullName
                             ? fullName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
                             : "U"}
-                        </span>
-                      )}
+                        </AvatarFallback>
+                      </Avatar>
                       Profile
                     </Button>
                   </Link>

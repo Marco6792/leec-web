@@ -81,7 +81,7 @@ export const demoSessions: DemoSession[] = [
       "Week 1: Instrument overview & safety",
       "Week 2: Calibration & verification",
     ],
-    image: "/photos/lab-meeting.jpg",
+    image: "/research/ndt-experimental-setup.jpg",
     tags: ["calibration", "measurement", "intermediate"],
   },
   {
@@ -127,7 +127,7 @@ export const demoSessions: DemoSession[] = [
       "Week 3: Fabrication & assembly",
       "Week 4: Testing & debugging",
     ],
-    image: "/photos/microscope-entrance.jpg",
+    image: "/photos/lab-interior.jpg",
     tags: ["pcb", "prototyping", "beginner"],
   },
   {

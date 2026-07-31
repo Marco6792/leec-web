@@ -66,6 +66,7 @@ export const equipment = pgTable("equipment", {
   serialNumber: text("serial_number"),
   specifications: text("specifications"),
   specificationsJson: jsonb("specifications_json").default({}),
+  usage: text("usage"),
   location: text("location"),
   imageUrl: text("image_url"),
   status: equipmentStatusEnum("status").default("operational"),

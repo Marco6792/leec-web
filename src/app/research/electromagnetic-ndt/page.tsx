@@ -26,7 +26,14 @@ export default function ElectromagneticNDTPage() {
         <div>
           <h2 className="text-2xl font-bold mb-4">Overview</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Our electromagnetic NDT research focuses on developing novel techniques for characterizing magnetic materials without damaging them. This includes the Printed Magnetic Needle Probe (PMNP) for internal characterization of laminated magnetic cores.
+            Every engineering system experiences performance depreciation in its
+            service time until failure of essential parts, driven by the
+            evolution of material microstructural parameters such as grain size,
+            orientation, and stress and strain fields. Our electromagnetic NDT
+            research develops instrumentation and computing techniques for
+            evaluating material integrity without damage — including the Printed
+            Magnetic Needle Probe (PMNP) for internal characterization of
+            laminated magnetic cores.
           </p>
         </div>
         <div>
@@ -34,11 +41,20 @@ export default function ElectromagneticNDTPage() {
           <ul className="space-y-3 text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-              Magnetic Needle Probe — internal field measurement in laminated cores
+              Magnetic Needle Probe (MNP) — internal field measurement in
+              laminated cores, miniaturized to &lt; 200 µm for embedded magnetic
+              measurement
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-              Barkhausen Noise Analysis — microstructural characterization
+              Magnetic Barkhausen Noise (MBN) — microstructural characterization
+              and early-stage corrosion detection
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
+              Magnetic Incremental Permeability (MIP) — latest innovation for
+              case-depth and stress characterization in Iron-Cobalt and
+              Iron-Nickel materials
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
@@ -49,9 +65,42 @@ export default function ElectromagneticNDTPage() {
         <div>
           <h2 className="text-2xl font-bold mb-4">Applications</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Industrial quality control, structural health monitoring, material science research, and manufacturing process optimization.
+            Non-invasive structural health monitoring and homogenization
+            analysis, early-stage thermal oxidation (corrosion) detection in
+            low-carbon steels, case-hardening depth evaluation, and residual
+            stress measurement — validated against Onelab® FEM simulations with
+            Pearson correlation coefficients up to r = 0.99.
           </p>
         </div>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          {
+            src: "/research/ndt-experimental-setup.jpg",
+            alt: "NDT experimental setup",
+            caption: "Electromagnetic NDT experimental setup",
+          },
+          {
+            src: "/research/ndt-pmnp-sensor.jpg",
+            alt: "Printed magnetic needle probe",
+            caption: "Printed Magnetic Needle Probe (PMNP) sensor design",
+          },
+        ].map((img) => (
+          <figure
+            key={img.src}
+            className="rounded-lg border overflow-hidden bg-muted/30"
+          >
+            <img
+              src={img.src}
+              alt={img.alt}
+              className="w-full aspect-[4/3] object-cover"
+            />
+            <figcaption className="px-3 py-2 text-xs text-muted-foreground">
+              {img.caption}
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   );

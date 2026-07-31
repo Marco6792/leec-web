@@ -1,30 +1,34 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Zap, Radio, Cpu, Waves } from "lucide-react";
+import { ArrowRight, Cpu, Zap, Waves, Leaf } from "lucide-react";
 
 const researchAreas = [
   {
+    title: "Power Electronics & Energy Management",
+    description:
+      "Battery management systems for solar photovoltaic generation, power grid preventive maintenance, and low-cost power conversion.",
+    icon: Cpu,
+    href: "/research/power-electronics",
+  },
+  {
     title: "Electromagnetic NDT",
-    description: "Non-destructive testing using magnetic needle probe, Barkhausen noise, and eddy current methods for material characterization.",
+    description:
+      "Non-destructive testing and material characterization using magnetic needle probes, Barkhausen noise, and eddy current methods.",
     icon: Waves,
     href: "/research/electromagnetic-ndt",
   },
   {
-    title: "Power Electronics",
-    description: "Design and control of power converters, electrical machines, and energy management systems for efficient power conversion.",
+    title: "Electrical Energy Harvesting",
+    description:
+      "Energy harvesting from organic wastes, water distribution systems, and ambient radio, TV and telephone signals.",
     icon: Zap,
-    href: "/research/power-electronics",
-  },
-  {
-    title: "Energy Harvesting",
-    description: "RF energy harvesting rectennas and microbial fuel cells for autonomous low-power electricity generation.",
-    icon: Radio,
     href: "/research/energy-harvesting",
   },
   {
-    title: "Sensors & IoT",
-    description: "Smart sensor development and IoT systems for monitoring, control, and data acquisition in engineering applications.",
-    icon: Cpu,
+    title: "Sensors, IoT & Smart Agriculture",
+    description:
+      "Sensor nodes for soil classification, pesticide monitoring, leak detection in water networks, and smart attendance systems.",
+    icon: Leaf,
     href: "/research/sensors-iot",
   },
 ];
@@ -38,7 +42,8 @@ export function ResearchAreas() {
             Research Areas
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Four core research domains driving innovation in electrical engineering and computing.
+            Four core research domains driving innovation in electrical
+            engineering and computing.
           </p>
         </div>
 
