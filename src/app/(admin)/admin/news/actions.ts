@@ -45,7 +45,7 @@ export async function createNews(formData: FormData) {
 
   const parsed = newsSchema.safeParse(raw);
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0]?.message ?? "Invalid input.";
+    const firstError = parsed.error.issues[0]?.message ?? "Invalid input.";
     redirect(`/admin/news/new?error=${encodeURIComponent(firstError)}`);
   }
 
@@ -83,7 +83,7 @@ export async function updateNews(id: string, formData: FormData) {
 
   const parsed = newsSchema.safeParse(raw);
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0]?.message ?? "Invalid input.";
+    const firstError = parsed.error.issues[0]?.message ?? "Invalid input.";
     redirect(`/admin/news/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 

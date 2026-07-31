@@ -72,7 +72,7 @@ export async function createPublication(formData: FormData) {
 
   const parsed = publicationSchema.safeParse(raw);
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0]?.message ?? "Invalid input.";
+    const firstError = parsed.error.issues[0]?.message ?? "Invalid input.";
     redirect(`/admin/publications/new?error=${encodeURIComponent(firstError)}`);
   }
 
@@ -126,7 +126,7 @@ export async function updatePublication(id: string, formData: FormData) {
 
   const parsed = publicationSchema.safeParse(raw);
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0]?.message ?? "Invalid input.";
+    const firstError = parsed.error.issues[0]?.message ?? "Invalid input.";
     redirect(`/admin/publications/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
