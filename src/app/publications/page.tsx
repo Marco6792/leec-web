@@ -106,21 +106,32 @@ export default async function PublicationsPage() {
                 href={`/publications/${pub.id}`}
                 className="group block p-7 rounded-2xl border bg-card hover:shadow-lg hover:border-foreground/20 transition-all duration-300"
               >
-                <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                  <Badge
-                    variant="secondary"
-                    className={`${typeConfig[pub.type]?.color || ""} gap-1.5 w-fit shrink-0 text-xs font-medium`}
-                  >
-                    <TypeIcon className="h-3 w-3" />
-                    {pub.type}
-                  </Badge>
-                  {pub.pdfUrl && (
-                    <span className="flex items-center gap-1 text-xs text-primary font-medium shrink-0">
-                      <Download className="h-3 w-3" />
-                      PDF
-                    </span>
+                <div className="flex flex-col sm:flex-row gap-5">
+                  {pub.imageUrl && (
+                    <div className="sm:w-44 shrink-0 overflow-hidden rounded-xl border aspect-video sm:aspect-auto">
+                      <img
+                        src={pub.imageUrl}
+                        alt={pub.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                   )}
                   <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <Badge
+                        variant="secondary"
+                        className={`${typeConfig[pub.type]?.color || ""} gap-1.5 w-fit shrink-0 text-xs font-medium`}
+                      >
+                        <TypeIcon className="h-3 w-3" />
+                        {pub.type}
+                      </Badge>
+                      {pub.pdfUrl && (
+                        <span className="flex items-center gap-1 text-xs text-primary font-medium shrink-0">
+                          <Download className="h-3 w-3" />
+                          PDF
+                        </span>
+                      )}
+                    </div>
                     <h3 className="font-semibold text-lg mb-2 leading-snug group-hover:text-primary transition-colors">
                       {pub.title}
                     </h3>

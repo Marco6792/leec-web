@@ -23,15 +23,6 @@ import { Menu, X, Search } from "lucide-react";
 
 const navItems = [
   {
-    href: "/about",
-    label: "About",
-    children: [
-      { href: "/about", label: "Mission & History" },
-      { href: "/partnership", label: "INSA Lyon Partnership" },
-      { href: "/about#governance", label: "Governance" },
-    ],
-  },
-  {
     href: "/research",
     label: "Research",
     children: [
@@ -48,7 +39,6 @@ const navItems = [
   { href: "/training", label: "Training" },
   { href: "/news", label: "News" },
   { href: "/events", label: "Events" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {

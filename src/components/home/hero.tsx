@@ -8,16 +8,16 @@ export function Hero() {
       {/* Background image */}
       <div className="absolute inset-0">
         <img
-          src="/photos/team-photo.jpg"
-          alt="LEEC Research Team"
+          src="/hero_page_image.jpeg"
+          alt="LEEC Research Poster"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/70 to-black/30" />
+        <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-black/40" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
             Laboratory of
@@ -28,14 +28,14 @@ export function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg sm:text-xl text-white/70 max-w-xl leading-relaxed mb-10">
+          <p className="text-lg sm:text-xl text-white/70 max-w-xl mx-auto leading-relaxed mb-10">
             Research in Engineering Sciences for the Local Community. Advancing
             African engineering through cutting-edge research, world-class
             facilities, and international collaboration.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/research">
               <Button
                 variant={"default"}

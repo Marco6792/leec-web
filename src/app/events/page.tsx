@@ -1,8 +1,10 @@
 import { desc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { db } from "@/db";
 import { events } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -104,7 +106,10 @@ function EventCard({
   };
 }) {
   return (
-    <div className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200">
+    <Link
+      href={`/events/${item.id}`}
+      className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200 block"
+    >
       <div className="md:flex">
         {item.imageUrl && (
           <div className="md:w-1/4 aspect-video md:aspect-auto overflow-hidden">
@@ -151,7 +156,7 @@ function EventCard({
             )}
           </div>
 
-          <h3 className="font-semibold text-lg mb-2 leading-snug">
+          <h3 className="font-semibold text-lg mb-2 leading-snug group-hover:text-primary transition-colors">
             {item.title}
           </h3>
 
@@ -162,29 +167,12 @@ function EventCard({
           )}
 
           <div className="flex items-center gap-3 mt-3">
-            {item.meetingUrl && (
-              <a
-                href={item.meetingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-primary hover:underline"
-              >
-                Join Meeting &rarr;
-              </a>
-            )}
-            {item.registrationUrl && (
-              <a
-                href={item.registrationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-primary hover:underline"
-              >
-                Register &rarr;
-              </a>
-            )}
+            <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium">
+              View details <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+            </span>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

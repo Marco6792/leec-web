@@ -1,8 +1,10 @@
 import { desc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { db } from "@/db";
 import { news } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +12,7 @@ export default async function NewsPage() {
   const articles = await db
     .select({
       id: news.id,
+      slug: news.slug,
       title: news.title,
       excerpt: news.excerpt,
       content: news.content,
@@ -41,9 +44,10 @@ export default async function NewsPage() {
       ) : (
         <div className="space-y-6">
           {articles.map((item) => (
-            <div
+            <Link
               key={item.id}
-              className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200"
+              href={`/news/${item.slug}`}
+              className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200 block"
             >
               <div className="md:flex">
                 {item.imageUrl && (
@@ -67,7 +71,7 @@ export default async function NewsPage() {
                       </>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-foreground/80 transition-colors leading-snug">
+                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.excerpt && (
@@ -87,9 +91,12 @@ export default async function NewsPage() {
                       ))}
                     </div>
                   )}
+                  <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium mt-4">
+                    Read article <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+                  </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -45,6 +45,7 @@ export const publications = pgTable("publications", {
   issn: text("issn"),
   patentNumber: text("patent_number"),
   repository: text("repository"),
+  imageUrl: text("image_url"),
   citationCount: integer("citation_count").default(0),
   altmetricScore: integer("altmetric_score").default(0),
   viewCount: integer("view_count").default(0),

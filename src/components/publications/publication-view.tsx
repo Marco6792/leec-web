@@ -58,6 +58,7 @@ export interface PublicationData {
   citationCount: number | null;
   altmetricScore: number | null;
   pdfUrl: string | null;
+  imageUrl: string | null;
   sourceDataUrl: string | null;
   codeUrl: string | null;
   keywords: string[];
@@ -282,10 +283,21 @@ export function PublicationView({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[4rem] sm:py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* ─── Main Content ──────────────────────────────────────── */}
         <div className="flex-1 min-w-0 space-y-6">
+          {/* Cover image */}
+          {publication.imageUrl && (
+            <div className="rounded-2xl overflow-hidden border aspect-video">
+              <img
+                src={publication.imageUrl}
+                alt={publication.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
           {/* Header */}
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-4">
