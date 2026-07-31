@@ -110,7 +110,7 @@ export function Navbar() {
   const profileHref = user ? `/profile/${user.id}` : "/profile";
 
   return (
-    <header className="fixed top-[2px] left-0 right-0 z-50 bg-background backdrop-blur-xl border border-border md:max-w-7xl mx-auto md:rounded-full">
+    <header className="fixed top-[38px] left-0 right-0 z-50 bg-background backdrop-blur-xl border border-border md:max-w-7xl mx-auto md:rounded-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link href="/" className="flex items-center group shrink-0">

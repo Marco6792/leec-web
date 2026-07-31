@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
+import { ConstructionBanner } from "@/components/layout/construction-banner";
 import { Footer } from "@/components/layout/footer";
 import "./globals.css";
 
@@ -30,6 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <ThemeProvider>
+          <ConstructionBanner />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
