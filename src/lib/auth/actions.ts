@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -88,10 +89,30 @@ export async function signInWithGoogle() {
   const supabase = await createClient();
   if (!supabase) throw new Error("Supabase is not configured");
 
+  // Get site URL from environment or fallback to request headers
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "https";
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : host
+      ? `${protocol}://${host}`
+      : "http://localhost:3000";
+
+  console.log("Google OAuth redirect URL:", `${siteUrl}/auth/callback`);
+  console.log(
+    "Environment NEXT_PUBLIC_SITE_URL:",
+    process.env.NEXT_PUBLIC_SITE_URL
+  );
+  console.log("Environment VERCEL_URL:", process.env.VERCEL_URL);
+  console.log("Request host:", host);
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${siteUrl}/auth/callback`,
     },
   });
 
@@ -109,10 +130,30 @@ export async function signInWithMicrosoft() {
   const supabase = await createClient();
   if (!supabase) throw new Error("Supabase is not configured");
 
+  // Get site URL from environment or fallback to request headers
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "https";
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : host
+      ? `${protocol}://${host}`
+      : "http://localhost:3000";
+
+  console.log("Microsoft OAuth redirect URL:", `${siteUrl}/auth/callback`);
+  console.log(
+    "Environment NEXT_PUBLIC_SITE_URL:",
+    process.env.NEXT_PUBLIC_SITE_URL
+  );
+  console.log("Environment VERCEL_URL:", process.env.VERCEL_URL);
+  console.log("Request host:", host);
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "azure",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${siteUrl}/auth/callback`,
     },
   });
 
