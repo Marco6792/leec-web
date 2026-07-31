@@ -199,7 +199,7 @@ export function AuthForm({ mode, action, oauthActions }: AuthFormProps) {
           </p>
           <RadioGroup
             value={researcherType ?? ""}
-            onValueChange={(value) => handleTypeSelect(value as ResearcherType)}
+            onValueChange={(value: string) => handleTypeSelect(value as ResearcherType)}
           >
             {researcherTypes.map((type) => {
               const Icon = type.icon;
