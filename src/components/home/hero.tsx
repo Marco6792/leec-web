@@ -18,12 +18,6 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="max-w-3xl">
-          {/* Badge */}
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 text-white/90 text-xs font-medium mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-white/50 animate-pulse" />
-            University of Buea &amp; INSA Lyon Partnership
-          </div> */}
-
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
             Laboratory of
@@ -43,7 +37,6 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/research">
               <Button
-                // size=""
                 variant={"default"}
                 className="gap-2  text-white pt-7 pb-7 pl-7 pr-7 rounded-full cursor-pointer hover:pr-10 transition-all"
               >

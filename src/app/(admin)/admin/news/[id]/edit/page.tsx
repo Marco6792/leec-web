@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news } from "@/db/schema";
@@ -9,7 +10,6 @@ import {
   FormField,
   FieldGrid,
   inputClass,
-  selectClass,
   textareaClass,
 } from "../../../_components/form-field";
 
@@ -51,12 +51,12 @@ export default async function EditNewsPage({
             Editing: {item.title}
           </p>
         </div>
-        <a
+        <Link
           href="/admin/news"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           &larr; Back to news
-        </a>
+        </Link>
       </div>
 
       {sp.saved === "true" && (
@@ -204,12 +204,12 @@ export default async function EditNewsPage({
             </button>
           </form>
           <div className="flex items-center gap-3">
-            <a
+            <Link
               href="/admin/news"
               className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
             >
               Cancel
-            </a>
+            </Link>
             <button
               type="submit"
               className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"

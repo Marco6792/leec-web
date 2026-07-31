@@ -52,7 +52,7 @@ interface Publication {
   openAccess: boolean | null;
 }
 
-interface ExistingAuthor {
+export interface ExistingAuthor {
   profileId: string;
   fullName: string;
   affiliation: string | null;

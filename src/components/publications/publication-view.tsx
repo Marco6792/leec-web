@@ -160,7 +160,7 @@ export function PublicationView({
 
   const config = typeConfig[publication.type] || typeConfig.journal;
   const TypeIcon = config.icon;
-  const venue = publication.journal || publication.conference || (publication.publisher.length > 0 ? publication.publisher[0] : "");
+  const venue = publication.journal || publication.conference || ((publication.publisher ?? []).length > 0 ? publication.publisher![0] : "");
 
   async function handleLike() {
     if (!currentUserId) return;
@@ -647,11 +647,11 @@ export function PublicationView({
                   </a>
                 </div>
               )}
-              {publication.publisher.length > 0 && (
+              {(publication.publisher ?? []).length > 0 && (
                 <div>
-                  <span className="text-muted-foreground">Publisher{publication.publisher.length > 1 ? "s" : ""}</span>
+                  <span className="text-muted-foreground">Publisher{(publication.publisher ?? []).length > 1 ? "s" : ""}</span>
                   <div className="flex flex-wrap gap-1.5 mt-1">
-                    {publication.publisher.map((pub) => (
+                    {(publication.publisher ?? []).map((pub) => (
                       <span key={pub} className="font-medium text-sm">{pub}</span>
                     ))}
                   </div>

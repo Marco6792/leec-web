@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news, profiles } from "@/db/schema";
@@ -52,7 +53,7 @@ export default async function AdminNewsPage({
             {data.length} article{data.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <a
+        <Link
           href="/admin/news/new"
           className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"
         >
@@ -61,7 +62,7 @@ export default async function AdminNewsPage({
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Add News
-        </a>
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-3">

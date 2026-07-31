@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { publications, publicationAuthors, profiles } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
-import { EditPublicationForm } from "../../_components/edit-publication-form";
+import { EditPublicationForm, type ExistingAuthor } from "../../_components/edit-publication-form";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ export default async function EditPublicationPage({
 
   if (!pub) redirect("/admin/publications?error=Publication+not+found");
 
-  const authorRows = await db
+  const authorRowsRaw = await db
     .select({
       profileId: publicationAuthors.profileId,
       fullName: profiles.fullName,
@@ -39,6 +39,11 @@ export default async function EditPublicationPage({
     .innerJoin(profiles, eq(publicationAuthors.profileId, profiles.id))
     .where(eq(publicationAuthors.publicationId, id))
     .orderBy(publicationAuthors.authorOrder);
+
+  const authorRows: ExistingAuthor[] = authorRowsRaw.map((a) => ({
+    ...a,
+    corresponding: a.corresponding ?? false,
+  }));
 
   const allProfiles = await db
     .select({ id: profiles.id, fullName: profiles.fullName, title: profiles.title, institution: profiles.institution })

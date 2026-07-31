@@ -6,7 +6,7 @@ import { Partners } from "@/components/home/partners";
 import { NewsPreview } from "@/components/home/news-preview";
 import { JoinCTA } from "@/components/home/join-cta";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <Hero />

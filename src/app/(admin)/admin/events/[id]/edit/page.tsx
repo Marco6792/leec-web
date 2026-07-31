@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { events } from "@/db/schema";
@@ -58,12 +59,12 @@ export default async function EditEventPage({
             Editing: {item.title}
           </p>
         </div>
-        <a
+        <Link
           href="/admin/events"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           &larr; Back to events
-        </a>
+        </Link>
       </div>
 
       {sp.saved === "true" && (
@@ -247,12 +248,12 @@ export default async function EditEventPage({
             </button>
           </form>
           <div className="flex items-center gap-3">
-            <a
+            <Link
               href="/admin/events"
               className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
             >
               Cancel
-            </a>
+            </Link>
             <button
               type="submit"
               className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"

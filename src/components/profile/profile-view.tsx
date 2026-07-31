@@ -21,8 +21,6 @@ import {
   GraduationCap,
   Globe,
   BookOpen,
-  FileText,
-  Building2,
   Quote,
   Mail,
   Beaker,
@@ -45,6 +43,24 @@ import type { ProfileData, EducationRow } from "@/lib/stores/profile";
 const OrcidIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
     <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-3.903-3.722h-2.416z" />
+  </svg>
+);
+
+const GoogleScholarIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+    <path d="M12.48 10.88v3.28h1.68c-.72 1.12-1.84 1.92-3.36 1.92-2.04 0-3.72-1.68-3.72-3.72s1.68-3.72 3.72-3.72c1.08 0 2.04.48 2.76 1.2l2.4-2.4C17.16 4.8 14.96 3.84 12.48 3.84c-3.96 0-7.2 3.24-7.2 7.2s3.24 7.2 7.2 7.2c4.2 0 6.96-2.88 6.96-6.96 0-.48-.048-.96-.12-1.44H12.48z" />
+  </svg>
+);
+
+const ResearchGateIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+    <path d="M19.586 0c-1.328 0-2.418 1.01-2.546 2.314-.022.268-.034.54-.034.816 0 1.576-.56 3.012-1.488 4.104.954.258 1.968.408 3.014.408.35 0 .696-.018 1.038-.052a2.517 2.517 0 0 1-.194-.876c0-1.574.56-3.01 1.486-4.102A6.555 6.555 0 0 0 19.586 0zM9.74 5.16c-1.92 0-3.672.708-5.028 1.884l1.68 1.68c.876-.756 2.004-1.224 3.24-1.224 1.248 0 2.376.468 3.24 1.224l1.68-1.68c-1.356-1.176-3.108-1.884-5.028-1.884zM1.8 9.6v4.8h1.68v-4.8H1.8zm18.384 0v4.8H21.6v-4.8h-1.416zM9.74 8.4c-2.76 0-5.04 1.872-5.76 4.416h1.68c.6-1.632 2.208-2.808 4.08-2.808s3.48 1.176 4.08 2.808h1.68c-.72-2.544-3-4.416-5.76-4.416zM3.6 15.6v2.4h16.8v-2.4H3.6z" />
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
   </svg>
 );
 
@@ -197,12 +213,21 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
   const pubCount = publications.length;
   const totalCitations = publications.reduce((s, p) => s + p.citation_count, 0);
 
+  const normalizeUrl = (url: string | null, type?: string): string | null => {
+    if (!url) return null;
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    if (type === "orcid") return `https://orcid.org/${trimmed}`;
+    return `https://${trimmed}`;
+  };
+
   const links = [
-    { key: "orcid", href: profile.orcid, label: "ORCID", icon: <OrcidIcon /> },
-    { key: "google_scholar", href: profile.google_scholar, label: "Google Scholar", icon: <BookOpen className="h-4 w-4" /> },
-    { key: "research_gate", href: profile.research_gate, label: "ResearchGate", icon: <FileText className="h-4 w-4" /> },
-    { key: "linked_in", href: profile.linked_in, label: "LinkedIn", icon: <Building2 className="h-4 w-4" /> },
-    { key: "website", href: profile.website, label: "Website", icon: <Globe className="h-4 w-4" /> },
+    { key: "orcid", href: normalizeUrl(profile.orcid, "orcid"), label: "ORCID", icon: <OrcidIcon /> },
+    { key: "google_scholar", href: normalizeUrl(profile.google_scholar), label: "Google Scholar", icon: <GoogleScholarIcon /> },
+    { key: "research_gate", href: normalizeUrl(profile.research_gate), label: "ResearchGate", icon: <ResearchGateIcon /> },
+    { key: "linked_in", href: normalizeUrl(profile.linked_in), label: "LinkedIn", icon: <LinkedInIcon /> },
+    { key: "website", href: normalizeUrl(profile.website), label: "Website", icon: <Globe className="h-4 w-4" /> },
   ].filter((l) => l.href);
 
   async function handleSaveAvatar() {
@@ -451,8 +476,10 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
                 <div className="flex flex-wrap gap-2 mb-4">
                   {links.map((link) => (
                     <a key={link.key} href={link.href!} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs hover:bg-muted transition-colors">
-                      {link.icon} {link.label} <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-card hover:bg-muted/50 transition-colors text-sm font-medium">
+                      <span className="flex-shrink-0">{link.icon}</span>
+                      <span>{link.label}</span>
+                      <ExternalLink className="h-3 w-3 text-muted-foreground" />
                     </a>
                   ))}
                 </div>

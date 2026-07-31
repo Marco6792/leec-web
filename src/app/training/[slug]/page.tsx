@@ -3,7 +3,6 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { trainingSessions, trainingEnrollments } from "@/db/schema";
 import { notFound } from "next/navigation";
-import { demoSessions } from "../_demo-data";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
@@ -14,7 +13,6 @@ import {
   Users,
   Wrench,
   GraduationCap,
-  ChevronRight,
   BookOpen,
   CheckCircle,
   ArrowLeft,
@@ -45,58 +43,20 @@ export default async function TrainingDetailPage({
 }) {
   const { slug } = await params;
 
-  let [session] = await db
+  const [session] = await db
     .select()
     .from(trainingSessions)
     .where(eq(trainingSessions.slug, slug))
     .limit(1);
 
-  // Fallback: if not found in DB, check demo data
-  let isDemo = false;
-  // Fallback: if not found in DB, cast demo data to match the DB schema
-  if (!session) {
-    const demo = demoSessions.find((s) => s.slug === slug) ?? null;
-    if (demo) {
-      isDemo = true;
-      session = {
-        id: demo.id,
-        title: demo.title,
-        slug: demo.slug,
-        description: demo.description,
-        level: demo.level as any,
-        status: demo.status as any,
-        maxParticipants: demo.maxParticipants,
-        startDate: demo.startDate as any,
-        endDate: demo.endDate as any,
-        creatorId: null as any,
-        labId: null as any,
-        imageUrl: demo.image,
-        tags: demo.tags,
-        curriculum: demo.curriculum,
-        schedule: [{ description: demo.schedule }] as any,
-        prerequisites: null as any,
-        linkedEquipmentIds: [] as any,
-        published: demo.status === "open",
-        publishedAt: null as any,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-    }
-  }
-
   if (!session) notFound();
 
-  // For demo sessions, use mock enrollment count (skip DB query since demo IDs won't match)
-  const [enrollmentCount] = isDemo
-    ? [{ count: 0 }]
-    : await db
-        .select({ count: count() })
-        .from(trainingEnrollments)
-        .where(eq(trainingEnrollments.sessionId, session.id));
+  const [enrollmentCount] = await db
+    .select({ count: count() })
+    .from(trainingEnrollments)
+    .where(eq(trainingEnrollments.sessionId, session.id));
 
-  const enrolledCount = isDemo
-    ? demoSessions.find((s) => s.slug === slug)?.enrolledCount ?? 0
-    : (enrollmentCount?.count ?? 0);
+  const enrolledCount = enrollmentCount?.count ?? 0;
 
   const spotsLeft = session.maxParticipants
     ? session.maxParticipants - enrolledCount

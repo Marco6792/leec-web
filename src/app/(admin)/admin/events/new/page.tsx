@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createEvent } from "../actions";
@@ -33,12 +34,12 @@ export default async function NewEventPage({
             Add a new event to the lab calendar.
           </p>
         </div>
-        <a
+        <Link
           href="/admin/events"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           &larr; Back to events
-        </a>
+        </Link>
       </div>
 
       {params.error && (
@@ -199,12 +200,12 @@ export default async function NewEventPage({
         </Card>
 
         <div className="flex items-center justify-end gap-3 pb-8">
-          <a
+          <Link
             href="/admin/events"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
           >
             Cancel
-          </a>
+          </Link>
           <button
             type="submit"
             className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
