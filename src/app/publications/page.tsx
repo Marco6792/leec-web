@@ -98,7 +98,8 @@ export default async function PublicationsPage() {
         <div className="space-y-5">
           {pubsWithAuthors.map((pub) => {
             const TypeIcon = typeConfig[pub.type]?.icon || FileText;
-            const venue = pub.journal || pub.conference || ((pub.publisher ?? []).length > 0 ? pub.publisher[0] : "");
+            const publisherList = pub.publisher ?? [];
+            const venue = pub.journal || pub.conference || (publisherList.length > 0 ? publisherList[0] : "");
             return (
               <Link
                 key={pub.id}
