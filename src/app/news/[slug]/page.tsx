@@ -12,7 +12,6 @@ import {
   Pin,
   User,
   Tag,
-  Share2,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -151,15 +150,6 @@ export default async function NewsDetailPage({
             <ArrowLeft className="size-4" /> All News
           </Button>
         </Link>
-        <Button
-          variant="outline"
-          className="gap-2"
-          onClick={(e) => {
-            navigator.clipboard?.writeText(window.location.href);
-          }}
-        >
-          <Share2 className="size-4" /> Share Article
-        </Button>
       </div>
     </div>
   );

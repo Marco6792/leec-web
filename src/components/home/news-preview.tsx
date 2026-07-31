@@ -11,6 +11,7 @@ export async function NewsPreview() {
   const articles = await db
     .select({
       id: news.id,
+      slug: news.slug,
       title: news.title,
       excerpt: news.excerpt,
       imageUrl: news.imageUrl,
@@ -48,9 +49,10 @@ export async function NewsPreview() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((item) => (
-              <div
+              <Link
                 key={item.id}
-                className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200"
+                href={`/news/${item.slug}`}
+                className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200 block"
               >
                 {item.imageUrl && (
                   <div className="aspect-video overflow-hidden">
@@ -73,7 +75,7 @@ export async function NewsPreview() {
                       </>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-foreground/80 transition-colors leading-snug">
+                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.excerpt && (
@@ -81,8 +83,11 @@ export async function NewsPreview() {
                       {item.excerpt}
                     </p>
                   )}
+                  <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium mt-3">
+                    Read article <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

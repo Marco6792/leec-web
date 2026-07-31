@@ -4,6 +4,7 @@ import { EquipmentShowcase } from "@/components/home/equipment-showcase";
 import { PublicationsPreview } from "@/components/home/publications-preview";
 import { Partners } from "@/components/home/partners";
 import { NewsPreview } from "@/components/home/news-preview";
+import { EventsPreview } from "@/components/home/events-preview";
 import { JoinCTA } from "@/components/home/join-cta";
 
 export default async function Home() {
@@ -12,6 +13,7 @@ export default async function Home() {
       <Hero />
       <PublicationsPreview />
       <NewsPreview />
+      <EventsPreview />
       <EquipmentShowcase />
       <ResearchAreas />
       <Partners />
