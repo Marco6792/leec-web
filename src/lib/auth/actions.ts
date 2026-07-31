@@ -101,14 +101,6 @@ export async function signInWithGoogle() {
       ? `${protocol}://${host}`
       : "http://localhost:3000";
 
-  console.log("Google OAuth redirect URL:", `${siteUrl}/auth/callback`);
-  console.log(
-    "Environment NEXT_PUBLIC_SITE_URL:",
-    process.env.NEXT_PUBLIC_SITE_URL
-  );
-  console.log("Environment VERCEL_URL:", process.env.VERCEL_URL);
-  console.log("Request host:", host);
-
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -141,14 +133,6 @@ export async function signInWithMicrosoft() {
       : host
       ? `${protocol}://${host}`
       : "http://localhost:3000";
-
-  console.log("Microsoft OAuth redirect URL:", `${siteUrl}/auth/callback`);
-  console.log(
-    "Environment NEXT_PUBLIC_SITE_URL:",
-    process.env.NEXT_PUBLIC_SITE_URL
-  );
-  console.log("Environment VERCEL_URL:", process.env.VERCEL_URL);
-  console.log("Request host:", host);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "azure",
