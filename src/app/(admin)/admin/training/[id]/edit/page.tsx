@@ -3,15 +3,16 @@ import { db } from "@/db";
 import { trainingSessions } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { updateTrainingSession } from "../../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,10 @@ export default async function EditTrainingPage({
   const boundAction = updateTrainingSession.bind(null, id);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Training", href: "/admin/training" }, { label: "Edit Session" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Training Session</h1>
@@ -49,12 +53,6 @@ export default async function EditTrainingPage({
             Editing: {session.title}
           </p>
         </div>
-        <a
-          href="/admin/training"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to training
-        </a>
       </div>
 
       {sp.saved === "true" && (
@@ -78,7 +76,7 @@ export default async function EditTrainingPage({
         </div>
       )}
 
-      <form action={boundAction} className="space-y-6">
+      <form action={boundAction} className="grid gap-6 lg:grid-cols-2">
         <input type="hidden" name="slug" value={session.slug} />
 
         <Card>
@@ -87,54 +85,51 @@ export default async function EditTrainingPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Session Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={session.title}
                 required
-                className={inputClass}
               />
             </FormField>
 
             <FieldGrid cols={3}>
               <FormField label="Level" name="level">
-                <select id="level" name="level" defaultValue={session.level ?? "beginner"} className={selectClass}>
+                <NativeSelect id="level" name="level" defaultValue={session.level ?? "beginner"} className="w-full">
                   {levels.map((l) => (
                     <option key={l} value={l}>
                       {l.charAt(0).toUpperCase() + l.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
               <FormField label="Status" name="status">
-                <select id="status" name="status" defaultValue={session.status ?? "draft"} className={selectClass}>
+                <NativeSelect id="status" name="status" defaultValue={session.status ?? "draft"} className="w-full">
                   {statuses.map((s) => (
                     <option key={s} value={s}>
                       {s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
               <FormField label="Max Participants" name="maxParticipants">
-                <input
+                <Input
                   id="maxParticipants"
                   name="maxParticipants"
                   type="number"
                   min={1}
                   defaultValue={session.maxParticipants ?? ""}
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
 
             <FormField label="Description" name="description">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 defaultValue={session.description ?? ""}
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -147,19 +142,18 @@ export default async function EditTrainingPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Start Date" name="startDate">
-                <input id="startDate" name="startDate" type="date" defaultValue={session.startDate ?? ""} className={inputClass} />
+                <Input id="startDate" name="startDate" type="date" defaultValue={session.startDate ?? ""} />
               </FormField>
               <FormField label="End Date" name="endDate">
-                <input id="endDate" name="endDate" type="date" defaultValue={session.endDate ?? ""} className={inputClass} />
+                <Input id="endDate" name="endDate" type="date" defaultValue={session.endDate ?? ""} />
               </FormField>
             </FieldGrid>
             <FormField label="Schedule" name="schedule">
-              <input
+              <Input
                 id="schedule"
                 name="schedule"
                 type="text"
                 defaultValue={Array.isArray(session.schedule) ? (session.schedule as any[])?.[0]?.description ?? "" : ""}
-                className={inputClass}
               />
             </FormField>
           </CardContent>
@@ -171,15 +165,14 @@ export default async function EditTrainingPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Image URL" name="imageUrl">
-              <input id="imageUrl" name="imageUrl" type="url" defaultValue={session.imageUrl ?? ""} className={inputClass} />
+              <Input id="imageUrl" name="imageUrl" type="url" defaultValue={session.imageUrl ?? ""} />
             </FormField>
             <FormField label="Tags" name="tags" helpText="Comma-separated.">
-              <input
+              <Input
                 id="tags"
                 name="tags"
                 type="text"
                 defaultValue={session.tags?.join(", ") ?? ""}
-                className={inputClass}
               />
             </FormField>
             <div className="flex items-center gap-3">
@@ -197,7 +190,7 @@ export default async function EditTrainingPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <a
             href="/admin/training"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

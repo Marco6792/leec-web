@@ -2,6 +2,8 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { DeleteButton } from "../_components/delete-button";
+import { deletePublication } from "./actions";
 
 interface PublicationRow {
   id: string;
@@ -103,6 +105,8 @@ export function PublicationsView({ data }: { data: PublicationRow[] }) {
       emptyMessage="No publications found. Add your first publication to get started."
       baseUrl="/admin/publications"
       idField="id"
+      actionsHeader=""
+      rowActions={(pub) => <DeleteButton action={deletePublication.bind(null, pub.id)} />}
     />
   );
 }

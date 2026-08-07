@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { completeOnboarding } from "@/lib/auth/onboarding";
 
 interface OnboardingFormProps {
@@ -33,13 +35,12 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="fullName" className="block text-sm font-medium mb-1">
                 Full name *
               </label>
-              <input
+              <Input
                 id="fullName"
                 name="fullName"
                 type="text"
                 required
                 defaultValue={defaultName}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -47,12 +48,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="title" className="block text-sm font-medium mb-1">
                 Title / Position
               </label>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 placeholder="e.g. PhD Student, Professor"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -60,12 +60,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="institution" className="block text-sm font-medium mb-1">
                 Institution
               </label>
-              <input
+              <Input
                 id="institution"
                 name="institution"
                 type="text"
                 placeholder="e.g. University of Buea"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -73,12 +72,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="department" className="block text-sm font-medium mb-1">
                 Department
               </label>
-              <input
+              <Input
                 id="department"
                 name="department"
                 type="text"
                 placeholder="e.g. Electrical Engineering"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -86,12 +84,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="phone" className="block text-sm font-medium mb-1">
                 Phone
               </label>
-              <input
+              <Input
                 id="phone"
                 name="phone"
                 type="tel"
                 placeholder="+237 XXX XXX XXX"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -99,12 +96,12 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="biography" className="block text-sm font-medium mb-1">
                 Biography
               </label>
-              <textarea
+              <Textarea
                 id="biography"
                 name="biography"
                 rows={3}
                 placeholder="Tell us about yourself..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 resize-none"
+                className="resize-none"
               />
             </div>
 
@@ -112,12 +109,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="researchInterests" className="block text-sm font-medium mb-1">
                 Research Interests
               </label>
-              <input
+              <Input
                 id="researchInterests"
                 name="researchInterests"
                 type="text"
                 placeholder="Comma-separated: Machine Learning, Power Systems, IoT"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -125,12 +121,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="orcid" className="block text-sm font-medium mb-1">
                 ORCID
               </label>
-              <input
+              <Input
                 id="orcid"
                 name="orcid"
                 type="text"
                 placeholder="0000-0000-0000-0000"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -138,12 +133,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="googleScholar" className="block text-sm font-medium mb-1">
                 Google Scholar
               </label>
-              <input
+              <Input
                 id="googleScholar"
                 name="googleScholar"
                 type="url"
                 placeholder="https://scholar.google.com/..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -151,12 +145,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="researchGate" className="block text-sm font-medium mb-1">
                 ResearchGate
               </label>
-              <input
+              <Input
                 id="researchGate"
                 name="researchGate"
                 type="url"
                 placeholder="https://researchgate.net/profile/..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -164,12 +157,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="linkedIn" className="block text-sm font-medium mb-1">
                 LinkedIn
               </label>
-              <input
+              <Input
                 id="linkedIn"
                 name="linkedIn"
                 type="url"
                 placeholder="https://linkedin.com/in/..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -177,12 +169,11 @@ export function OnboardingForm({ defaultName }: OnboardingFormProps) {
               <label htmlFor="website" className="block text-sm font-medium mb-1">
                 Website
               </label>
-              <input
+              <Input
                 id="website"
                 name="website"
                 type="url"
                 placeholder="https://..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
           </div>

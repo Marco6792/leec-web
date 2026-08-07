@@ -32,17 +32,6 @@ export function FormField({
   );
 }
 
-// ─── Preset input styles matching admin design ────────────────────────────
-
-export const inputClass =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50";
-
-export const selectClass =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50";
-
-export const textareaClass =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 resize-y min-h-[100px]";
-
 // ─── Layout helpers ───────────────────────────────────────────────────────
 
 export function FieldGrid({

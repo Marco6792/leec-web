@@ -2,8 +2,11 @@ import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { updateProfile } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +29,8 @@ export default async function AdminSettingsPage({
   if (!profile) redirect("/login");
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Settings" }]} />
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -56,7 +60,7 @@ export default async function AdminSettingsPage({
       )}
 
       {/* Profile Form */}
-      <form action={updateProfile} className="space-y-6">
+      <form action={updateProfile} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Profile Information</CardTitle>
@@ -67,13 +71,12 @@ export default async function AdminSettingsPage({
               <label htmlFor="fullName" className="block text-sm font-medium mb-1.5">
                 Full Name <span className="text-destructive">*</span>
               </label>
-              <input
+              <Input
                 id="fullName"
                 name="fullName"
                 type="text"
                 defaultValue={profile.fullName}
                 required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -82,13 +85,12 @@ export default async function AdminSettingsPage({
               <label htmlFor="title" className="block text-sm font-medium mb-1.5">
                 Title / Position
               </label>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={profile.title ?? ""}
                 placeholder="e.g. Professor, PhD Student, Lab Technician"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
             </div>
 
@@ -98,26 +100,24 @@ export default async function AdminSettingsPage({
                 <label htmlFor="institution" className="block text-sm font-medium mb-1.5">
                   Institution
                 </label>
-                <input
+                <Input
                   id="institution"
                   name="institution"
                   type="text"
                   defaultValue={profile.institution ?? ""}
                   placeholder="University of Buea"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
               <div>
                 <label htmlFor="department" className="block text-sm font-medium mb-1.5">
                   Department
                 </label>
-                <input
+                <Input
                   id="department"
                   name="department"
                   type="text"
                   defaultValue={profile.department ?? ""}
                   placeholder="Electrical and Electronic Engineering"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
             </div>
@@ -127,13 +127,12 @@ export default async function AdminSettingsPage({
               <label htmlFor="biography" className="block text-sm font-medium mb-1.5">
                 Biography
               </label>
-              <textarea
+              <Textarea
                 id="biography"
                 name="biography"
                 rows={4}
                 defaultValue={profile.biography ?? ""}
                 placeholder="Brief academic and professional background..."
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 resize-y min-h-[100px]"
               />
             </div>
 
@@ -142,13 +141,12 @@ export default async function AdminSettingsPage({
               <label htmlFor="researchInterests" className="block text-sm font-medium mb-1.5">
                 Research Interests
               </label>
-              <input
+              <Input
                 id="researchInterests"
                 name="researchInterests"
                 type="text"
                 defaultValue={profile.researchInterests?.join(", ") ?? ""}
                 placeholder="Comma-separated: Magnetic materials, NDT, Energy harvesting"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
               />
               <p className="text-xs text-muted-foreground mt-1">
                 Separate each interest with a comma.
@@ -168,52 +166,48 @@ export default async function AdminSettingsPage({
                 <label htmlFor="orcid" className="block text-sm font-medium mb-1.5">
                   ORCID
                 </label>
-                <input
+                <Input
                   id="orcid"
                   name="orcid"
                   type="text"
                   defaultValue={profile.orcid ?? ""}
                   placeholder="0000-0002-..."
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
               <div>
                 <label htmlFor="googleScholar" className="block text-sm font-medium mb-1.5">
                   Google Scholar
                 </label>
-                <input
+                <Input
                   id="googleScholar"
                   name="googleScholar"
                   type="url"
                   defaultValue={profile.googleScholar ?? ""}
                   placeholder="https://scholar.google.com/..."
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
               <div>
                 <label htmlFor="researchGate" className="block text-sm font-medium mb-1.5">
                   ResearchGate
                 </label>
-                <input
+                <Input
                   id="researchGate"
                   name="researchGate"
                   type="url"
                   defaultValue={profile.researchGate ?? ""}
                   placeholder="https://researchgate.net/profile/..."
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
               <div>
                 <label htmlFor="linkedIn" className="block text-sm font-medium mb-1.5">
                   LinkedIn
                 </label>
-                <input
+                <Input
                   id="linkedIn"
                   name="linkedIn"
                   type="url"
                   defaultValue={profile.linkedIn ?? ""}
                   placeholder="https://linkedin.com/in/..."
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
             </div>
@@ -231,26 +225,24 @@ export default async function AdminSettingsPage({
                 <label htmlFor="website" className="block text-sm font-medium mb-1.5">
                   Personal Website
                 </label>
-                <input
+                <Input
                   id="website"
                   name="website"
                   type="url"
                   defaultValue={profile.website ?? ""}
                   placeholder="https://example.com"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium mb-1.5">
                   Phone
                 </label>
-                <input
+                <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   defaultValue={profile.phone ?? ""}
                   placeholder="+237 6XX XXX XXX"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                 />
               </div>
             </div>
@@ -272,7 +264,7 @@ export default async function AdminSettingsPage({
         </Card>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <button
             type="submit"
             className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"

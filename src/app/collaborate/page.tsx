@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -531,7 +534,7 @@ export default function CollaboratePage() {
                       <label className="block text-sm font-medium mb-1.5">
                         Organization Name <span className="text-destructive">*</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         required
                         value={formData.organizationName}
@@ -539,20 +542,19 @@ export default function CollaboratePage() {
                           updateField("organizationName", e.target.value)
                         }
                         placeholder="e.g. CAMTECH Industries"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1.5">
                         Organization Type <span className="text-destructive">*</span>
                       </label>
-                      <select
+                      <NativeSelect
                         value={formData.organizationType}
                         onChange={(e) =>
                           updateField("organizationType", e.target.value)
                         }
                         required
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                        className="w-full"
                       >
                         <option value="industry">Industry / Company</option>
                         <option value="startup">Startup</option>
@@ -563,30 +565,28 @@ export default function CollaboratePage() {
                         <option value="government">Government Agency</option>
                         <option value="ngo">NGO / Non-profit</option>
                         <option value="funding_agency">Funding Agency</option>
-                      </select>
+                      </NativeSelect>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1.5">
                         Country
                       </label>
-                      <input
+                      <Input
                         type="text"
                         value={formData.country}
                         onChange={(e) => updateField("country", e.target.value)}
                         placeholder="e.g. Cameroon, France, ..."
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1.5">
                         Website
                       </label>
-                      <input
+                      <Input
                         type="url"
                         value={formData.website}
                         onChange={(e) => updateField("website", e.target.value)}
                         placeholder="https://example.com"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                   </div>
@@ -605,7 +605,7 @@ export default function CollaboratePage() {
                       <label className="block text-sm font-medium mb-1.5">
                         Full Name <span className="text-destructive">*</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         required
                         value={formData.contactName}
@@ -613,14 +613,13 @@ export default function CollaboratePage() {
                           updateField("contactName", e.target.value)
                         }
                         placeholder="Dr. Your Name"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1.5">
                         Email <span className="text-destructive">*</span>
                       </label>
-                      <input
+                      <Input
                         type="email"
                         required
                         value={formData.contactEmail}
@@ -628,7 +627,6 @@ export default function CollaboratePage() {
                           updateField("contactEmail", e.target.value)
                         }
                         placeholder="you@organization.com"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                   </div>
@@ -648,13 +646,13 @@ export default function CollaboratePage() {
                         Collaboration Type{" "}
                         <span className="text-destructive">*</span>
                       </label>
-                      <select
+                      <NativeSelect
                         value={formData.collaborationType}
                         onChange={(e) =>
                           updateField("collaborationType", e.target.value)
                         }
                         required
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                        className="w-full"
                       >
                         <option value="contract_research">
                           Contract Research
@@ -669,14 +667,14 @@ export default function CollaboratePage() {
                         <option value="visiting_scholar">
                           Visiting Scholar Program
                         </option>
-                      </select>
+                      </NativeSelect>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1.5">
                         Project Title{" "}
                         <span className="text-destructive">*</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         required
                         value={formData.projectTitle}
@@ -684,7 +682,6 @@ export default function CollaboratePage() {
                           updateField("projectTitle", e.target.value)
                         }
                         placeholder="e.g. Development of an IoT-based predictive maintenance system"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
                     <div>
@@ -692,7 +689,7 @@ export default function CollaboratePage() {
                         Description &amp; Objectives{" "}
                         <span className="text-destructive">*</span>
                       </label>
-                      <textarea
+                      <Textarea
                         required
                         rows={4}
                         value={formData.description}
@@ -700,7 +697,6 @@ export default function CollaboratePage() {
                           updateField("description", e.target.value)
                         }
                         placeholder="Describe your project, the problem you're trying to solve, and what kind of support you're looking for from LEEC..."
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 resize-y min-h-[100px]"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -708,12 +704,12 @@ export default function CollaboratePage() {
                         <label className="block text-sm font-medium mb-1.5">
                           Expected Timeline
                         </label>
-                        <select
+                        <NativeSelect
                           value={formData.timeline}
                           onChange={(e) =>
                             updateField("timeline", e.target.value)
                           }
-                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                          className="w-full"
                         >
                           <option value="">Select timeline</option>
                           <option value="1-3_months">1–3 months</option>
@@ -721,18 +717,18 @@ export default function CollaboratePage() {
                           <option value="6-12_months">6–12 months</option>
                           <option value="12+_months">More than 1 year</option>
                           <option value="not_sure">Not sure yet</option>
-                        </select>
+                        </NativeSelect>
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-1.5">
                           Estimated Budget
                         </label>
-                        <select
+                        <NativeSelect
                           value={formData.budget}
                           onChange={(e) =>
                             updateField("budget", e.target.value)
                           }
-                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                          className="w-full"
                         >
                           <option value="">Select range</option>
                           <option value="under_5k">Under 5,000 €</option>
@@ -741,7 +737,7 @@ export default function CollaboratePage() {
                           <option value="50k_100k">50,000 – 100,000 €</option>
                           <option value="100k+">100,000 €+</option>
                           <option value="not_sure">Not sure yet</option>
-                        </select>
+                        </NativeSelect>
                       </div>
                     </div>
                   </div>
@@ -780,12 +776,12 @@ export default function CollaboratePage() {
                       <label className="block text-sm font-medium mb-1.5">
                         How did you hear about us?
                       </label>
-                      <select
+                      <NativeSelect
                         value={formData.heardAbout}
                         onChange={(e) =>
                           updateField("heardAbout", e.target.value)
                         }
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                        className="w-full"
                       >
                         <option value="">Select an option</option>
                         <option value="website">Website</option>
@@ -794,7 +790,7 @@ export default function CollaboratePage() {
                         <option value="publication">Publication</option>
                         <option value="social_media">Social Media</option>
                         <option value="other">Other</option>
-                      </select>
+                      </NativeSelect>
                     </div>
                   </div>
                 </div>

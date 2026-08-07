@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { publications, publicationAuthors, profiles, publicationLikes, publicationRatings } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 import Link from "next/link";
 import {
   BookOpen,
@@ -22,6 +23,8 @@ export const metadata = {
   title: "Publications — LEEC",
   description: "Research outputs from our laboratory",
 };
+
+export const revalidate = 60;
 
 const typeConfig: Record<string, { icon: typeof BookOpen; color: string }> = {
   conference: { icon: Mic, color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" },
@@ -109,9 +112,12 @@ export default async function PublicationsPage() {
                 <div className="flex flex-col sm:flex-row gap-5">
                   {pub.imageUrl && (
                     <div className="sm:w-44 shrink-0 overflow-hidden rounded-xl border aspect-video sm:aspect-auto">
-                      <img
+                      <SiteImage
                         src={pub.imageUrl}
                         alt={pub.title}
+                        width={352}
+                        height={198}
+                        sizes="(max-width: 640px) 100vw, 176px"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -150,13 +156,14 @@ export default async function PublicationsPage() {
                             return (
                               <div
                                 key={author.id}
-                                className="size-8 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0"
+                                className="size-8 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
                               >
                                 {author.avatarUrl ? (
-                                  <img
+                                  <SiteImage
                                     src={author.avatarUrl}
                                     alt={author.fullName}
-                                    className="size-full object-cover"
+                                    fill
+                                    sizes="32px"
                                   />
                                 ) : (
                                   <div className="size-full flex items-center justify-center text-[10px] font-bold text-muted-foreground">

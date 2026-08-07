@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { NativeSelect } from "@/components/ui/native-select";
 
 interface FilterOption {
   value: string;
@@ -38,11 +39,9 @@ export function FilterSelect({
   );
 
   return (
-    <select
-      defaultValue=""
+    <NativeSelect
       value={currentValue ?? ""}
       onChange={(e) => handleChange(e.target.value)}
-      className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
     >
       <option value="">{placeholder}</option>
       {options.map((opt) => (
@@ -50,6 +49,6 @@ export function FilterSelect({
           {opt.label}
         </option>
       ))}
-    </select>
+    </NativeSelect>
   );
 }

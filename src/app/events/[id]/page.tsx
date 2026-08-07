@@ -6,6 +6,8 @@ import { events, profiles } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PdfViewer } from "@/components/pdf-viewer";
+import { SiteImage } from "@/components/site-image";
 import {
   ArrowLeft,
   Calendar,
@@ -15,9 +17,10 @@ import {
   Globe,
   ExternalLink,
   CalendarPlus,
+  FileText,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const eventTypeLabels: Record<string, string> = {
   seminar: "Seminar",
@@ -69,6 +72,9 @@ export default async function EventDetailPage({
       meetingUrl: events.meetingUrl,
       registrationUrl: events.registrationUrl,
       imageUrl: events.imageUrl,
+      pdfUrl: events.pdfUrl,
+      gallery: events.gallery,
+      documents: events.documents,
       organizerId: events.organizerId,
       organizerName: profiles.fullName,
     })
@@ -101,11 +107,12 @@ export default async function EventDetailPage({
         {/* Main */}
         <div className="lg:col-span-2 space-y-8">
           {item.imageUrl && (
-            <div className="rounded-2xl overflow-hidden border aspect-video">
-              <img
+            <div className="relative rounded-2xl overflow-hidden border aspect-video">
+              <SiteImage
                 src={item.imageUrl}
                 alt={item.title}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 66vw"
               />
             </div>
           )}
@@ -144,6 +151,67 @@ export default async function EventDetailPage({
               <p className="text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
+            )}
+
+            {/* Gallery */}
+            {(item.gallery?.length ?? 0) > 1 && (
+              <div className="mt-10">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Gallery
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {(item.gallery ?? []).map((url, i) => (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group relative aspect-video overflow-hidden rounded-xl border"
+                    >
+                      <SiteImage
+                        src={url}
+                        alt={`${item.title} — image ${i + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                        className="transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Attached PDF document */}
+            {item.pdfUrl && (
+              <div className="mt-10">
+                <PdfViewer url={item.pdfUrl} title={item.title} />
+              </div>
+            )}
+
+            {/* Additional documents */}
+            {(item.documents?.length ?? 0) > 1 && (
+              <div className="mt-10">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Documents
+                </h3>
+                <ul className="space-y-2">
+                  {(item.documents ?? [])
+                    .filter((doc) => doc !== item.pdfUrl)
+                    .map((doc) => (
+                      <li key={doc}>
+                        <a
+                          href={doc}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-muted transition-colors"
+                        >
+                          <FileText className="size-4 text-muted-foreground" />
+                          {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
             )}
           </div>
         </div>

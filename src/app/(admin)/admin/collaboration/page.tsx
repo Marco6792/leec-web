@@ -5,6 +5,7 @@ import {
   collaborationProjects,
 } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { CollaborationView } from "./collaboration-view";
 import { approveRequest, rejectRequest } from "./actions";
 
@@ -47,6 +48,7 @@ export default async function AdminCollaborationPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Collaboration" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Collaboration</h1>

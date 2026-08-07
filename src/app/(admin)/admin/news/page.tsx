@@ -3,6 +3,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news, profiles } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { NewsView } from "./news-view";
 import { FilterSelect } from "../_components/filter-select";
 
@@ -46,6 +47,7 @@ export default async function AdminNewsPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "News" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">News &amp; Events</h1>

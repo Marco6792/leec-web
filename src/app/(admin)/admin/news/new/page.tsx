@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createNews } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MediaUpload } from "@/components/admin/media-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,10 @@ export default async function NewNewsPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "News", href: "/admin/news" }, { label: "Create Article" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create News Article</h1>
@@ -30,12 +34,6 @@ export default async function NewNewsPage({
             Write a new news article for the lab website.
           </p>
         </div>
-        <Link
-          href="/admin/news"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to news
-        </Link>
       </div>
 
       {params.error && (
@@ -49,80 +47,39 @@ export default async function NewNewsPage({
         </div>
       )}
 
-      <form action={createNews} className="space-y-6">
+      <form action={createNews} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Article Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="e.g. New Research Breakthrough in Power Electronics"
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Excerpt" name="excerpt" helpText="Short summary shown in previews.">
-              <textarea
+              <Textarea
                 id="excerpt"
                 name="excerpt"
                 rows={2}
                 placeholder="Brief summary of the article..."
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Content" name="content" helpText="Full article body. Supports plain text.">
-              <textarea
+              <Textarea
                 id="content"
                 name="content"
                 rows={12}
                 placeholder="Write your article content here..."
-                className={textareaClass}
               />
             </FormField>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Media &amp; Metadata</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <FormField label="Image URL" name="imageUrl" helpText="URL to the featured image.">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                placeholder="https://..."
-                className={inputClass}
-              />
-            </FormField>
-
-            <FieldGrid cols={2}>
-              <FormField label="Published Date" name="publishedAt" helpText="Leave empty to use current date when published.">
-                <input
-                  id="publishedAt"
-                  name="publishedAt"
-                  type="date"
-                  className={inputClass}
-                />
-              </FormField>
-
-              <FormField label="Tags" name="tags" helpText="Comma-separated tags (e.g. Research, Award, Student).">
-                <input
-                  id="tags"
-                  name="tags"
-                  type="text"
-                  placeholder="Research, Award, Student"
-                  className={inputClass}
-                />
-              </FormField>
-            </FieldGrid>
           </CardContent>
         </Card>
 
@@ -130,7 +87,26 @@ export default async function NewNewsPage({
           <CardHeader>
             <CardTitle>Publication Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
+            <FieldGrid cols={2}>
+              <FormField label="Published Date" name="publishedAt" helpText="Leave empty to use current date when published.">
+                <Input
+                  id="publishedAt"
+                  name="publishedAt"
+                  type="date"
+                />
+              </FormField>
+
+              <FormField label="Tags" name="tags" helpText="Comma-separated tags (e.g. Research, Award, Student).">
+                <Input
+                  id="tags"
+                  name="tags"
+                  type="text"
+                  placeholder="Research, Award, Student"
+                />
+              </FormField>
+            </FieldGrid>
+
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -156,7 +132,24 @@ export default async function NewNewsPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
+              </FormField>
+            </FieldGrid>
+          </CardContent>
+        </Card>
+
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <Link
             href="/admin/news"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

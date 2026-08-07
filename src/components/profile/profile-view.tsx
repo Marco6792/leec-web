@@ -4,7 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 
 import { signout } from "@/lib/auth/actions";
 import {
@@ -126,11 +129,10 @@ function EditableField({
     <div>
       {label && <p className="text-xs text-muted-foreground mb-1">{label}</p>}
       {rows ? (
-        <textarea value={val} onChange={(e) => setVal(e.target.value)} rows={rows}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 resize-none" />
+        <Textarea value={val} onChange={(e) => setVal(e.target.value)} rows={rows}
+          className="resize-none" />
       ) : (
-        <input type="text" value={val} onChange={(e) => setVal(e.target.value)}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50" />
+        <Input type="text" value={val} onChange={(e) => setVal(e.target.value)} />
       )}
       {error && <p className="text-xs text-destructive mt-1">{error}</p>}
       <div className="flex gap-2 mt-2">
@@ -265,16 +267,26 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
   // ─── Render ─────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 pb-16 sm:pb-24">
+      {profile.cover_url && (
+        <div className="relative mb-10 h-40 sm:h-56 overflow-hidden rounded-2xl border border-border bg-muted">
+          <SiteImage
+            src={profile.cover_url}
+            alt={`${profile.full_name} cover`}
+            fill
+            sizes="100vw"
+          />
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-8">
 
         {/* ─── Sidebar ──────────────────────────────────────────── */}
         <div className="lg:w-72 shrink-0 space-y-6">
           <div className="text-center">
             <div className="relative inline-block">
-              <div className="size-28 mx-auto rounded-2xl overflow-hidden border bg-muted">
+              <div className="relative size-28 mx-auto rounded-2xl overflow-hidden border bg-muted">
                 {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt={profile.full_name} className="size-full object-cover" />
+                  <SiteImage src={profile.avatar_url} alt={profile.full_name} fill sizes="112px" />
                 ) : (
                   <div className="size-full flex items-center justify-center text-3xl font-bold text-muted-foreground">{initials}</div>
                 )}
@@ -289,9 +301,9 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
             </div>
             {editingAvatar && isOwner && (
               <div className="mt-3 space-y-2">
-                <input type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)}
+                <Input type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)}
                   placeholder="Avatar URL"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-1.5 text-xs outline-none focus:border-ring" />
+                  className="h-7 text-xs" />
                 {avatarError && <p className="text-xs text-destructive">{avatarError}</p>}
                 <div className="flex gap-2 justify-center">
                   <Button size="sm" onClick={handleSaveAvatar} className="cursor-pointer"><Check className="h-3.5 w-3.5" /></Button>
@@ -441,17 +453,12 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
               ))}
               {addingEdu && isOwner && (
                 <div className="p-4 rounded-xl border space-y-3 bg-muted/30">
-                  <input placeholder="Degree *" value={newEdu.degree} onChange={(e) => setNewEdu((p) => ({ ...p, degree: e.target.value }))}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring" />
-                  <input placeholder="Institution *" value={newEdu.institution} onChange={(e) => setNewEdu((p) => ({ ...p, institution: e.target.value }))}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring" />
-                  <input placeholder="Field of study" value={newEdu.field} onChange={(e) => setNewEdu((p) => ({ ...p, field: e.target.value }))}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring" />
+                  <Input placeholder="Degree *" value={newEdu.degree} onChange={(e) => setNewEdu((p) => ({ ...p, degree: e.target.value }))} />
+                  <Input placeholder="Institution *" value={newEdu.institution} onChange={(e) => setNewEdu((p) => ({ ...p, institution: e.target.value }))} />
+                  <Input placeholder="Field of study" value={newEdu.field} onChange={(e) => setNewEdu((p) => ({ ...p, field: e.target.value }))} />
                   <div className="grid grid-cols-2 gap-3">
-                    <input type="number" placeholder="Start year" value={newEdu.start_year} onChange={(e) => setNewEdu((p) => ({ ...p, start_year: e.target.value }))}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring" />
-                    <input type="number" placeholder="End year" value={newEdu.end_year} onChange={(e) => setNewEdu((p) => ({ ...p, end_year: e.target.value }))}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring" />
+                    <Input type="number" placeholder="Start year" value={newEdu.start_year} onChange={(e) => setNewEdu((p) => ({ ...p, start_year: e.target.value }))} />
+                    <Input type="number" placeholder="End year" value={newEdu.end_year} onChange={(e) => setNewEdu((p) => ({ ...p, end_year: e.target.value }))} />
                   </div>
                   {eduError && <p className="text-xs text-destructive">{eduError}</p>}
                   <div className="flex gap-2">

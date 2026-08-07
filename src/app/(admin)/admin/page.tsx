@@ -1,10 +1,11 @@
-import { sql } from "drizzle-orm";
+import { sql, desc, eq, and } from "drizzle-orm";
 import { db } from "@/db";
 import {
   publications,
   equipment,
   projects,
   labMembers,
+  profiles,
   news,
   events,
   partners,
@@ -12,6 +13,7 @@ import {
   equipmentBookings,
 } from "@/db/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
 
@@ -71,6 +73,43 @@ export default async function AdminDashboardPage() {
     getCount(grants),
     getCountWhere(equipmentBookings, sql`status = 'pending'`),
   ]);
+
+  // Team stats: recent active members, role breakdown, profile-photo coverage
+  const [recentMembers, roleCounts, activeMemberCount, activeMembersWithPhoto] =
+    await Promise.all([
+      db
+        .select({
+          userId: labMembers.userId,
+          name: profiles.fullName,
+          title: profiles.title,
+          avatarUrl: profiles.avatarUrl,
+          role: labMembers.role,
+          status: labMembers.status,
+        })
+        .from(labMembers)
+        .leftJoin(profiles, eq(labMembers.userId, profiles.id))
+        .where(eq(labMembers.status, "active"))
+        .orderBy(desc(labMembers.joinedAt))
+        .limit(8),
+      db
+        .select({ role: labMembers.role, count: sql<number>`count(*)` })
+        .from(labMembers)
+        .where(eq(labMembers.status, "active"))
+        .groupBy(labMembers.role)
+        .orderBy(desc(sql`count(*)`)),
+      getCountWhere(labMembers, sql`status = 'active'`),
+      (async () => {
+        const [row] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(profiles)
+          .where(sql`avatar_url is not null and avatar_url <> '' and exists (
+            select 1 from lab_members
+            where lab_members.user_id = profiles.id
+            and lab_members.status = 'active'
+          )`);
+        return row?.count ?? 0;
+      })(),
+    ]);
 
   const metrics: MetricCardData[] = [
     {
@@ -220,18 +259,115 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Quick actions */}
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Quick actions, team overview, system status */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
-            <QuickActionLink href="/admin/publications" label="Add Publication" icon="plus" />
-            <QuickActionLink href="/admin/equipment" label="Register Equipment" icon="plus" />
-            <QuickActionLink href="/admin/news" label="Post News Article" icon="plus" />
-            <QuickActionLink href="/admin/events" label="Create Event" icon="plus" />
-            <QuickActionLink href="/admin/lab-members" label="Manage Lab Members" icon="users" />
+            <QuickActionLink href="/admin/lab-members/new" label="Add Member" icon="users" />
+            <QuickActionLink href="/admin/projects/new" label="Create Project" icon="plus" />
+            <QuickActionLink href="/admin/publications/new" label="Add Publication" icon="plus" />
+            <QuickActionLink href="/admin/equipment/new" label="Register Equipment" icon="plus" />
+            <QuickActionLink href="/admin/news/new" label="Post News Article" icon="plus" />
+            <QuickActionLink href="/admin/events/new" label="Create Event" icon="plus" />
+          </CardContent>
+        </Card>
+
+        {/* Team overview: member + profile-photo stats */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle>Team Overview</CardTitle>
+            <Link
+              href="/admin/lab-members"
+              className="text-xs text-primary hover:underline"
+            >
+              Manage
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Role breakdown */}
+            {roleCounts.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {roleCounts.slice(0, 6).map((r) => (
+                  <span
+                    key={r.role}
+                    className="rounded-md bg-muted px-2 py-1 text-[11px] text-muted-foreground"
+                  >
+                    {roleLabel(r.role)} ×{r.count}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Profile-photo coverage */}
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="text-muted-foreground">Profile photos</span>
+                <span className="font-medium">
+                  {activeMembersWithPhoto}
+                  <span className="text-muted-foreground">/{activeMemberCount}</span>
+                </span>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{
+                    width: `${
+                      activeMemberCount > 0
+                        ? Math.min(
+                            100,
+                            Math.round(
+                              (activeMembersWithPhoto / activeMemberCount) * 100,
+                            ),
+                          )
+                        : 0
+                    }%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Recent members with photos */}
+            {recentMembers.length === 0 ? (
+              <p className="text-xs text-muted-foreground py-2">
+                No members yet. Add your first member to get started.
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {recentMembers.map((member) => (
+                  <li key={member.userId} className="flex items-center gap-3 py-2">
+                    {member.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={member.avatarUrl}
+                        alt={member.name ?? "Member"}
+                        className="size-9 rounded-full object-cover border border-border"
+                      />
+                    ) : (
+                      <div className="flex size-9 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground border border-border">
+                        {(member.name ?? "U").charAt(0)}
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
+                        {member.name ?? "Unknown"}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {member.title ?? roleLabel(member.role)}
+                      </p>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className="shrink-0 text-[10px] uppercase tracking-wider"
+                    >
+                      {member.role.replace("_", " ")}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
 
@@ -252,6 +388,22 @@ export default async function AdminDashboardPage() {
 }
 
 // ─── Sub-components ────────────────────────────────────────────────────────
+
+const roleLabels: Record<string, string> = {
+  director: "Director",
+  pi: "Principal Investigator",
+  researcher: "Researcher",
+  phd_student: "PhD Student",
+  master_student: "Master Student",
+  technician: "Technician",
+  visitor: "Visitor",
+  external: "External",
+  client: "Client",
+};
+
+function roleLabel(role: string): string {
+  return roleLabels[role] ?? role.charAt(0).toUpperCase() + role.slice(1).replace("_", " ");
+}
 
 function QuickActionLink({ href, label, icon }: { href: string; label: string; icon: string }) {
   return (

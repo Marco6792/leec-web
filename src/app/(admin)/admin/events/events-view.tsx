@@ -2,6 +2,8 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { DeleteButton } from "../_components/delete-button";
+import { deleteEvent } from "./actions";
 
 interface EventRow {
   id: string;
@@ -106,6 +108,8 @@ export function EventsView({ data }: { data: EventRow[] }) {
       emptyMessage="No events yet. Create your first event."
       baseUrl="/admin/events"
       idField="id"
+      actionsHeader=""
+      rowActions={(item) => <DeleteButton action={deleteEvent.bind(null, item.id)} />}
     />
   );
 }

@@ -2,7 +2,18 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -23,6 +34,9 @@ interface AdminTableProps<T> {
   emptyMessage?: string;
   baseUrl?: string;
   idField?: keyof T;
+  /** Optional per-row actions rendered in a trailing "Actions" column. */
+  rowActions?: (item: T) => React.ReactNode;
+  actionsHeader?: string;
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────
@@ -36,6 +50,8 @@ export function AdminTable<T extends Record<string, any>>({
   emptyMessage = "No records found.",
   baseUrl,
   idField,
+  rowActions,
+  actionsHeader = "Actions",
 }: AdminTableProps<T>) {
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -90,37 +106,26 @@ export function AdminTable<T extends Record<string, any>>({
     <div className="space-y-4">
       {/* Search */}
       <div className="relative max-w-sm">
-        <svg
-          viewBox="0 0 24 24"
-          className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <input
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
           type="text"
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder={searchPlaceholder}
-          className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-3 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+          className="pl-10 pr-3"
         />
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-border">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-muted/50">
+      <div className="overflow-hidden rounded-xl border border-border">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50 hover:bg-muted/50">
               {columns.map((col) => (
-                <th
+                <TableHead
                   key={col.key}
                   className={cn(
-                    "px-4 py-3 text-left font-medium text-muted-foreground",
+                    "px-4 py-3 font-medium text-muted-foreground",
                     col.sortable && "cursor-pointer select-none hover:text-foreground",
                     col.className,
                   )}
@@ -129,50 +134,44 @@ export function AdminTable<T extends Record<string, any>>({
                   <span className="inline-flex items-center gap-1">
                     {col.label}
                     {col.sortable && sortKey === col.key && (
-                      <svg
-                        viewBox="0 0 24 24"
+                      <ChevronDown
                         className={cn(
                           "size-3.5 transition-transform",
                           sortDir === "asc" && "rotate-180",
                         )}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
+                      />
                     )}
                   </span>
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+              {rowActions && (
+                <TableHead className="px-4 py-3 font-medium text-muted-foreground">
+                  {actionsHeader}
+                </TableHead>
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {paginated.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="px-4 py-12 text-center text-sm text-muted-foreground"
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length + (rowActions ? 1 : 0)}
+                  className="px-4 py-12 text-center text-muted-foreground"
                 >
                   {emptyMessage}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               paginated.map((item) => {
                 const key = item[keyField];
                 const href = idField && baseUrl ? `${baseUrl}/${item[idField]}` : undefined;
                 return (
-                  <tr
+                  <TableRow
                     key={String(key)}
-                    className={cn(
-                      "border-b border-border last:border-0 hover:bg-muted/30 transition-colors",
-                      href && "cursor-pointer",
-                    )}
+                    className={cn(href && "cursor-pointer")}
                   >
                     {columns.map((col) => (
-                      <td
+                      <TableCell
                         key={col.key}
                         className={cn("px-4 py-3", col.className)}
                       >
@@ -188,14 +187,19 @@ export function AdminTable<T extends Record<string, any>>({
                             ? col.render(item)
                             : String(item[col.key] ?? "")
                         )}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                    {rowActions && (
+                      <TableCell className="px-4 py-3">
+                        <div className="flex items-center gap-2">{rowActions(item)}</div>
+                      </TableCell>
+                    )}
+                  </TableRow>
                 );
               })
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {/* Pagination */}
@@ -206,25 +210,29 @@ export function AdminTable<T extends Record<string, any>>({
             {sorted.length}
           </span>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
+              <ChevronLeft />
               Previous
-            </button>
+            </Button>
             <span className="text-xs">
               Page {page} of {totalPages}
             </span>
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
               Next
-            </button>
+              <ChevronRight />
+            </Button>
           </div>
         </div>
       )}

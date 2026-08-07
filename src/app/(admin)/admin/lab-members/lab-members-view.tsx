@@ -2,18 +2,32 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { NativeSelect } from "@/components/ui/native-select";
+import { DeleteButton } from "../_components/delete-button";
+import { updateLabMemberRole, deleteLabMember } from "./actions";
 
 interface LabMemberRow {
   userId: string;
   labId: string;
   name: string | null;
   title: string | null;
+  avatarUrl: string | null;
   role: string;
   status: string | null;
   labName: string | null;
   joinedAt: Date | null;
   leftAt: Date | null;
 }
+
+const roles = [
+  "director", "pi", "researcher", "phd_student", "master_student",
+  "technician", "visitor", "external", "client",
+];
+
+const roleLabels: Record<string, string> = {
+  phd_student: "PhD Student",
+  master_student: "Master Student",
+};
 
 const roleColors: Record<string, string> = {
   director: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
@@ -40,9 +54,18 @@ const columns: Column<LabMemberRow>[] = [
     sortable: true,
     render: (member) => (
       <div className="flex items-center gap-3">
-        <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
-          {(member.name ?? "U").charAt(0)}
-        </div>
+        {member.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={member.avatarUrl}
+            alt={member.name ?? "Member"}
+            className="size-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            {(member.name ?? "U").charAt(0)}
+          </div>
+        )}
         <div>
           <span className="font-medium">{member.name ?? "Unknown"}</span>
           {member.title && (
@@ -99,7 +122,35 @@ const columns: Column<LabMemberRow>[] = [
   },
 ];
 
-export function LabMembersView({ data }: { data: LabMemberRow[] }) {
+function MemberRoleSelect({ userId, role }: { userId: string; role: string }) {
+  const action = updateLabMemberRole.bind(null, userId);
+  return (
+    <form action={action}>
+      <NativeSelect
+        name="role"
+        defaultValue={role}
+        onChange={(e) => e.target.form?.requestSubmit()}
+        title="Change role"
+        size="sm"
+      >
+        {roles.map((r) => (
+          <option key={r} value={r}>
+            {roleLabels[r] ?? r.charAt(0).toUpperCase() + r.slice(1).replace("_", " ")}
+          </option>
+        ))}
+      </NativeSelect>
+    </form>
+  );
+}
+
+export function LabMembersView({
+  data,
+  canManageMembers = true,
+}: {
+  data: LabMemberRow[];
+  /** Directors and PIs can change roles / remove members. */
+  canManageMembers?: boolean;
+}) {
   return (
     <AdminTable
       data={data}
@@ -109,6 +160,17 @@ export function LabMembersView({ data }: { data: LabMemberRow[] }) {
       emptyMessage="No lab members found. Add members to get started."
       baseUrl="/admin/lab-members"
       idField="userId"
+      actionsHeader=""
+      rowActions={
+        canManageMembers
+          ? (member) => (
+              <>
+                <MemberRoleSelect userId={member.userId} role={member.role} />
+                <DeleteButton action={deleteLabMember.bind(null, member.userId)} />
+              </>
+            )
+          : undefined
+      }
     />
   );
 }

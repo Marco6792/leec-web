@@ -75,6 +75,7 @@ export const projects = pgTable("projects", {
   researchDomains: text("research_domains").array().default([]),
   outputs: jsonb("outputs").default([]),
   imageUrl: text("image_url"),
+  pdfUrl: text("pdf_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

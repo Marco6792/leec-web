@@ -9,9 +9,12 @@ import { updateNews, deleteNews } from "../../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  textareaClass,
 } from "../../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MediaUpload } from "@/components/admin/media-upload";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
+import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +46,10 @@ export default async function EditNewsPage({
     : "";
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "News", href: "/admin/news" }, { label: "Edit Article" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit News Article</h1>
@@ -51,12 +57,7 @@ export default async function EditNewsPage({
             Editing: {item.title}
           </p>
         </div>
-        <Link
-          href="/admin/news"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to news
-        </Link>
+        <ViewPublicPage href={`/news/${item.slug}`} />
       </div>
 
       {sp.saved === "true" && (
@@ -80,7 +81,7 @@ export default async function EditNewsPage({
         </div>
       )}
 
-      <form action={boundAction} className="space-y-6">
+      <form action={boundAction} className="grid gap-6 lg:grid-cols-2">
         <input type="hidden" name="slug" value={item.slug} />
 
         <Card>
@@ -89,76 +90,32 @@ export default async function EditNewsPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={item.title}
                 required
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Excerpt" name="excerpt">
-              <textarea
+              <Textarea
                 id="excerpt"
                 name="excerpt"
                 rows={2}
                 defaultValue={item.excerpt ?? ""}
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Content" name="content">
-              <textarea
+              <Textarea
                 id="content"
                 name="content"
                 rows={12}
                 defaultValue={item.content ?? ""}
-                className={textareaClass}
               />
             </FormField>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Media &amp; Metadata</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <FormField label="Image URL" name="imageUrl">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                defaultValue={item.imageUrl ?? ""}
-                placeholder="https://..."
-                className={inputClass}
-              />
-            </FormField>
-
-            <FieldGrid cols={2}>
-              <FormField label="Published Date" name="publishedAt">
-                <input
-                  id="publishedAt"
-                  name="publishedAt"
-                  type="date"
-                  defaultValue={dateStr}
-                  className={inputClass}
-                />
-              </FormField>
-
-              <FormField label="Tags" name="tags" helpText="Comma-separated tags.">
-                <input
-                  id="tags"
-                  name="tags"
-                  type="text"
-                  defaultValue={item.tags?.join(", ") ?? ""}
-                  placeholder="Research, Award, Student"
-                  className={inputClass}
-                />
-              </FormField>
-            </FieldGrid>
           </CardContent>
         </Card>
 
@@ -166,7 +123,28 @@ export default async function EditNewsPage({
           <CardHeader>
             <CardTitle>Publication Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
+            <FieldGrid cols={2}>
+              <FormField label="Published Date" name="publishedAt">
+                <Input
+                  id="publishedAt"
+                  name="publishedAt"
+                  type="date"
+                  defaultValue={dateStr}
+                />
+              </FormField>
+
+              <FormField label="Tags" name="tags" helpText="Comma-separated tags.">
+                <Input
+                  id="tags"
+                  name="tags"
+                  type="text"
+                  defaultValue={item.tags?.join(", ") ?? ""}
+                  placeholder="Research, Award, Student"
+                />
+              </FormField>
+            </FieldGrid>
+
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -194,7 +172,32 @@ export default async function EditNewsPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-between gap-3 pb-8">
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload
+                  endpoint="gallery"
+                  inputName="gallery"
+                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
+                />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload
+                  endpoint="documents"
+                  inputName="documents"
+                  value={item.documents?.length ? item.documents : item.pdfUrl ? [item.pdfUrl] : []}
+                />
+              </FormField>
+            </FieldGrid>
+          </CardContent>
+        </Card>
+
+        <div className="flex items-center justify-between gap-3 pb-8 lg:col-span-2">
           <form action={boundDelete}>
             <button
               type="submit"

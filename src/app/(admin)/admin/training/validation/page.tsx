@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { trainingSessions } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { validateTrainingSession, deleteTrainingSession } from "../actions";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDeleteButton } from "./confirm-delete-button";
@@ -37,6 +38,9 @@ export default async function ValidationQueuePage() {
 
   return (
     <div className="space-y-8">
+      <AdminBreadcrumbs
+        items={[{ label: "Training", href: "/admin/training" }, { label: "Validation" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Training Validation</h1>
@@ -44,12 +48,6 @@ export default async function ValidationQueuePage() {
             Review and approve training sessions created by supervisors.
           </p>
         </div>
-        <a
-          href="/admin/training"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to training
-        </a>
       </div>
 
       {/* Pending Approval */}

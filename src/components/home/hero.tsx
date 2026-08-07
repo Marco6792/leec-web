@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SiteImage } from "@/components/site-image";
 import { ArrowRight } from "lucide-react";
 
 export function Hero() {
@@ -7,10 +8,12 @@ export function Hero() {
     <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-black">
       {/* Background image */}
       <div className="absolute inset-0">
-        <img
+        <SiteImage
           src="/hero_page_image.jpeg"
           alt="LEEC Research Poster"
-          className="w-full h-full object-cover"
+          fill
+          priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-black/40" />
       </div>

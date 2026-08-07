@@ -14,11 +14,24 @@ const newsSchema = z.object({
   excerpt: z.string().optional(),
   content: z.string().optional(),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  pdfUrl: z.string().optional(),
+  gallery: z.string().optional(),
+  documents: z.string().optional(),
   published: z.boolean().optional(),
   publishedAt: z.string().optional(),
   pinned: z.boolean().optional(),
   tags: z.string().optional(),
 });
+
+function parseJsonArray(value: string | undefined): string[] {
+  if (!value) return [];
+  try {
+    const arr = JSON.parse(value);
+    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
 
 function slugify(text: string): string {
   return text
@@ -35,7 +48,8 @@ export async function createNews(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(newsSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.published = formData.get("published") === "on";
   raw.pinned = formData.get("pinned") === "on";
@@ -49,14 +63,20 @@ export async function createNews(formData: FormData) {
     redirect(`/admin/news/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { tags, publishedAt, ...rest } = parsed.data;
+  const { tags, publishedAt, pdfUrl, gallery, documents, ...rest } = parsed.data;
 
   const tagsArray = tags
     ? tags.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   await db.insert(news).values({
     ...rest,
+    imageUrl: galleryArray[0] ?? null,
+    pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
+    gallery: galleryArray,
+    documents: documentsArray,
     slug,
     authorId: user.id,
     tags: tagsArray,
@@ -64,6 +84,7 @@ export async function createNews(formData: FormData) {
   });
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   redirect("/admin/news?saved=true");
 }
 
@@ -73,7 +94,8 @@ export async function updateNews(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(newsSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.published = formData.get("published") === "on";
   raw.pinned = formData.get("pinned") === "on";
@@ -87,16 +109,22 @@ export async function updateNews(id: string, formData: FormData) {
     redirect(`/admin/news/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { tags, publishedAt, ...rest } = parsed.data;
+  const { tags, publishedAt, pdfUrl, gallery, documents, ...rest } = parsed.data;
 
   const tagsArray = tags
     ? tags.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   await db
     .update(news)
     .set({
       ...rest,
+      imageUrl: galleryArray[0] ?? null,
+      pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
+      gallery: galleryArray,
+      documents: documentsArray,
       slug,
       tags: tagsArray,
       publishedAt: publishedAt ? new Date(publishedAt) : (rest.published ? new Date() : null),
@@ -105,7 +133,9 @@ export async function updateNews(id: string, formData: FormData) {
     .where(eq(news.id, id));
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   revalidatePath("/news");
+  revalidatePath(`/news/${slug}`);
   redirect(`/admin/news/${id}/edit?saved=true`);
 }
 
@@ -116,6 +146,7 @@ export async function deleteNews(id: string) {
   await db.delete(news).where(eq(news.id, id));
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   revalidatePath("/news");
   redirect("/admin/news");
 }

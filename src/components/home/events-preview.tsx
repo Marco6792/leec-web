@@ -3,9 +3,8 @@ import { db } from "@/db";
 import { events } from "@/db/schema";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SiteImage } from "@/components/site-image";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
-
-export const dynamic = "force-dynamic";
 
 const eventTypeLabels: Record<string, string> = {
   seminar: "Seminar",
@@ -67,11 +66,13 @@ export async function EventsPreview() {
                 className="group rounded-xl border overflow-hidden bg-card hover:shadow-md transition-all duration-200 block"
               >
                 {item.imageUrl && (
-                  <div className="aspect-video overflow-hidden">
-                    <img
+                  <div className="relative aspect-video overflow-hidden">
+                    <SiteImage
                       src={item.imageUrl}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                      className="group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}

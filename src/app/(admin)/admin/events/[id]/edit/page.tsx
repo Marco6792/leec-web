@@ -9,10 +9,13 @@ import { updateEvent, deleteEvent } from "../../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
+import { MediaUpload } from "@/components/admin/media-upload";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
+import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +54,10 @@ export default async function EditEventPage({
     : "";
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Events", href: "/admin/events" }, { label: "Edit Event" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Event</h1>
@@ -59,12 +65,7 @@ export default async function EditEventPage({
             Editing: {item.title}
           </p>
         </div>
-        <Link
-          href="/admin/events"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to events
-        </Link>
+        <ViewPublicPage href={`/events/${item.id}`} />
       </div>
 
       {sp.saved === "true" && (
@@ -88,51 +89,48 @@ export default async function EditEventPage({
         </div>
       )}
 
-      <form action={boundAction} className="space-y-6">
+      <form action={boundAction} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Event Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={item.title}
                 required
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Description" name="description">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 defaultValue={item.description ?? ""}
-                className={textareaClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Event Type" name="eventType">
-                <select id="eventType" name="eventType" defaultValue={item.eventType ?? "seminar"} className={selectClass}>
+                <NativeSelect id="eventType" name="eventType" defaultValue={item.eventType ?? "seminar"} className="w-full">
                   {eventTypes.map((t) => (
                     <option key={t} value={t}>
                       {t.charAt(0).toUpperCase() + t.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Location" name="location">
-                <input
+                <Input
                   id="location"
                   name="location"
                   type="text"
                   defaultValue={item.location ?? ""}
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -141,38 +139,29 @@ export default async function EditEventPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Date &amp; Time</CardTitle>
+            <CardTitle>Date, Time &amp; Online</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Start Date" name="startDate" required>
-                <input
+                <Input
                   id="startDate"
                   name="startDate"
                   type="date"
                   defaultValue={startDateStr}
                   required
-                  className={inputClass}
                 />
               </FormField>
               <FormField label="End Date" name="endDate">
-                <input
+                <Input
                   id="endDate"
                   name="endDate"
                   type="date"
                   defaultValue={endDateStr}
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Online &amp; Media</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
             <div className="flex items-center gap-3">
               <input
                 id="isOnline"
@@ -187,42 +176,23 @@ export default async function EditEventPage({
             </div>
 
             <FormField label="Meeting URL" name="meetingUrl">
-              <input
+              <Input
                 id="meetingUrl"
                 name="meetingUrl"
                 type="url"
                 defaultValue={item.meetingUrl ?? ""}
-                className={inputClass}
-              />
-            </FormField>
-
-            <FormField label="Image URL" name="imageUrl">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                defaultValue={item.imageUrl ?? ""}
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Registration URL" name="registrationUrl">
-              <input
+              <Input
                 id="registrationUrl"
                 name="registrationUrl"
                 type="url"
                 defaultValue={item.registrationUrl ?? ""}
-                className={inputClass}
               />
             </FormField>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication</CardTitle>
-          </CardHeader>
-          <CardContent>
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -238,7 +208,32 @@ export default async function EditEventPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-between gap-3 pb-8">
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload
+                  endpoint="gallery"
+                  inputName="gallery"
+                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
+                />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload
+                  endpoint="documents"
+                  inputName="documents"
+                  value={item.documents?.length ? item.documents : item.pdfUrl ? [item.pdfUrl] : []}
+                />
+              </FormField>
+            </FieldGrid>
+          </CardContent>
+        </Card>
+
+        <div className="flex items-center justify-between gap-3 pb-8 lg:col-span-2">
           <form action={boundDelete}>
             <button
               type="submit"

@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { NewPublicationForm } from "../_components/new-publication-form";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,9 @@ export default async function NewPublicationPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Publications", href: "/admin/publications" }, { label: "Add Publication" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Add Publication</h1>
@@ -28,12 +32,6 @@ export default async function NewPublicationPage({
             Add a new publication to the lab repository.
           </p>
         </div>
-        <a
-          href="/admin/publications"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to publications
-        </a>
       </div>
 
       <NewPublicationForm profiles={allProfiles} error={params.error} />

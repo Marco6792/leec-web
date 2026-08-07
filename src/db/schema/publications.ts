@@ -50,6 +50,8 @@ export const publications = pgTable("publications", {
   altmetricScore: integer("altmetric_score").default(0),
   viewCount: integer("view_count").default(0),
   pdfUrl: text("pdf_url"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  documents: jsonb("documents").$type<string[]>().default([]),
   sourceDataUrl: text("source_data_url"),
   codeUrl: text("code_url"),
   keywords: text("keywords").array().default([]),

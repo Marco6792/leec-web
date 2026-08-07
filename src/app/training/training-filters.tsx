@@ -4,6 +4,9 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
+import { SiteImage } from "@/components/site-image";
 import { cn } from "@/lib/utils";
 import {
   GraduationCap,
@@ -14,7 +17,6 @@ import {
   Search,
   ArrowRight,
   BookOpen,
-  ChevronDown,
 } from "lucide-react";
 
 // ─── Types matching the DB schema ──────────────────────────────────────────
@@ -137,71 +139,59 @@ export default function TrainingFilters({ sessions, allEquipmentNames }: Props) 
             {/* Search */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search training sessions..."
-                className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-3 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
-              />
+        <Input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search training sessions..."
+          className="pl-10 pr-3"
+        />
             </div>
 
             {/* Filter dropdowns */}
             <div className="flex flex-wrap items-center gap-3">
               {/* Level filter */}
-              <div className="relative">
-                <select
-                  value={levelFilter}
-                  onChange={(e) => setLevelFilter(e.target.value)}
-                  aria-label="Filter by level"
-                  className="appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 cursor-pointer"
-                >
-                  <option value="all">All Levels</option>
-                  {levels.map((l) => (
-                    <option key={l} value={l}>
-                      {l.charAt(0).toUpperCase() + l.slice(1)}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-              </div>
+              <NativeSelect
+                value={levelFilter}
+                onChange={(e) => setLevelFilter(e.target.value)}
+                aria-label="Filter by level"
+              >
+                <option value="all">All Levels</option>
+                {levels.map((l) => (
+                  <option key={l} value={l}>
+                    {l.charAt(0).toUpperCase() + l.slice(1)}
+                  </option>
+                ))}
+              </NativeSelect>
 
               {/* Status filter */}
-              <div className="relative">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  aria-label="Filter by status"
-                  className="appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 cursor-pointer"
-                >
-                  <option value="all">All Statuses</option>
-                  {visibleStatuses.map((s) => (
-                    <option key={s} value={s}>
-                      {statusConfig[s].label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-              </div>
+              <NativeSelect
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                aria-label="Filter by status"
+              >
+                <option value="all">All Statuses</option>
+                {visibleStatuses.map((s) => (
+                  <option key={s} value={s}>
+                    {statusConfig[s].label}
+                  </option>
+                ))}
+              </NativeSelect>
 
               {/* Equipment filter */}
               {allEquipmentNames.length > 0 && (
-                <div className="relative">
-                  <select
-                    value={equipmentFilter}
-                    onChange={(e) => setEquipmentFilter(e.target.value)}
-                    aria-label="Filter by equipment"
-                    className="appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 cursor-pointer"
-                  >
-                    <option value="all">All Equipment</option>
-                    {allEquipmentNames.map((e) => (
-                      <option key={e} value={e}>
-                        {e}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-                </div>
+                <NativeSelect
+                  value={equipmentFilter}
+                  onChange={(e) => setEquipmentFilter(e.target.value)}
+                  aria-label="Filter by equipment"
+                >
+                  <option value="all">All Equipment</option>
+                  {allEquipmentNames.map((e) => (
+                    <option key={e} value={e}>
+                      {e}
+                    </option>
+                  ))}
+                </NativeSelect>
               )}
             </div>
           </div>
@@ -253,11 +243,13 @@ export default function TrainingFilters({ sessions, allEquipmentNames }: Props) 
                     className="group rounded-xl border bg-card overflow-hidden hover:shadow-lg hover:border-foreground/20 transition-all duration-300 flex flex-col"
                   >
                     {/* Image */}
-                    <div className="aspect-[16/9] overflow-hidden bg-muted">
-                      <img
+                    <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+                      <SiteImage
                         src={session.imageUrl ?? "/photos/lab-interior.jpg"}
                         alt={session.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
 

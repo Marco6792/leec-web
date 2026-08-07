@@ -10,6 +10,7 @@ import {
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 import Link from "next/link";
 import {
   Calendar,
@@ -30,7 +31,7 @@ import {
   MapPin,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 // ─── Status Config ────────────────────────────────────────────────────────
 
@@ -723,9 +724,11 @@ export default async function CollaborationDetailPage({
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   Partner Logo
                 </p>
-                <img
+                <SiteImage
                   src={project.partnerLogoUrl}
                   alt={`${project.partnerName ?? "Partner"} logo`}
+                  width={160}
+                  height={64}
                   className="max-h-16 w-auto object-contain"
                 />
               </div>

@@ -20,9 +20,22 @@ const eventSchema = z.object({
   isOnline: z.boolean().optional(),
   meetingUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  pdfUrl: z.string().optional(),
+  gallery: z.string().optional(),
+  documents: z.string().optional(),
   published: z.boolean().optional(),
   registrationUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
 });
+
+function parseJsonArray(value: string | undefined): string[] {
+  if (!value) return [];
+  try {
+    const arr = JSON.parse(value);
+    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
 
 export async function createEvent(formData: FormData) {
   const user = await getUser();
@@ -30,7 +43,8 @@ export async function createEvent(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(eventSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isOnline = formData.get("isOnline") === "on";
   raw.published = formData.get("published") === "on";
@@ -41,19 +55,26 @@ export async function createEvent(formData: FormData) {
     redirect(`/admin/events/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { startDate, endDate, meetingUrl, imageUrl, registrationUrl, ...rest } = parsed.data;
+  const { startDate, endDate, meetingUrl, imageUrl, pdfUrl, gallery, documents, registrationUrl, ...rest } = parsed.data;
+
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   await db.insert(events).values({
     ...rest,
+    pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
     startDate: new Date(startDate),
     endDate: endDate ? new Date(endDate) : null,
     meetingUrl: meetingUrl || null,
-    imageUrl: imageUrl || null,
+    imageUrl: (galleryArray[0] ?? imageUrl) || null,
+    gallery: galleryArray,
+    documents: documentsArray,
     registrationUrl: registrationUrl || null,
     organizerId: user.id,
   });
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   redirect("/admin/events?saved=true");
 }
 
@@ -63,7 +84,8 @@ export async function updateEvent(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(eventSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isOnline = formData.get("isOnline") === "on";
   raw.published = formData.get("published") === "on";
@@ -74,23 +96,31 @@ export async function updateEvent(id: string, formData: FormData) {
     redirect(`/admin/events/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { startDate, endDate, meetingUrl, imageUrl, registrationUrl, ...rest } = parsed.data;
+  const { startDate, endDate, meetingUrl, imageUrl, pdfUrl, gallery, documents, registrationUrl, ...rest } = parsed.data;
+
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   await db
     .update(events)
     .set({
       ...rest,
+      pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
       startDate: new Date(startDate),
       endDate: endDate ? new Date(endDate) : null,
       meetingUrl: meetingUrl || null,
-      imageUrl: imageUrl || null,
+      imageUrl: (galleryArray[0] ?? imageUrl) || null,
+      gallery: galleryArray,
+      documents: documentsArray,
       registrationUrl: registrationUrl || null,
       updatedAt: new Date(),
     })
     .where(eq(events.id, id));
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   revalidatePath("/events");
+  revalidatePath(`/events/${id}`);
   redirect(`/admin/events/${id}/edit?saved=true`);
 }
 
@@ -101,6 +131,7 @@ export async function deleteEvent(id: string) {
   await db.delete(events).where(eq(events.id, id));
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   revalidatePath("/events");
   redirect("/admin/events");
 }

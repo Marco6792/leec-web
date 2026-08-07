@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 
 export default function AboutPage() {
   return (
@@ -93,11 +94,14 @@ export default function AboutPage() {
               key={photo.src}
               className="rounded-lg border overflow-hidden bg-muted/30"
             >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="w-full aspect-[4/3] object-cover"
-              />
+              <div className="relative aspect-[4/3]">
+                <SiteImage
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+              </div>
               <figcaption className="px-3 py-2 text-xs text-muted-foreground">
                 {photo.caption}
               </figcaption>

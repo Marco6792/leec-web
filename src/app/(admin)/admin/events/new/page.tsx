@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createEvent } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
+import { MediaUpload } from "@/components/admin/media-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +28,10 @@ export default async function NewEventPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Events", href: "/admin/events" }, { label: "Create Event" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Event</h1>
@@ -34,12 +39,6 @@ export default async function NewEventPage({
             Add a new event to the lab calendar.
           </p>
         </div>
-        <Link
-          href="/admin/events"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to events
-        </Link>
       </div>
 
       {params.error && (
@@ -53,51 +52,48 @@ export default async function NewEventPage({
         </div>
       )}
 
-      <form action={createEvent} className="space-y-6">
+      <form action={createEvent} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Event Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="e.g. Distinguished Seminar: Advances in Power Electronics"
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Description" name="description">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 placeholder="Event description..."
-                className={textareaClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Event Type" name="eventType">
-                <select id="eventType" name="eventType" defaultValue="seminar" className={selectClass}>
+                <NativeSelect id="eventType" name="eventType" defaultValue="seminar" className="w-full">
                   {eventTypes.map((t) => (
                     <option key={t} value={t}>
                       {t.charAt(0).toUpperCase() + t.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Location" name="location" helpText="Physical venue or 'Online'">
-                <input
+                <Input
                   id="location"
                   name="location"
                   type="text"
                   placeholder="e.g. Lab 201, Engineering Building"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -106,36 +102,27 @@ export default async function NewEventPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Date &amp; Time</CardTitle>
+            <CardTitle>Date, Time &amp; Online</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Start Date" name="startDate" required>
-                <input
+                <Input
                   id="startDate"
                   name="startDate"
                   type="date"
                   required
-                  className={inputClass}
                 />
               </FormField>
               <FormField label="End Date" name="endDate">
-                <input
+                <Input
                   id="endDate"
                   name="endDate"
                   type="date"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Online &amp; Media</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
             <div className="flex items-center gap-3">
               <input
                 id="isOnline"
@@ -149,42 +136,23 @@ export default async function NewEventPage({
             </div>
 
             <FormField label="Meeting URL" name="meetingUrl" helpText="Zoom, Google Meet, etc.">
-              <input
+              <Input
                 id="meetingUrl"
                 name="meetingUrl"
                 type="url"
                 placeholder="https://..."
-                className={inputClass}
-              />
-            </FormField>
-
-            <FormField label="Image URL" name="imageUrl">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                placeholder="https://..."
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Registration URL" name="registrationUrl">
-              <input
+              <Input
                 id="registrationUrl"
                 name="registrationUrl"
                 type="url"
                 placeholder="https://..."
-                className={inputClass}
               />
             </FormField>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication</CardTitle>
-          </CardHeader>
-          <CardContent>
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -199,7 +167,24 @@ export default async function NewEventPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
+              </FormField>
+            </FieldGrid>
+          </CardContent>
+        </Card>
+
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <Link
             href="/admin/events"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

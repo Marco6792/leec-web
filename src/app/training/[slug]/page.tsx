@@ -19,7 +19,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   draft: { label: "Pending Approval", color: "bg-muted text-muted-foreground" },
