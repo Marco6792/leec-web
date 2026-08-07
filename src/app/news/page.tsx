@@ -4,9 +4,9 @@ import { db } from "@/db";
 import { news } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function NewsPage() {
   const articles = await db
@@ -17,6 +17,7 @@ export default async function NewsPage() {
       excerpt: news.excerpt,
       content: news.content,
       imageUrl: news.imageUrl,
+      pdfUrl: news.pdfUrl,
       publishedAt: news.publishedAt,
       pinned: news.pinned,
       tags: news.tags,
@@ -91,9 +92,16 @@ export default async function NewsPage() {
                       ))}
                     </div>
                   )}
-                  <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium mt-4">
-                    Read article <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-                  </span>
+                  <div className="flex items-center justify-between gap-3 mt-4">
+                    <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium">
+                      Read article <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    {item.pdfUrl && (
+                      <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                        <FileText className="size-3.5 text-primary" /> PDF
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </Link>

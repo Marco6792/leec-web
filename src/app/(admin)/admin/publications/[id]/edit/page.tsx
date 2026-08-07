@@ -4,6 +4,7 @@ import { publications, publicationAuthors, profiles } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
 import { EditPublicationForm, type ExistingAuthor } from "../../_components/edit-publication-form";
+import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -59,12 +60,15 @@ export default async function EditPublicationPage({
             Editing: {pub.title}
           </p>
         </div>
-        <a
-          href="/admin/publications"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to publications
-        </a>
+        <div className="flex items-center gap-4">
+          <ViewPublicPage href={`/publications/${pub.id}`} />
+          <a
+            href="/admin/publications"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            &larr; Back to publications
+          </a>
+        </div>
       </div>
 
       <EditPublicationForm

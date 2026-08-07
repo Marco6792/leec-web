@@ -4,8 +4,9 @@ import { db } from "@/db";
 import { equipment } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { FileText } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const categoryLabels: Record<string, string> = {
   instrument: "Instrument",
@@ -31,6 +32,7 @@ export default async function EquipmentPage() {
       model: equipment.model,
       specifications: equipment.specifications,
       imageUrl: equipment.imageUrl,
+      pdfUrl: equipment.pdfUrl,
     })
     .from(equipment)
     .where(eq(equipment.isPublic, true))
@@ -75,10 +77,20 @@ export default async function EquipmentPage() {
                   </span>
                 )}
               </div>
-              <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                {item.name}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                  {item.name}
+                </h3>
+                {item.pdfUrl && (
+                  <span
+                    title="Datasheet available"
+                    className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/50 px-2 py-1 text-[11px] font-medium text-muted-foreground shrink-0"
+                  >
+                    <FileText className="size-3.5 text-primary" /> Datasheet
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-1">{item.description}</p>
               {item.specifications && (
                 <p className="text-xs text-muted-foreground/70 mt-3 border-t pt-3">
                   {item.specifications}

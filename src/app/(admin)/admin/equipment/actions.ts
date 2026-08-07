@@ -22,6 +22,7 @@ const equipmentSchema = z.object({
   usage: z.string().optional(),
   location: z.string().optional(),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  pdfUrl: z.string().optional(),
   status: z
     .enum(["operational", "maintenance", "repair", "calibration", "retired"])
     .optional(),
@@ -61,17 +62,19 @@ export async function createEquipment(formData: FormData) {
     redirect(`/admin/equipment/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { imageUrl, acquiredDate, value, ...rest } = parsed.data;
+  const { imageUrl, pdfUrl, acquiredDate, value, ...rest } = parsed.data;
 
   await db.insert(equipment).values({
     ...rest,
     slug,
     imageUrl: imageUrl || null,
+    pdfUrl: pdfUrl || null,
     acquiredDate: acquiredDate || null,
     value: value || null,
   });
 
   revalidatePath("/admin/equipment");
+  revalidatePath("/");
   redirect("/admin/equipment?saved=true");
 }
 
@@ -95,7 +98,7 @@ export async function updateEquipment(id: string, formData: FormData) {
     redirect(`/admin/equipment/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { imageUrl, acquiredDate, value, ...rest } = parsed.data;
+  const { imageUrl, pdfUrl, acquiredDate, value, ...rest } = parsed.data;
 
   await db
     .update(equipment)
@@ -103,6 +106,7 @@ export async function updateEquipment(id: string, formData: FormData) {
       ...rest,
       slug,
       imageUrl: imageUrl || null,
+      pdfUrl: pdfUrl || null,
       acquiredDate: acquiredDate || null,
       value: value || null,
       updatedAt: new Date(),
@@ -110,5 +114,19 @@ export async function updateEquipment(id: string, formData: FormData) {
     .where(eq(equipment.id, id));
 
   revalidatePath("/admin/equipment");
+  revalidatePath("/");
+  revalidatePath(`/equipment/${slug}`);
   redirect(`/admin/equipment/${id}/edit?saved=true`);
+}
+
+export async function deleteEquipment(id: string) {
+  const user = await getUser();
+  if (!user) redirect("/login");
+
+  await db.delete(equipment).where(eq(equipment.id, id));
+
+  revalidatePath("/admin/equipment");
+  revalidatePath("/");
+  revalidatePath("/equipment");
+  redirect("/admin/equipment");
 }

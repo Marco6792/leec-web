@@ -9,6 +9,8 @@ import {
   selectClass,
   textareaClass,
 } from "../../_components/form-field";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -93,15 +95,14 @@ export default async function NewNewsPage({
             <CardTitle>Media &amp; Metadata</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <FormField label="Image URL" name="imageUrl" helpText="URL to the featured image.">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                placeholder="https://..."
-                className={inputClass}
-              />
-            </FormField>
+            <FieldGrid cols={2}>
+              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
+                <UploadImage endpoint="entityImage" inputName="imageUrl" />
+              </FormField>
+              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+                <PdfUpload inputName="pdfUrl" />
+              </FormField>
+            </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt" helpText="Leave empty to use current date when published.">

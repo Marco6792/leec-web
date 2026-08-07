@@ -8,6 +8,8 @@ import {
   selectClass,
   textareaClass,
 } from "../../_components/form-field";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -180,9 +182,14 @@ export default async function NewEquipmentPage({
               </FormField>
             </FieldGrid>
 
-            <FormField label="Image URL" name="imageUrl" helpText="URL to a photo of the equipment.">
-              <input id="imageUrl" name="imageUrl" type="url" placeholder="https://..." className={inputClass} />
-            </FormField>
+            <FieldGrid cols={2}>
+              <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
+                <UploadImage endpoint="entityImage" inputName="imageUrl" />
+              </FormField>
+              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+                <PdfUpload inputName="pdfUrl" label="Upload datasheet" />
+              </FormField>
+            </FieldGrid>
           </CardContent>
         </Card>
 

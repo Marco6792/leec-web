@@ -6,6 +6,7 @@ import { events, profiles } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PdfViewer } from "@/components/pdf-viewer";
 import {
   ArrowLeft,
   Calendar,
@@ -17,7 +18,7 @@ import {
   CalendarPlus,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const eventTypeLabels: Record<string, string> = {
   seminar: "Seminar",
@@ -69,6 +70,7 @@ export default async function EventDetailPage({
       meetingUrl: events.meetingUrl,
       registrationUrl: events.registrationUrl,
       imageUrl: events.imageUrl,
+      pdfUrl: events.pdfUrl,
       organizerId: events.organizerId,
       organizerName: profiles.fullName,
     })
@@ -144,6 +146,13 @@ export default async function EventDetailPage({
               <p className="text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
+            )}
+
+            {/* Attached PDF document */}
+            {item.pdfUrl && (
+              <div className="mt-10">
+                <PdfViewer url={item.pdfUrl} title={item.title} />
+              </div>
             )}
           </div>
         </div>

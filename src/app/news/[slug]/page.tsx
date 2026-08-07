@@ -6,6 +6,7 @@ import { news, profiles } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PdfViewer } from "@/components/pdf-viewer";
 import {
   ArrowLeft,
   Calendar,
@@ -14,7 +15,7 @@ import {
   Tag,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function NewsDetailPage({
   params,
@@ -30,6 +31,7 @@ export default async function NewsDetailPage({
       excerpt: news.excerpt,
       content: news.content,
       imageUrl: news.imageUrl,
+      pdfUrl: news.pdfUrl,
       publishedAt: news.publishedAt,
       pinned: news.pinned,
       tags: news.tags,
@@ -139,6 +141,13 @@ export default async function NewsDetailPage({
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Attached PDF document */}
+      {item.pdfUrl && (
+        <div className="mt-12">
+          <PdfViewer url={item.pdfUrl} title={item.title} />
         </div>
       )}
 

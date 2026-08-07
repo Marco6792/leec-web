@@ -1,56 +1,62 @@
+import { eq, and, desc } from "drizzle-orm";
+import { db } from "@/db";
+import { labMembers, profiles } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-const team = [
-  {
-    name: "Prof. Pierre Tsafack",
-    role: "Director",
-    description: "Full Professor of Electronic Engineering, founder and director of the LEEC Research Laboratory.",
-  },
-  {
-    name: "Mongshi Anita",
-    role: "Researcher",
-    description: "Electromagnetic NDT, material characterization and magnetic measurement techniques.",
-  },
-  {
-    name: "Tene Yves Deffo",
-    role: "Researcher",
-    description: "Electromagnetic non-destructive testing and corrosion detection in steels.",
-  },
-  {
-    name: "Nguedjang Sorelle",
-    role: "Researcher",
-    description: "Magnetic NDT methods and structural health monitoring.",
-  },
-  {
-    name: "Toutsop Borel",
-    role: "Researcher",
-    description: "Electromagnetic instrumentation and magnetic sensor design.",
-  },
-  {
-    name: "F. Ajamah",
-    role: "Researcher",
-    description: "Energy harvesting from water distribution systems and micro hydropower.",
-  },
-  {
-    name: "N. Kamdjou",
-    role: "Researcher",
-    description: "Microbial fuel cells and energy harvesting from organic wastes.",
-  },
-  {
-    name: "Mangeh E.",
-    role: "Researcher",
-    description: "Smart agriculture: sensor nodes for soil classification and pesticide monitoring.",
-  },
-  {
-    name: "Nkemeni V.",
-    role: "Researcher",
-    description: "Sensor systems and IoT applications for agriculture and telecommunication.",
-  },
-];
+export const revalidate = 60;
 
-export default function PeoplePage() {
+const roleLabels: Record<string, string> = {
+  director: "Director",
+  pi: "Principal Investigator",
+  researcher: "Researcher",
+  phd_student: "PhD Student",
+  master_student: "Master Student",
+  technician: "Technician",
+  visitor: "Visitor",
+  external: "External Collaborator",
+  client: "Client",
+};
+
+const rolePriority: Record<string, number> = {
+  director: 0,
+  pi: 1,
+  technician: 2,
+  researcher: 3,
+  phd_student: 4,
+  master_student: 5,
+  visitor: 6,
+  external: 7,
+  client: 8,
+};
+
+export default async function PeoplePage() {
+  const members = await db
+    .select({
+      name: profiles.fullName,
+      title: profiles.title,
+      avatarUrl: profiles.avatarUrl,
+      role: labMembers.role,
+      biography: profiles.biography,
+      researchInterests: profiles.researchInterests,
+      institution: profiles.institution,
+      website: profiles.website,
+      linkedIn: profiles.linkedIn,
+      orcid: profiles.orcid,
+      joinedAt: labMembers.joinedAt,
+    })
+    .from(labMembers)
+    .innerJoin(profiles, eq(labMembers.userId, profiles.id))
+    .where(and(eq(labMembers.status, "active"), eq(profiles.isPublic, true)))
+    .orderBy(desc(labMembers.joinedAt));
+
+  const sorted = [...members].sort(
+    (a, b) =>
+      (rolePriority[a.role] ?? 99) - (rolePriority[b.role] ?? 99) ||
+      new Date(b.joinedAt ?? 0).getTime() - new Date(a.joinedAt ?? 0).getTime(),
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
       <Badge variant="outline" className="mb-6">People</Badge>
@@ -63,22 +69,111 @@ export default function PeoplePage() {
 
       <Separator className="mb-12" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {team.map((member) => (
-          <Card key={member.name} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <span className="text-lg font-bold text-foreground">
-                  {member.name.split(" ").map((n) => n[0]).join("")}
-                </span>
-              </div>
-              <h3 className="font-semibold text-lg">{member.name}</h3>
-              <p className="text-sm text-muted-foreground mb-2">{member.role}</p>
-              <p className="text-sm text-muted-foreground">{member.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {sorted.length === 0 ? (
+        <div className="rounded-xl border border-border p-12 text-center text-muted-foreground">
+          <p className="text-lg font-medium">No team members yet</p>
+          <p className="text-sm mt-1">
+            Team members are added by the lab administrators.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sorted.map((member) => (
+            <Card
+              key={member.name}
+              className="group hover:shadow-lg transition-all duration-300"
+            >
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="relative mb-4">
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  {member.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={member.avatarUrl}
+                      alt={member.name}
+                      className="relative size-24 rounded-full object-cover border border-border shadow-sm"
+                    />
+                  ) : (
+                    <div className="relative size-24 rounded-full bg-muted flex items-center justify-center border border-border">
+                      <span className="text-2xl font-bold text-foreground/70">
+                        {member.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join("")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <h3 className="font-semibold text-lg">{member.name}</h3>
+                <Badge
+                  variant="outline"
+                  className="mt-1.5 mb-2 text-[10px] uppercase tracking-wider bg-primary/5 text-primary"
+                >
+                  {roleLabels[member.role] ?? member.role}
+                </Badge>
+                {member.title && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {member.title}
+                  </p>
+                )}
+                {member.biography && (
+                  <p className="text-sm text-muted-foreground line-clamp-3">
+                    {member.biography}
+                  </p>
+                )}
+                {member.researchInterests && member.researchInterests.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-1.5 mt-3">
+                    {member.researchInterests.slice(0, 3).map((interest) => (
+                      <span
+                        key={interest}
+                        className="rounded-md bg-muted px-2 py-0.5 text-[10px] text-muted-foreground"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {(member.website || member.linkedIn || member.orcid) && (
+                  <div className="flex items-center gap-3 mt-4 text-xs">
+                    {member.website && (
+                      <a
+                        href={member.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        Website
+                      </a>
+                    )}
+                    {member.linkedIn && (
+                      <a
+                        href={member.linkedIn}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        LinkedIn
+                      </a>
+                    )}
+                    {member.orcid && (
+                      <a
+                        href={`https://orcid.org/${member.orcid.replace(/^https?:\/\/(www\.)?orcid\.org\//, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        ORCID
+                      </a>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

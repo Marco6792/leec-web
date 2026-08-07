@@ -24,7 +24,7 @@ export default async function AdminLabMembersPage({
 }: {
   searchParams: Promise<{ role?: string; status?: string }>;
 }) {
-  await requireAdmin();
+  const { role } = await requireAdmin();
 
   const params = await searchParams;
   const roleFilter = params.role;
@@ -36,6 +36,7 @@ export default async function AdminLabMembersPage({
       labId: labMembers.labId,
       name: profiles.fullName,
       title: profiles.title,
+      avatarUrl: profiles.avatarUrl,
       role: labMembers.role,
       status: labMembers.status,
       labName: researchCenters.name,
@@ -54,11 +55,23 @@ export default async function AdminLabMembersPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Lab Members</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {data.length} member{data.length !== 1 ? "s" : ""}
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Lab Members</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {data.length} member{data.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <a
+          href="/admin/lab-members/new"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"
+        >
+          <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add Member
+        </a>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -82,7 +95,10 @@ export default async function AdminLabMembersPage({
         />
       </div>
 
-      <LabMembersView data={data} />
+      <LabMembersView
+        data={data}
+        canManageMembers={role === "director" || role === "pi"}
+      />
     </div>
   );
 }

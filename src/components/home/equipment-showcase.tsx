@@ -5,8 +5,6 @@ import { equipment } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-
 export async function EquipmentShowcase() {
   const equipmentList = await db
     .select({

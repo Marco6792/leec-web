@@ -65,6 +65,7 @@ export async function createTrainingSession(formData: FormData) {
   });
 
   revalidatePath("/admin/training");
+  revalidatePath("/training");
   redirect("/admin/training?saved=true");
 }
 
@@ -100,6 +101,7 @@ export async function updateTrainingSession(id: string, formData: FormData) {
     .where(eq(trainingSessions.id, id));
 
   revalidatePath("/admin/training");
+  revalidatePath("/training");
   redirect(`/admin/training/${id}/edit?saved=true`);
 }
 
@@ -118,6 +120,7 @@ export async function validateTrainingSession(id: string) {
     .where(eq(trainingSessions.id, id));
 
   revalidatePath("/admin/training");
+  revalidatePath("/training");
   revalidatePath("/admin/training/validation");
 }
 
@@ -134,6 +137,7 @@ export async function archiveTrainingSession(id: string) {
     .where(eq(trainingSessions.id, id));
 
   revalidatePath("/admin/training");
+  revalidatePath("/training");
 }
 
 export async function deleteTrainingSession(id: string) {
@@ -143,5 +147,6 @@ export async function deleteTrainingSession(id: string) {
   await db.delete(trainingSessions).where(eq(trainingSessions.id, id));
 
   revalidatePath("/admin/training");
+  revalidatePath("/training");
   redirect("/admin/training?deleted=true");
 }

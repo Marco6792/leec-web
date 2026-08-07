@@ -13,6 +13,9 @@ import {
   selectClass,
   textareaClass,
 } from "../../../_components/form-field";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
+import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -59,12 +62,15 @@ export default async function EditEventPage({
             Editing: {item.title}
           </p>
         </div>
-        <Link
-          href="/admin/events"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to events
-        </Link>
+        <div className="flex items-center gap-4">
+          <ViewPublicPage href={`/events/${item.id}`} />
+          <Link
+            href="/admin/events"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            &larr; Back to events
+          </Link>
+        </div>
       </div>
 
       {sp.saved === "true" && (
@@ -196,15 +202,14 @@ export default async function EditEventPage({
               />
             </FormField>
 
-            <FormField label="Image URL" name="imageUrl">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                defaultValue={item.imageUrl ?? ""}
-                className={inputClass}
-              />
-            </FormField>
+            <FieldGrid cols={2}>
+              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
+                <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
+              </FormField>
+              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} />
+              </FormField>
+            </FieldGrid>
 
             <FormField label="Registration URL" name="registrationUrl">
               <input

@@ -12,6 +12,11 @@ import {
   selectClass,
   textareaClass,
 } from "../../../_components/form-field";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
+import { DeleteButton } from "../../../_components/delete-button";
+import { ViewPublicPage } from "../../../_components/view-public-page";
+import { deleteEquipment } from "../../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -57,12 +62,15 @@ export default async function EditEquipmentPage({
             Editing: {item.name}
           </p>
         </div>
-        <a
-          href="/admin/equipment"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to equipment
-        </a>
+        <div className="flex items-center gap-4">
+          <ViewPublicPage href={`/equipment/${item.slug}`} />
+          <a
+            href="/admin/equipment"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            &larr; Back to equipment
+          </a>
+        </div>
       </div>
 
       {/* Saved banner */}
@@ -214,9 +222,14 @@ export default async function EditEquipmentPage({
               </FormField>
             </FieldGrid>
 
-            <FormField label="Image URL" name="imageUrl">
-              <input id="imageUrl" name="imageUrl" type="url" defaultValue={item.imageUrl ?? ""} className={inputClass} />
-            </FormField>
+            <FieldGrid cols={2}>
+              <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
+                <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
+              </FormField>
+              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} label="Upload datasheet" />
+              </FormField>
+            </FieldGrid>
           </CardContent>
         </Card>
 
@@ -269,6 +282,11 @@ export default async function EditEquipmentPage({
           </button>
         </div>
       </form>
+
+      {/* Delete (outside the main form to keep HTML valid) */}
+      <div className="flex items-center justify-end gap-3 border-t border-border pt-6 pb-8">
+        <DeleteButton action={deleteEquipment.bind(null, id)} label="Delete Equipment" />
+      </div>
     </div>
   );
 }

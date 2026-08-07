@@ -23,6 +23,8 @@ export const metadata = {
   description: "Research outputs from our laboratory",
 };
 
+export const revalidate = 60;
+
 const typeConfig: Record<string, { icon: typeof BookOpen; color: string }> = {
   conference: { icon: Mic, color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" },
   journal: { icon: BookOpen, color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300" },

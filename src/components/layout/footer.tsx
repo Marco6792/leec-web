@@ -33,6 +33,7 @@ export function Footer() {
               {[
                 { href: "/about", label: "About LEEC" },
                 { href: "/research", label: "Research Areas" },
+                { href: "/projects", label: "Projects" },
                 { href: "/people", label: "Our People" },
                 { href: "/publications", label: "Publications" },
                 { href: "/equipment", label: "Equipment" },

@@ -20,6 +20,7 @@ const eventSchema = z.object({
   isOnline: z.boolean().optional(),
   meetingUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  pdfUrl: z.string().optional(),
   published: z.boolean().optional(),
   registrationUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
 });
@@ -41,10 +42,11 @@ export async function createEvent(formData: FormData) {
     redirect(`/admin/events/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { startDate, endDate, meetingUrl, imageUrl, registrationUrl, ...rest } = parsed.data;
+  const { startDate, endDate, meetingUrl, imageUrl, pdfUrl, registrationUrl, ...rest } = parsed.data;
 
   await db.insert(events).values({
     ...rest,
+    pdfUrl: pdfUrl || null,
     startDate: new Date(startDate),
     endDate: endDate ? new Date(endDate) : null,
     meetingUrl: meetingUrl || null,
@@ -54,6 +56,7 @@ export async function createEvent(formData: FormData) {
   });
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   redirect("/admin/events?saved=true");
 }
 
@@ -74,12 +77,13 @@ export async function updateEvent(id: string, formData: FormData) {
     redirect(`/admin/events/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { startDate, endDate, meetingUrl, imageUrl, registrationUrl, ...rest } = parsed.data;
+  const { startDate, endDate, meetingUrl, imageUrl, pdfUrl, registrationUrl, ...rest } = parsed.data;
 
   await db
     .update(events)
     .set({
       ...rest,
+      pdfUrl: pdfUrl || null,
       startDate: new Date(startDate),
       endDate: endDate ? new Date(endDate) : null,
       meetingUrl: meetingUrl || null,
@@ -90,7 +94,9 @@ export async function updateEvent(id: string, formData: FormData) {
     .where(eq(events.id, id));
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   revalidatePath("/events");
+  revalidatePath(`/events/${id}`);
   redirect(`/admin/events/${id}/edit?saved=true`);
 }
 
@@ -101,6 +107,7 @@ export async function deleteEvent(id: string) {
   await db.delete(events).where(eq(events.id, id));
 
   revalidatePath("/admin/events");
+  revalidatePath("/");
   revalidatePath("/events");
   redirect("/admin/events");
 }

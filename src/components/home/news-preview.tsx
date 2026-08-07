@@ -5,8 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-
 export async function NewsPreview() {
   const articles = await db
     .select({

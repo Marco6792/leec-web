@@ -4,9 +4,9 @@ import { db } from "@/db";
 import { events } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const eventTypeLabels: Record<string, string> = {
   seminar: "Seminar",
@@ -31,6 +31,7 @@ export default async function EventsPage() {
       isOnline: events.isOnline,
       meetingUrl: events.meetingUrl,
       imageUrl: events.imageUrl,
+      pdfUrl: events.pdfUrl,
       registrationUrl: events.registrationUrl,
     })
     .from(events)
@@ -102,6 +103,7 @@ function EventCard({
     isOnline: boolean | null;
     meetingUrl: string | null;
     imageUrl: string | null;
+    pdfUrl: string | null;
     registrationUrl: string | null;
   };
 }) {
@@ -166,10 +168,15 @@ function EventCard({
             </p>
           )}
 
-          <div className="flex items-center gap-3 mt-3">
+          <div className="flex items-center justify-between gap-3 mt-3">
             <span className="inline-flex items-center gap-1.5 text-sm text-primary font-medium">
               View details <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
             </span>
+            {item.pdfUrl && (
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                <FileText className="size-3.5 text-primary" /> PDF
+              </span>
+            )}
           </div>
         </div>
       </div>

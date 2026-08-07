@@ -14,6 +14,7 @@ const newsSchema = z.object({
   excerpt: z.string().optional(),
   content: z.string().optional(),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  pdfUrl: z.string().optional(),
   published: z.boolean().optional(),
   publishedAt: z.string().optional(),
   pinned: z.boolean().optional(),
@@ -49,7 +50,7 @@ export async function createNews(formData: FormData) {
     redirect(`/admin/news/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { tags, publishedAt, ...rest } = parsed.data;
+  const { tags, publishedAt, pdfUrl, ...rest } = parsed.data;
 
   const tagsArray = tags
     ? tags.split(",").map((s) => s.trim()).filter(Boolean)
@@ -57,6 +58,7 @@ export async function createNews(formData: FormData) {
 
   await db.insert(news).values({
     ...rest,
+    pdfUrl: pdfUrl || null,
     slug,
     authorId: user.id,
     tags: tagsArray,
@@ -64,6 +66,7 @@ export async function createNews(formData: FormData) {
   });
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   redirect("/admin/news?saved=true");
 }
 
@@ -87,7 +90,7 @@ export async function updateNews(id: string, formData: FormData) {
     redirect(`/admin/news/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { tags, publishedAt, ...rest } = parsed.data;
+  const { tags, publishedAt, pdfUrl, ...rest } = parsed.data;
 
   const tagsArray = tags
     ? tags.split(",").map((s) => s.trim()).filter(Boolean)
@@ -97,6 +100,7 @@ export async function updateNews(id: string, formData: FormData) {
     .update(news)
     .set({
       ...rest,
+      pdfUrl: pdfUrl || null,
       slug,
       tags: tagsArray,
       publishedAt: publishedAt ? new Date(publishedAt) : (rest.published ? new Date() : null),
@@ -105,7 +109,9 @@ export async function updateNews(id: string, formData: FormData) {
     .where(eq(news.id, id));
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   revalidatePath("/news");
+  revalidatePath(`/news/${slug}`);
   redirect(`/admin/news/${id}/edit?saved=true`);
 }
 
@@ -116,6 +122,7 @@ export async function deleteNews(id: string) {
   await db.delete(news).where(eq(news.id, id));
 
   revalidatePath("/admin/news");
+  revalidatePath("/");
   revalidatePath("/news");
   redirect("/admin/news");
 }

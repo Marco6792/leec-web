@@ -12,6 +12,9 @@ import {
   inputClass,
   textareaClass,
 } from "../../../_components/form-field";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
+import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -51,12 +54,15 @@ export default async function EditNewsPage({
             Editing: {item.title}
           </p>
         </div>
-        <Link
-          href="/admin/news"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to news
-        </Link>
+        <div className="flex items-center gap-4">
+          <ViewPublicPage href={`/news/${item.slug}`} />
+          <Link
+            href="/admin/news"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            &larr; Back to news
+          </Link>
+        </div>
       </div>
 
       {sp.saved === "true" && (
@@ -126,16 +132,14 @@ export default async function EditNewsPage({
             <CardTitle>Media &amp; Metadata</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <FormField label="Image URL" name="imageUrl">
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                defaultValue={item.imageUrl ?? ""}
-                placeholder="https://..."
-                className={inputClass}
-              />
-            </FormField>
+            <FieldGrid cols={2}>
+              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
+                <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
+              </FormField>
+              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} />
+              </FormField>
+            </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt">

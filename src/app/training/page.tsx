@@ -6,7 +6,7 @@ import { GraduationCap } from "lucide-react";
 import TrainingFilters from "./training-filters";
 import type { TrainingSessionRow } from "./training-filters";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 // ─── Server Component ─────────────────────────────────────────────────────
 

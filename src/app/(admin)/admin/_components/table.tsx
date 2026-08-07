@@ -23,6 +23,9 @@ interface AdminTableProps<T> {
   emptyMessage?: string;
   baseUrl?: string;
   idField?: keyof T;
+  /** Optional per-row actions rendered in a trailing "Actions" column. */
+  rowActions?: (item: T) => React.ReactNode;
+  actionsHeader?: string;
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────
@@ -36,6 +39,8 @@ export function AdminTable<T extends Record<string, any>>({
   emptyMessage = "No records found.",
   baseUrl,
   idField,
+  rowActions,
+  actionsHeader = "Actions",
 }: AdminTableProps<T>) {
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -147,6 +152,11 @@ export function AdminTable<T extends Record<string, any>>({
                   </span>
                 </th>
               ))}
+              {rowActions && (
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                  {actionsHeader}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -190,6 +200,11 @@ export function AdminTable<T extends Record<string, any>>({
                         )}
                       </td>
                     ))}
+                    {rowActions && (
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">{rowActions(item)}</div>
+                      </td>
+                    )}
                   </tr>
                 );
               })

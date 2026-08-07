@@ -6,6 +6,7 @@ import { equipment } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PdfViewer } from "@/components/pdf-viewer";
 import {
   ArrowLeft,
   Boxes,
@@ -18,7 +19,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const categoryLabels: Record<string, string> = {
   instrument: "Instrument",
@@ -224,6 +225,19 @@ export default async function EquipmentDetailPage({
                 );
               })}
             </ul>
+          </div>
+        </>
+      )}
+
+      {/* Datasheet PDF */}
+      {item.pdfUrl && (
+        <>
+          <Separator className="my-14" />
+          <div className="max-w-4xl">
+            <h2 className="text-2xl font-bold tracking-tight mb-6">
+              Datasheet &amp; Documents
+            </h2>
+            <PdfViewer url={item.pdfUrl} title={`${item.name} — Datasheet`} />
           </div>
         </>
       )}

@@ -2,6 +2,8 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { DeleteButton } from "../_components/delete-button";
+import { deleteEquipment } from "./actions";
 
 interface EquipmentRow {
   id: string;
@@ -102,6 +104,8 @@ export function EquipmentView({ data }: { data: EquipmentRow[] }) {
       emptyMessage="No equipment registered. Add your first item to get started."
       baseUrl="/admin/equipment"
       idField="id"
+      actionsHeader=""
+      rowActions={(item) => <DeleteButton action={deleteEquipment.bind(null, item.id)} />}
     />
   );
 }

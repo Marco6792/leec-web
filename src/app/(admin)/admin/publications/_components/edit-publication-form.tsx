@@ -12,6 +12,8 @@ import {
 } from "../../_components/form-field";
 import { PublisherInput } from "../_components/publisher-input";
 import { AuthorSelector, type AuthorEntry } from "../_components/author-selector";
+import { UploadImage } from "@/components/admin/upload-image";
+import { PdfUpload } from "@/components/admin/pdf-upload";
 
 const publicationTypes = [
   "journal", "conference", "book", "chapter", "report",
@@ -43,6 +45,7 @@ interface Publication {
   patentNumber: string | null;
   repository: string | null;
   citationCount: number | null;
+  imageUrl: string | null;
   pdfUrl: string | null;
   sourceDataUrl: string | null;
   keywords: string[] | null;
@@ -289,20 +292,24 @@ export function EditPublicationForm({
         </Card>
       </div>
 
-      {/* Row 3: Links */}
+      {/* Row 3: Media & Links */}
       <Card>
         <CardHeader>
-          <CardTitle>Links &amp; Resources</CardTitle>
+          <CardTitle>Media &amp; Resources</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-5">
           <FieldGrid cols={2}>
-            <FormField label="PDF URL" name="pdfUrl">
-              <input id="pdfUrl" name="pdfUrl" type="url" defaultValue={publication.pdfUrl ?? ""} className={inputClass} />
+            <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
+              <UploadImage endpoint="entityImage" inputName="imageUrl" value={publication.imageUrl ?? ""} />
             </FormField>
-            <FormField label="Source Data URL" name="sourceDataUrl">
-              <input id="sourceDataUrl" name="sourceDataUrl" type="url" defaultValue={publication.sourceDataUrl ?? ""} className={inputClass} />
+            <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+              <PdfUpload inputName="pdfUrl" value={publication.pdfUrl ?? ""} />
             </FormField>
           </FieldGrid>
+
+          <FormField label="Source Data URL" name="sourceDataUrl" helpText="Link to raw data or a repository.">
+            <input id="sourceDataUrl" name="sourceDataUrl" type="url" defaultValue={publication.sourceDataUrl ?? ""} className={inputClass} />
+          </FormField>
         </CardContent>
       </Card>
 

@@ -2,6 +2,8 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { DeleteButton } from "../_components/delete-button";
+import { deleteProject } from "./actions";
 
 interface ProjectRow {
   id: string;
@@ -85,6 +87,8 @@ export function ProjectsView({ data }: { data: ProjectRow[] }) {
       emptyMessage="No projects found. Create your first project to get started."
       baseUrl="/admin/projects"
       idField="id"
+      actionsHeader=""
+      rowActions={(item) => <DeleteButton action={deleteProject.bind(null, item.id)} />}
     />
   );
 }

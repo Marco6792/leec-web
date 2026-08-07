@@ -5,8 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-
 const eventTypeLabels: Record<string, string> = {
   seminar: "Seminar",
   workshop: "Workshop",

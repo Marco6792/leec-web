@@ -34,6 +34,7 @@ const navItems = [
     ],
   },
   { href: "/people", label: "People" },
+  { href: "/projects", label: "Projects" },
   { href: "/publications", label: "Publications" },
   { href: "/equipment", label: "Equipment" },
   { href: "/training", label: "Training" },

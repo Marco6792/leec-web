@@ -28,7 +28,8 @@ const publicationSchema = z.object({
   patentNumber: z.string().optional(),
   repository: z.string().optional(),
   citationCount: z.coerce.number().int().min(0).optional(),
-  pdfUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
+  imageUrl: z.string().optional(),
+  pdfUrl: z.string().optional(),
   sourceDataUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   keywords: z.string().optional(),
   researchDomains: z.string().optional(),
@@ -76,7 +77,7 @@ export async function createPublication(formData: FormData) {
     redirect(`/admin/publications/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { keywords, researchDomains, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
+  const { keywords, researchDomains, imageUrl, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
 
   const publisherArray = publisher
     ? publisher.split(",").map((s) => s.trim()).filter(Boolean)
@@ -86,6 +87,7 @@ export async function createPublication(formData: FormData) {
     .insert(publications)
     .values({
       ...rest,
+      imageUrl: imageUrl || null,
       pdfUrl: pdfUrl || null,
       sourceDataUrl: sourceDataUrl || null,
       keywords: keywords ? keywords.split(",").map((s) => s.trim()).filter(Boolean) : [],
@@ -111,6 +113,8 @@ export async function createPublication(formData: FormData) {
   }
 
   revalidatePath("/admin/publications");
+  revalidatePath("/publications");
+  revalidatePath("/");
   redirect("/admin/publications?saved=true");
 }
 
@@ -130,7 +134,7 @@ export async function updatePublication(id: string, formData: FormData) {
     redirect(`/admin/publications/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { keywords, researchDomains, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
+  const { keywords, researchDomains, imageUrl, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
 
   const publisherArray = publisher
     ? publisher.split(",").map((s) => s.trim()).filter(Boolean)
@@ -140,6 +144,7 @@ export async function updatePublication(id: string, formData: FormData) {
     .update(publications)
     .set({
       ...rest,
+      imageUrl: imageUrl || null,
       pdfUrl: pdfUrl || null,
       sourceDataUrl: sourceDataUrl || null,
       keywords: keywords ? keywords.split(",").map((s) => s.trim()).filter(Boolean) : [],
@@ -168,6 +173,20 @@ export async function updatePublication(id: string, formData: FormData) {
   }
 
   revalidatePath("/admin/publications");
+  revalidatePath("/publications");
+  revalidatePath("/");
   revalidatePath(`/publications/${id}`);
   redirect(`/admin/publications/${id}/edit?saved=true`);
+}
+
+export async function deletePublication(id: string) {
+  const user = await getUser();
+  if (!user) redirect("/login");
+
+  await db.delete(publications).where(eq(publications.id, id));
+
+  revalidatePath("/admin/publications");
+  revalidatePath("/");
+  revalidatePath("/publications");
+  redirect("/admin/publications");
 }
