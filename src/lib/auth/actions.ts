@@ -7,6 +7,10 @@ import { createClient } from "@/lib/supabase/server";
 
 /**
  * Sign in with email and password.
+ *
+ * Honors the `redirect` hidden field (set by the login page from the
+ * middleware's `?redirect=` param) so users are sent back to the page
+ * they originally requested (e.g. `/admin`) instead of always home.
  */
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -22,7 +26,16 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+
+  const redirectTo = formData.get("redirect");
+  const target =
+    typeof redirectTo === "string" &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//") &&
+    !/[\\\n\r]/.test(redirectTo)
+      ? redirectTo
+      : "/";
+  redirect(target);
 }
 
 /**
