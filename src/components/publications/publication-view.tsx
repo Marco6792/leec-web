@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import {
@@ -61,6 +63,8 @@ export interface PublicationData {
   altmetricScore: number | null;
   pdfUrl: string | null;
   imageUrl: string | null;
+  gallery: string[];
+  documents: string[];
   sourceDataUrl: string | null;
   codeUrl: string | null;
   keywords: string[];
@@ -300,6 +304,33 @@ export function PublicationView({
             </div>
           )}
 
+          {/* Gallery */}
+          {(publication.gallery?.length ?? 0) > 1 && (
+            <div>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                Gallery
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {(publication.gallery ?? []).map((url, i) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative aspect-video overflow-hidden rounded-xl border"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt={`${publication.title} — image ${i + 1}`}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Header */}
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -518,6 +549,20 @@ export function PublicationView({
                     <ExternalLink className="h-4 w-4" /> Dataset
                   </a>
                 )}
+                {(publication.documents ?? [])
+                  .filter((doc) => doc !== publication.pdfUrl)
+                  .map((doc) => (
+                    <a
+                      key={doc}
+                      href={doc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm hover:bg-muted transition-colors"
+                    >
+                      <FileText className="h-4 w-4" />
+                      {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
+                    </a>
+                  ))}
               </div>
             </div>
           )}
@@ -542,13 +587,13 @@ export function PublicationView({
               <div className="mt-4 space-y-4">
                 {currentUserId && (
                   <div className="flex gap-2">
-                    <input
+                    <Input
                       type="text"
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleComment()}
                       placeholder="Add a comment..."
-                      className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
+                      className="flex-1"
                     />
                     <Button
                       size="sm"
@@ -649,16 +694,15 @@ export function PublicationView({
                         </span>
                         <StarRating rating={userRating} onRate={handleRate} />
                       </div>
-                      <input
+                      <Input
                         type="text"
                         value={newReview.title}
                         onChange={(e) =>
                           setNewReview({ ...newReview, title: e.target.value })
                         }
                         placeholder="Review title (optional)"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
                       />
-                      <textarea
+                      <Textarea
                         value={newReview.content}
                         onChange={(e) =>
                           setNewReview({
@@ -668,26 +712,24 @@ export function PublicationView({
                         }
                         placeholder="Write your review..."
                         rows={3}
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring resize-none"
+                        className="resize-none"
                       />
                       <div className="grid grid-cols-2 gap-3">
-                        <input
+                        <Input
                           type="text"
                           value={newReview.pros}
                           onChange={(e) =>
                             setNewReview({ ...newReview, pros: e.target.value })
                           }
                           placeholder="Pros"
-                          className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
                         />
-                        <input
+                        <Input
                           type="text"
                           value={newReview.cons}
                           onChange={(e) =>
                             setNewReview({ ...newReview, cons: e.target.value })
                           }
                           placeholder="Cons"
-                          className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
                         />
                       </div>
                       <Button

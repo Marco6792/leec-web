@@ -8,10 +8,10 @@ import { updateEquipment } from "../../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 import { UploadImage } from "@/components/admin/upload-image";
 import { PdfUpload } from "@/components/admin/pdf-upload";
 import { DeleteButton } from "../../../_components/delete-button";
@@ -54,7 +54,7 @@ export default async function EditEquipmentPage({
   const boundAction = updateEquipment.bind(null, id);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Equipment</h1>
@@ -96,7 +96,7 @@ export default async function EditEquipmentPage({
         </div>
       )}
 
-      <form action={boundAction} className="space-y-6">
+      <form action={boundAction} className="grid gap-6 lg:grid-cols-2">
         {/* Basic Info */}
         <Card>
           <CardHeader>
@@ -107,45 +107,43 @@ export default async function EditEquipmentPage({
             <input type="hidden" name="slug" value={item.slug} />
 
             <FormField label="Equipment Name" name="name" required>
-              <input
+              <Input
                 id="name"
                 name="name"
                 type="text"
                 defaultValue={item.name}
                 required
-                className={inputClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Category" name="category">
-                <select id="category" name="category" defaultValue={item.category ?? "instrument"} className={selectClass}>
+                <NativeSelect id="category" name="category" defaultValue={item.category ?? "instrument"} className="w-full">
                   {categories.map((c) => (
                     <option key={c} value={c}>
                       {c.charAt(0).toUpperCase() + c.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Status" name="status">
-                <select id="status" name="status" defaultValue={item.status ?? "operational"} className={selectClass}>
+                <NativeSelect id="status" name="status" defaultValue={item.status ?? "operational"} className="w-full">
                   {equipmentStatuses.map((s) => (
                     <option key={s} value={s}>
                       {s.charAt(0).toUpperCase() + s.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
             </FieldGrid>
 
             <FormField label="Description" name="description">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 defaultValue={item.description ?? ""}
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -159,39 +157,37 @@ export default async function EditEquipmentPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Manufacturer" name="manufacturer">
-                <input id="manufacturer" name="manufacturer" type="text" defaultValue={item.manufacturer ?? ""} className={inputClass} />
+                <Input id="manufacturer" name="manufacturer" type="text" defaultValue={item.manufacturer ?? ""} />
               </FormField>
               <FormField label="Model" name="model">
-                <input id="model" name="model" type="text" defaultValue={item.model ?? ""} className={inputClass} />
+                <Input id="model" name="model" type="text" defaultValue={item.model ?? ""} />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Serial Number" name="serialNumber">
-                <input id="serialNumber" name="serialNumber" type="text" defaultValue={item.serialNumber ?? ""} className={inputClass} />
+                <Input id="serialNumber" name="serialNumber" type="text" defaultValue={item.serialNumber ?? ""} />
               </FormField>
               <FormField label="Location" name="location">
-                <input id="location" name="location" type="text" defaultValue={item.location ?? ""} className={inputClass} />
+                <Input id="location" name="location" type="text" defaultValue={item.location ?? ""} />
               </FormField>
             </FieldGrid>
 
             <FormField label="Specifications" name="specifications">
-              <textarea
+              <Textarea
                 id="specifications"
                 name="specifications"
                 rows={3}
                 defaultValue={item.specifications ?? ""}
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Usage / Applications" name="usage">
-              <textarea
+              <Textarea
                 id="usage"
                 name="usage"
                 rows={4}
                 defaultValue={item.usage ?? ""}
-                className={textareaClass}
               />
               <p className="text-xs text-muted-foreground mt-1">
                 How the equipment is used and how to request access. Shown on the public detail page.
@@ -208,17 +204,17 @@ export default async function EditEquipmentPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={3}>
               <FormField label="Acquired Date" name="acquiredDate">
-                <input id="acquiredDate" name="acquiredDate" type="date" defaultValue={item.acquiredDate ?? ""} className={inputClass} />
+                <Input id="acquiredDate" name="acquiredDate" type="date" defaultValue={item.acquiredDate ?? ""} />
               </FormField>
               <FormField label="Value" name="value">
-                <input id="value" name="value" type="text" inputMode="decimal" defaultValue={item.value ?? ""} className={inputClass} />
+                <Input id="value" name="value" type="text" inputMode="decimal" defaultValue={item.value ?? ""} />
               </FormField>
               <FormField label="Currency" name="currency">
-                <select id="currency" name="currency" defaultValue={item.currency ?? "XAF"} className={selectClass}>
+                <NativeSelect id="currency" name="currency" defaultValue={item.currency ?? "XAF"} className="w-full">
                   {currencies.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
             </FieldGrid>
 
@@ -226,8 +222,8 @@ export default async function EditEquipmentPage({
               <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
                 <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
               </FormField>
-              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} label="Upload datasheet" />
+              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded via UploadThing with inline preview.">
+                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} />
               </FormField>
             </FieldGrid>
           </CardContent>
@@ -267,7 +263,7 @@ export default async function EditEquipmentPage({
         </Card>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <a
             href="/admin/equipment"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

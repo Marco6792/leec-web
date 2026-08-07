@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { X, GripVertical, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export interface AuthorEntry {
   profileId: string;
@@ -110,12 +111,12 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
                   <span className="text-sm font-medium truncate">{author.fullName}</span>
                   <span className="text-xs text-muted-foreground">#{i + 1}</span>
                 </div>
-                <input
+                <Input
                   type="text"
                   value={author.affiliation}
                   onChange={(e) => updateAffiliation(author.profileId, e.target.value)}
                   placeholder="Affiliation (optional)"
-                  className="mt-1 w-full rounded border border-border bg-background px-2 py-0.5 text-xs outline-none focus:border-ring"
+                  className="mt-1 h-6 px-2 text-xs"
                 />
               </div>
               <button
@@ -144,7 +145,7 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
 
       {/* Add author search */}
       <div className="relative">
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={search}
@@ -155,7 +156,6 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
           onFocus={() => setShowDropdown(true)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           placeholder="Search lab members to add as authors..."
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/50"
         />
         {showDropdown && filtered.length > 0 && (
           <div className="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-popover p-1 shadow-md">

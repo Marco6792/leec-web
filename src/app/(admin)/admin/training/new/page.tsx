@@ -4,10 +4,10 @@ import { createTrainingSession } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ export default async function NewTrainingPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Training Session</h1>
@@ -49,59 +49,56 @@ export default async function NewTrainingPage({
         </div>
       )}
 
-      <form action={createTrainingSession} className="space-y-6">
+      <form action={createTrainingSession} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Session Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="e.g. Quantum Machine Operation 101"
-                className={inputClass}
               />
             </FormField>
 
             <FieldGrid cols={3}>
               <FormField label="Level" name="level">
-                <select id="level" name="level" defaultValue="beginner" className={selectClass}>
+                <NativeSelect id="level" name="level" defaultValue="beginner" className="w-full">
                   {levels.map((l) => (
                     <option key={l} value={l}>
                       {l.charAt(0).toUpperCase() + l.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
               <FormField label="Status" name="status">
-                <select id="status" name="status" className={selectClass}>
+                <NativeSelect id="status" name="status" className="w-full">
                   <option value="draft">Draft</option>
                   <option value="pending_approval">Pending Approval</option>
                   <option value="open">Open</option>
-                </select>
+                </NativeSelect>
               </FormField>
               <FormField label="Max Participants" name="maxParticipants">
-                <input
+                <Input
                   id="maxParticipants"
                   name="maxParticipants"
                   type="number"
                   min={1}
                   placeholder="e.g. 12"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
 
             <FormField label="Description" name="description" helpText="Describe the session content and objectives.">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 placeholder="What will participants learn? Any prerequisites?"
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -114,19 +111,18 @@ export default async function NewTrainingPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Start Date" name="startDate">
-                <input id="startDate" name="startDate" type="date" className={inputClass} />
+                <Input id="startDate" name="startDate" type="date" />
               </FormField>
               <FormField label="End Date" name="endDate">
-                <input id="endDate" name="endDate" type="date" className={inputClass} />
+                <Input id="endDate" name="endDate" type="date" />
               </FormField>
             </FieldGrid>
             <FormField label="Schedule" name="schedule" helpText="e.g. Mondays & Wednesdays, 14:00–16:00">
-              <input
+              <Input
                 id="schedule"
                 name="schedule"
                 type="text"
                 placeholder="e.g. Mondays & Wednesdays, 14:00–16:00"
-                className={inputClass}
               />
             </FormField>
           </CardContent>
@@ -138,15 +134,14 @@ export default async function NewTrainingPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Image URL" name="imageUrl" helpText="URL to a promotional image.">
-              <input id="imageUrl" name="imageUrl" type="url" placeholder="https://..." className={inputClass} />
+              <Input id="imageUrl" name="imageUrl" type="url" placeholder="https://..." />
             </FormField>
             <FormField label="Tags" name="tags" helpText="Comma-separated. e.g. quantum, measurement, beginner">
-              <input
+              <Input
                 id="tags"
                 name="tags"
                 type="text"
                 placeholder="quantum, measurement, beginner"
-                className={inputClass}
               />
             </FormField>
             <div className="flex items-center gap-3">
@@ -163,7 +158,7 @@ export default async function NewTrainingPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <a
             href="/admin/training"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

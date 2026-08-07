@@ -6,10 +6,10 @@ import { PdfUpload } from "@/components/admin/pdf-upload";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 
 export interface ProfileOption {
   id: string;
@@ -47,7 +47,7 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
   const isEdit = Boolean(initial);
 
   return (
-    <form action={action} className="space-y-6 max-w-4xl">
+    <form action={action} className="grid gap-6 lg:grid-cols-2 max-w-6xl">
       {(saved === "true" || error) && (
         <div
           className={
@@ -81,38 +81,37 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
         </CardHeader>
         <CardContent className="space-y-5">
           <FormField label="Project title" name="title" required>
-            <input
+            <Input
               id="title"
               name="title"
               type="text"
               required
               defaultValue={initial?.title ?? ""}
               placeholder="e.g. Smart Agriculture IoT Sensor Network"
-              className={inputClass}
             />
           </FormField>
 
           <FieldGrid cols={2}>
             <FormField label="Status" name="status" helpText="Only projects with status 'Active' are shown on the public website.">
-              <select
+              <NativeSelect
                 id="status"
                 name="status"
                 defaultValue={initial?.status ?? "active"}
-                className={selectClass}
+                className="w-full"
               >
                 {statuses.map((s) => (
                   <option key={s} value={s}>
                     {s === "on_hold" ? "On Hold" : s.charAt(0).toUpperCase() + s.slice(1)}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </FormField>
             <FormField label="Principal Investigator" name="piId">
-              <select
+              <NativeSelect
                 id="piId"
                 name="piId"
                 defaultValue={initial?.piId ?? ""}
-                className={selectClass}
+                className="w-full"
               >
                 <option value="">None</option>
                 {profiles.map((p) => (
@@ -120,18 +119,17 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
                     {p.fullName}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </FormField>
           </FieldGrid>
 
           <FormField label="Description" name="description">
-            <textarea
+            <Textarea
               id="description"
               name="description"
               rows={4}
               defaultValue={initial?.description ?? ""}
               placeholder="Project objectives, scope and impact..."
-              className={textareaClass}
             />
           </FormField>
         </CardContent>
@@ -145,59 +143,55 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
         <CardContent className="space-y-5">
           <FieldGrid cols={2}>
             <FormField label="Start date" name="startDate">
-              <input
+              <Input
                 id="startDate"
                 name="startDate"
                 type="date"
                 defaultValue={initial?.startDate ?? ""}
-                className={inputClass}
               />
             </FormField>
             <FormField label="End date" name="endDate">
-              <input
+              <Input
                 id="endDate"
                 name="endDate"
                 type="date"
                 defaultValue={initial?.endDate ?? ""}
-                className={inputClass}
               />
             </FormField>
           </FieldGrid>
 
           <FieldGrid cols={2}>
             <FormField label="Funding source" name="fundingSource">
-              <input
+              <Input
                 id="fundingSource"
                 name="fundingSource"
                 type="text"
                 defaultValue={initial?.fundingSource ?? ""}
                 placeholder="e.g. Agence Universitaire de la Francophonie"
-                className={inputClass}
               />
             </FormField>
             <div className="grid grid-cols-2 gap-4">
               <FormField label="Amount" name="fundingAmount">
-                <input
+                <Input
                   id="fundingAmount"
                   name="fundingAmount"
                   type="text"
                   inputMode="decimal"
                   defaultValue={initial?.fundingAmount ?? ""}
                   placeholder="e.g. 25000000"
-                  className={inputClass}
                 />
               </FormField>
               <FormField label="Currency" name="currency">
-                <select
+                <NativeSelect
                   id="currency"
                   name="currency"
                   defaultValue={initial?.currency ?? "XAF"}
-                  className={selectClass}
+                  className="w-full"
                 >
                   {currencies.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
             </div>
           </FieldGrid>
@@ -215,7 +209,7 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
             <FormField label="Project image" name="imageUrl" helpText="Uploaded via UploadThing.">
               <UploadImage endpoint="entityImage" inputName="imageUrl" value={initial?.imageUrl ?? ""} />
             </FormField>
-            <FormField label="Project document (PDF)" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
+            <FormField label="Project document (PDF)" name="pdfUrl" helpText="Uploaded via UploadThing with inline preview.">
               <PdfUpload inputName="pdfUrl" value={initial?.pdfUrl ?? ""} />
             </FormField>
           </FieldGrid>
@@ -223,7 +217,7 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
       </Card>
 
       {/* Submit */}
-      <div className="flex items-center justify-end gap-3 pb-8">
+      <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
         <a
           href="/admin/projects"
           className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

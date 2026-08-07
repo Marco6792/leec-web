@@ -4,10 +4,10 @@ import { createEquipment } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 import { UploadImage } from "@/components/admin/upload-image";
 import { PdfUpload } from "@/components/admin/pdf-upload";
 
@@ -34,7 +34,7 @@ export default async function NewEquipmentPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Register Equipment</h1>
@@ -62,7 +62,7 @@ export default async function NewEquipmentPage({
         </div>
       )}
 
-      <form action={createEquipment} className="space-y-6">
+      <form action={createEquipment} className="grid gap-6 lg:grid-cols-2">
         {/* Basic Info */}
         <Card>
           <CardHeader>
@@ -70,45 +70,43 @@ export default async function NewEquipmentPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Equipment Name" name="name" required>
-              <input
+              <Input
                 id="name"
                 name="name"
                 type="text"
                 required
                 placeholder="e.g. Keithley 2400 SourceMeter"
-                className={inputClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Category" name="category">
-                <select id="category" name="category" defaultValue="instrument" className={selectClass}>
+                <NativeSelect id="category" name="category" defaultValue="instrument" className="w-full">
                   {categories.map((c) => (
                     <option key={c} value={c}>
                       {c.charAt(0).toUpperCase() + c.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Status" name="status">
-                <select id="status" name="status" defaultValue="operational" className={selectClass}>
+                <NativeSelect id="status" name="status" defaultValue="operational" className="w-full">
                   {equipmentStatuses.map((s) => (
                     <option key={s} value={s}>
                       {s.charAt(0).toUpperCase() + s.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
             </FieldGrid>
 
             <FormField label="Description" name="description" helpText="Optional. Describe the equipment and its purpose.">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 placeholder="Key features and intended use..."
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -122,39 +120,37 @@ export default async function NewEquipmentPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Manufacturer" name="manufacturer">
-                <input id="manufacturer" name="manufacturer" type="text" placeholder="e.g. Keysight" className={inputClass} />
+                <Input id="manufacturer" name="manufacturer" type="text" placeholder="e.g. Keysight" />
               </FormField>
               <FormField label="Model" name="model">
-                <input id="model" name="model" type="text" placeholder="e.g. 34461A" className={inputClass} />
+                <Input id="model" name="model" type="text" placeholder="e.g. 34461A" />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Serial Number" name="serialNumber">
-                <input id="serialNumber" name="serialNumber" type="text" placeholder="e.g. MY12345678" className={inputClass} />
+                <Input id="serialNumber" name="serialNumber" type="text" placeholder="e.g. MY12345678" />
               </FormField>
               <FormField label="Location" name="location">
-                <input id="location" name="location" type="text" placeholder="e.g. Lab 201, Engineering Building" className={inputClass} />
+                <Input id="location" name="location" type="text" placeholder="e.g. Lab 201, Engineering Building" />
               </FormField>
             </FieldGrid>
 
             <FormField label="Specifications" name="specifications" helpText="Key technical specifications.">
-              <textarea
+              <Textarea
                 id="specifications"
                 name="specifications"
                 rows={3}
                 placeholder="e.g. 6.5 digit multimeter, 10 A max current..."
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Usage / Applications" name="usage" helpText="How the equipment is used and how to request access. Shown on the public detail page.">
-              <textarea
+              <Textarea
                 id="usage"
                 name="usage"
                 rows={4}
                 placeholder="Primary use, typical procedure, access conditions..."
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -168,17 +164,17 @@ export default async function NewEquipmentPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={3}>
               <FormField label="Acquired Date" name="acquiredDate">
-                <input id="acquiredDate" name="acquiredDate" type="date" className={inputClass} />
+                <Input id="acquiredDate" name="acquiredDate" type="date" />
               </FormField>
               <FormField label="Value" name="value">
-                <input id="value" name="value" type="text" inputMode="decimal" placeholder="e.g. 2500000" className={inputClass} />
+                <Input id="value" name="value" type="text" inputMode="decimal" placeholder="e.g. 2500000" />
               </FormField>
               <FormField label="Currency" name="currency">
-                <select id="currency" name="currency" defaultValue="XAF" className={selectClass}>
+                <NativeSelect id="currency" name="currency" defaultValue="XAF" className="w-full">
                   {currencies.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
             </FieldGrid>
 
@@ -186,8 +182,8 @@ export default async function NewEquipmentPage({
               <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
                 <UploadImage endpoint="entityImage" inputName="imageUrl" />
               </FormField>
-              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-                <PdfUpload inputName="pdfUrl" label="Upload datasheet" />
+              <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded via UploadThing with inline preview.">
+                <PdfUpload inputName="pdfUrl" />
               </FormField>
             </FieldGrid>
           </CardContent>
@@ -226,7 +222,7 @@ export default async function NewEquipmentPage({
         </Card>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <a
             href="/admin/equipment"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

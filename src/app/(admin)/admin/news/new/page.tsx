@@ -5,12 +5,10 @@ import { createNews } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
-import { UploadImage } from "@/components/admin/upload-image";
-import { PdfUpload } from "@/components/admin/pdf-upload";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MediaUpload } from "@/components/admin/media-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +22,7 @@ export default async function NewNewsPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create News Article</h1>
@@ -51,40 +49,37 @@ export default async function NewNewsPage({
         </div>
       )}
 
-      <form action={createNews} className="space-y-6">
+      <form action={createNews} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Article Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="e.g. New Research Breakthrough in Power Electronics"
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Excerpt" name="excerpt" helpText="Short summary shown in previews.">
-              <textarea
+              <Textarea
                 id="excerpt"
                 name="excerpt"
                 rows={2}
                 placeholder="Brief summary of the article..."
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Content" name="content" helpText="Full article body. Supports plain text.">
-              <textarea
+              <Textarea
                 id="content"
                 name="content"
                 rows={12}
                 placeholder="Write your article content here..."
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -96,31 +91,29 @@ export default async function NewNewsPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
-              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
-                <UploadImage endpoint="entityImage" inputName="imageUrl" />
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
               </FormField>
-              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-                <PdfUpload inputName="pdfUrl" />
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt" helpText="Leave empty to use current date when published.">
-                <input
+                <Input
                   id="publishedAt"
                   name="publishedAt"
                   type="date"
-                  className={inputClass}
                 />
               </FormField>
 
               <FormField label="Tags" name="tags" helpText="Comma-separated tags (e.g. Research, Award, Student).">
-                <input
+                <Input
                   id="tags"
                   name="tags"
                   type="text"
                   placeholder="Research, Award, Student"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -157,7 +150,7 @@ export default async function NewNewsPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <Link
             href="/admin/news"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

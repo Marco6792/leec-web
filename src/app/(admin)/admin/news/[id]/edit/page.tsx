@@ -9,11 +9,10 @@ import { updateNews, deleteNews } from "../../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  textareaClass,
 } from "../../../_components/form-field";
-import { UploadImage } from "@/components/admin/upload-image";
-import { PdfUpload } from "@/components/admin/pdf-upload";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MediaUpload } from "@/components/admin/media-upload";
 import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +45,7 @@ export default async function EditNewsPage({
     : "";
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit News Article</h1>
@@ -86,7 +85,7 @@ export default async function EditNewsPage({
         </div>
       )}
 
-      <form action={boundAction} className="space-y-6">
+      <form action={boundAction} className="grid gap-6 lg:grid-cols-2">
         <input type="hidden" name="slug" value={item.slug} />
 
         <Card>
@@ -95,33 +94,30 @@ export default async function EditNewsPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={item.title}
                 required
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Excerpt" name="excerpt">
-              <textarea
+              <Textarea
                 id="excerpt"
                 name="excerpt"
                 rows={2}
                 defaultValue={item.excerpt ?? ""}
-                className={textareaClass}
               />
             </FormField>
 
             <FormField label="Content" name="content">
-              <textarea
+              <Textarea
                 id="content"
                 name="content"
                 rows={12}
                 defaultValue={item.content ?? ""}
-                className={textareaClass}
               />
             </FormField>
           </CardContent>
@@ -133,33 +129,39 @@ export default async function EditNewsPage({
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
-              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
-                <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload
+                  endpoint="gallery"
+                  inputName="gallery"
+                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
+                />
               </FormField>
-              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-                <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} />
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload
+                  endpoint="documents"
+                  inputName="documents"
+                  value={item.documents?.length ? item.documents : item.pdfUrl ? [item.pdfUrl] : []}
+                />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt">
-                <input
+                <Input
                   id="publishedAt"
                   name="publishedAt"
                   type="date"
                   defaultValue={dateStr}
-                  className={inputClass}
                 />
               </FormField>
 
               <FormField label="Tags" name="tags" helpText="Comma-separated tags.">
-                <input
+                <Input
                   id="tags"
                   name="tags"
                   type="text"
                   defaultValue={item.tags?.join(", ") ?? ""}
                   placeholder="Research, Award, Student"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -198,7 +200,7 @@ export default async function EditNewsPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-between gap-3 pb-8">
+        <div className="flex items-center justify-between gap-3 pb-8 lg:col-span-2">
           <form action={boundDelete}>
             <button
               type="submit"

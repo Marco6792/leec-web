@@ -30,6 +30,8 @@ const publicationSchema = z.object({
   citationCount: z.coerce.number().int().min(0).optional(),
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
+  gallery: z.string().optional(),
+  documents: z.string().optional(),
   sourceDataUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   keywords: z.string().optional(),
   researchDomains: z.string().optional(),
@@ -44,6 +46,16 @@ interface AuthorData {
   fullName: string;
   affiliation: string;
   corresponding: boolean;
+}
+
+function parseJsonArray(value: string | undefined): string[] {
+  if (!value) return [];
+  try {
+    const arr = JSON.parse(value);
+    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
 }
 
 function parseAuthors(formData: FormData, count: number): AuthorData[] {
@@ -77,18 +89,22 @@ export async function createPublication(formData: FormData) {
     redirect(`/admin/publications/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { keywords, researchDomains, imageUrl, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
+  const { keywords, researchDomains, imageUrl, pdfUrl, gallery, documents, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
 
   const publisherArray = publisher
     ? publisher.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   const [pub] = await db
     .insert(publications)
     .values({
       ...rest,
-      imageUrl: imageUrl || null,
-      pdfUrl: pdfUrl || null,
+      imageUrl: (galleryArray[0] ?? imageUrl) || null,
+      pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
+      gallery: galleryArray,
+      documents: documentsArray,
       sourceDataUrl: sourceDataUrl || null,
       keywords: keywords ? keywords.split(",").map((s) => s.trim()).filter(Boolean) : [],
       researchDomains: researchDomains
@@ -134,18 +150,22 @@ export async function updatePublication(id: string, formData: FormData) {
     redirect(`/admin/publications/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { keywords, researchDomains, imageUrl, pdfUrl, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
+  const { keywords, researchDomains, imageUrl, pdfUrl, gallery, documents, sourceDataUrl, publisher, authorCount, ...rest } = parsed.data;
 
   const publisherArray = publisher
     ? publisher.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+  const galleryArray = parseJsonArray(gallery);
+  const documentsArray = parseJsonArray(documents);
 
   await db
     .update(publications)
     .set({
       ...rest,
-      imageUrl: imageUrl || null,
-      pdfUrl: pdfUrl || null,
+      imageUrl: (galleryArray[0] ?? imageUrl) || null,
+      pdfUrl: (documentsArray[0] ?? pdfUrl) || null,
+      gallery: galleryArray,
+      documents: documentsArray,
       sourceDataUrl: sourceDataUrl || null,
       keywords: keywords ? keywords.split(",").map((s) => s.trim()).filter(Boolean) : [],
       researchDomains: researchDomains

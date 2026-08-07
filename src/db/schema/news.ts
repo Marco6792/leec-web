@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   boolean,
+  jsonb,
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { profiles } from "./profiles";
@@ -37,6 +38,8 @@ export const news = pgTable("news", {
   }),
   imageUrl: text("image_url"),
   pdfUrl: text("pdf_url"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  documents: jsonb("documents").$type<string[]>().default([]),
   published: boolean("published").default(false),
   publishedAt: timestamp("published_at"),
   pinned: boolean("pinned").default(false),
@@ -63,6 +66,8 @@ export const events = pgTable("events", {
   }),
   imageUrl: text("image_url"),
   pdfUrl: text("pdf_url"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  documents: jsonb("documents").$type<string[]>().default([]),
   published: boolean("published").default(false),
   registrationUrl: text("registration_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

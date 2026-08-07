@@ -1,8 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { uploadPdf } from "@/lib/storage";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { UploadDropzone } from "@uploadthing/react";
+import type { OurFileRouter } from "@/lib/uploadthing";
+import { deleteUpload } from "@/lib/upload-delete";
+import { UploadProgress } from "@/components/admin/upload-progress";
+import { cn, formatBytes } from "@/lib/utils";
 
 interface PdfUploadProps {
   /** Name of the hidden input that carries the uploaded URL to the server action. */
@@ -10,53 +13,39 @@ interface PdfUploadProps {
   /** Existing PDF URL — used when editing a record. */
   value?: string;
   onChange?: (url: string) => void;
-  label?: string;
   className?: string;
 }
 
 /**
- * Uploads a PDF to Supabase Storage (documents bucket) from the browser,
- * shows an inline preview, and writes the public URL into a hidden input
- * (default `pdfUrl`) that the existing server actions already read.
+ * Uploads a PDF through UploadThing's dropzone, shows an inline preview,
+ * and writes the public URL into a hidden input (default `pdfUrl`) that the
+ * existing server actions already read.
  */
 export function PdfUpload({
   inputName = "pdfUrl",
   value = "",
   onChange,
-  label = "Upload PDF",
   className,
 }: PdfUploadProps) {
   const [url, setUrl] = useState(value);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const pendingSize = pendingFiles.reduce((sum, f) => sum + f.size, 0);
 
-    setUploading(true);
+  function commit(nextUrl: string) {
+    setUrl(nextUrl);
     setError(null);
-
-    const result = await uploadPdf(file);
-    setUploading(false);
-
-    if (result.error) {
-      setError(result.error);
-      return;
-    }
-
-    setUrl(result.url);
-    onChange?.(result.url);
-
-    // Reset the input so the same file can be re-selected.
-    if (inputRef.current) inputRef.current.value = "";
+    onChange?.(nextUrl);
   }
 
   function clear() {
+    const removed = url;
     setUrl("");
     setError(null);
     onChange?.("");
+    if (removed) void deleteUpload(removed);
   }
 
   return (
@@ -66,11 +55,7 @@ export function PdfUpload({
       {url ? (
         <div className="space-y-3">
           <div className="overflow-hidden rounded-lg border border-border bg-muted/30">
-            <iframe
-              src={url}
-              title="PDF preview"
-              className="h-72 w-full"
-            />
+            <iframe src={url} title="PDF preview" className="h-72 w-full" />
           </div>
           <div className="flex items-center gap-3">
             <a
@@ -91,22 +76,56 @@ export function PdfUpload({
           </div>
         </div>
       ) : (
-        <label
-          className={cn(
-            "flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-6 text-center text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground",
-            uploading && "pointer-events-none opacity-60",
-          )}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="application/pdf,.pdf"
-            onChange={handleFile}
-            className="hidden"
-          />
-          <span>{uploading ? "Uploading…" : label}</span>
-          <span className="text-xs">PDF files only</span>
-        </label>
+        <UploadDropzone<OurFileRouter, "pdf">
+          endpoint="pdf"
+          config={{ mode: "manual" }}
+          uploadProgressGranularity="fine"
+          onChange={(files) => setPendingFiles(files)}
+          onUploadBegin={() => setProgress(0)}
+          onUploadProgress={(p) => setProgress(p)}
+          onClientUploadComplete={(res) => {
+            const file = res?.[0];
+            if (file?.url) commit(file.url);
+            setPendingFiles([]);
+            setProgress(null);
+          }}
+          onUploadError={(err) => {
+            setError(err.message);
+            setProgress(null);
+          }}
+          appearance={{
+            container: (args) =>
+              cn(
+                "cursor-pointer rounded-xl border-2 border-dashed border-border bg-muted/30 transition-colors",
+                "hover:border-ring hover:bg-muted/50",
+                args.isDragActive && "border-primary bg-primary/5",
+                args.isUploading && "border-primary/50 opacity-80",
+              ),
+            label: (args) =>
+              cn(
+                "text-sm font-medium text-muted-foreground",
+                args.isDragActive && "text-primary",
+                args.isUploading && "text-primary",
+              ),
+            allowedContent: "text-xs text-muted-foreground/80",
+            button: (args) =>
+              cn(
+                "rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors",
+                "hover:bg-primary/90 disabled:opacity-60",
+              ),
+          }}
+        />
+      )}
+
+      {pendingFiles.length > 0 && !url && (
+        <p className="text-xs font-medium text-muted-foreground">
+          {pendingFiles.length} file{pendingFiles.length === 1 ? "" : "s"} selected ·{" "}
+          {formatBytes(pendingSize)}
+        </p>
+      )}
+
+      {progress !== null && !url && (
+        <UploadProgress progress={progress} totalBytes={pendingSize} />
       )}
 
       {error && <p className="text-xs text-destructive">{error}</p>}

@@ -16,6 +16,7 @@ import {
   Globe,
   ExternalLink,
   CalendarPlus,
+  FileText,
 } from "lucide-react";
 
 export const revalidate = 60;
@@ -71,6 +72,8 @@ export default async function EventDetailPage({
       registrationUrl: events.registrationUrl,
       imageUrl: events.imageUrl,
       pdfUrl: events.pdfUrl,
+      gallery: events.gallery,
+      documents: events.documents,
       organizerId: events.organizerId,
       organizerName: profiles.fullName,
     })
@@ -148,10 +151,63 @@ export default async function EventDetailPage({
               </p>
             )}
 
+            {/* Gallery */}
+            {(item.gallery?.length ?? 0) > 1 && (
+              <div className="mt-10">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Gallery
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {(item.gallery ?? []).map((url, i) => (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group relative aspect-video overflow-hidden rounded-xl border"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={url}
+                        alt={`${item.title} — image ${i + 1}`}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Attached PDF document */}
             {item.pdfUrl && (
               <div className="mt-10">
                 <PdfViewer url={item.pdfUrl} title={item.title} />
+              </div>
+            )}
+
+            {/* Additional documents */}
+            {(item.documents?.length ?? 0) > 1 && (
+              <div className="mt-10">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Documents
+                </h3>
+                <ul className="space-y-2">
+                  {(item.documents ?? [])
+                    .filter((doc) => doc !== item.pdfUrl)
+                    .map((doc) => (
+                      <li key={doc}>
+                        <a
+                          href={doc}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-muted transition-colors"
+                        >
+                          <FileText className="size-4 text-muted-foreground" />
+                          {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
               </div>
             )}
           </div>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { UploadButton } from "@uploadthing/react";
+import { UploadDropzone } from "@uploadthing/react";
 import type { OurFileRouter } from "@/lib/uploadthing";
-import { cn } from "@/lib/utils";
+import { deleteUpload } from "@/lib/upload-delete";
+import { UploadProgress } from "@/components/admin/upload-progress";
+import { cn, formatBytes } from "@/lib/utils";
 
 interface UploadImageProps {
   endpoint: keyof OurFileRouter;
@@ -12,25 +14,28 @@ interface UploadImageProps {
   /** Existing image URL — used when editing a record. */
   value?: string;
   onChange?: (url: string) => void;
-  label?: string;
   className?: string;
 }
 
 /**
- * Wraps UploadThing's UploadButton so it can be dropped into any admin form.
- * Writes the final URL into a hidden input (default `imageUrl`) that the
- * existing server actions already read.
+ * Wraps UploadThing's UploadDropzone so it can be dropped into any admin form.
+ * Uses UploadThing's native manual-mode flow: pick a file, see its size,
+ * then click the native "Upload" button. Writes the final URL into a hidden
+ * input (default `imageUrl`) that the existing server actions already read.
  */
 export function UploadImage({
   endpoint,
   inputName = "imageUrl",
   value = "",
   onChange,
-  label = "Upload image",
   className,
 }: UploadImageProps) {
   const [url, setUrl] = useState(value);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+
+  const pendingSize = pendingFiles.reduce((sum, f) => sum + f.size, 0);
 
   function commit(nextUrl: string) {
     setUrl(nextUrl);
@@ -39,9 +44,11 @@ export function UploadImage({
   }
 
   function clear() {
+    const removed = url;
     setUrl("");
     setError(null);
     onChange?.("");
+    if (removed) void deleteUpload(removed);
   }
 
   return (
@@ -73,22 +80,59 @@ export function UploadImage({
           </div>
         </div>
       ) : (
-        <UploadButton<OurFileRouter, typeof endpoint>
+        <UploadDropzone<OurFileRouter, typeof endpoint>
           endpoint={endpoint}
-          className="cursor-pointer rounded-lg border border-dashed border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground"
+          config={{ mode: "manual" }}
+          uploadProgressGranularity="fine"
+          onChange={(files) => setPendingFiles(files)}
+          onUploadBegin={() => setProgress(0)}
+          onUploadProgress={(p) => setProgress(p)}
           onClientUploadComplete={(res) => {
             const file = res?.[0];
             if (file?.url) commit(file.url);
+            setPendingFiles([]);
+            setProgress(null);
           }}
-          onUploadError={(err) => setError(err.message)}
-          content={{ button: label }}
+          onUploadError={(err) => {
+            setError(err.message);
+            setProgress(null);
+          }}
+          appearance={{
+            container: (args) =>
+              cn(
+                "cursor-pointer rounded-xl border-2 border-dashed border-border bg-muted/30 transition-colors",
+                "hover:border-ring hover:bg-muted/50",
+                args.isDragActive && "border-primary bg-primary/5",
+                args.isUploading && "border-primary/50 opacity-80",
+              ),
+            label: (args) =>
+              cn(
+                "text-sm font-medium text-muted-foreground",
+                args.isDragActive && "text-primary",
+                args.isUploading && "text-primary",
+              ),
+            allowedContent: "text-xs text-muted-foreground/80",
+            button: (args) =>
+              cn(
+                "rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors",
+                "hover:bg-primary/90 disabled:opacity-60",
+              ),
+          }}
         />
       )}
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
-      {!url && !error && (
-        <p className="text-xs text-muted-foreground">JPG, PNG or WEBP — 4MB max</p>
+      {pendingFiles.length > 0 && !url && (
+        <p className="text-xs font-medium text-muted-foreground">
+          {pendingFiles.length} file{pendingFiles.length === 1 ? "" : "s"} selected ·{" "}
+          {formatBytes(pendingSize)}
+        </p>
       )}
+
+      {progress !== null && !url && (
+        <UploadProgress progress={progress} totalBytes={pendingSize} />
+      )}
+
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

@@ -1,19 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { ExternalLink, FileText, X } from "lucide-react";
+import { UploadDropzone } from "@uploadthing/react";
+import type { OurFileRouter } from "@/lib/uploadthing";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createPublication } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
+import { cn, formatBytes } from "@/lib/utils";
 import { PublisherInput } from "../_components/publisher-input";
 import { AuthorSelector, type AuthorEntry } from "../_components/author-selector";
-import { UploadImage } from "@/components/admin/upload-image";
-import { PdfUpload } from "@/components/admin/pdf-upload";
+import { MediaUpload } from "@/components/admin/media-upload";
+import { UploadProgress } from "@/components/admin/upload-progress";
+import { deleteUpload } from "@/lib/upload-delete";
 
 const publicationTypes = [
   "journal", "conference", "book", "chapter", "report",
@@ -36,6 +41,11 @@ export function NewPublicationForm({
 }) {
   const [publishers, setPublishers] = useState<string[]>([]);
   const [authors, setAuthors] = useState<AuthorEntry[]>([]);
+  const [sourceDataUrl, setSourceDataUrl] = useState("");
+  const [sourceDataError, setSourceDataError] = useState<string | null>(null);
+  const [sourceDataProgress, setSourceDataProgress] = useState<number | null>(null);
+  const [sourceDataPending, setSourceDataPending] = useState<File[]>([]);
+  const sourceDataPendingSize = sourceDataPending.reduce((sum, f) => sum + f.size, 0);
 
   return (
     <form action={createPublication} className="space-y-6">
@@ -59,18 +69,18 @@ export function NewPublicationForm({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Publication Type" name="type" required>
-                <select id="type" name="type" required className={selectClass}>
+                <NativeSelect id="type" name="type" required className="w-full">
                   <option value="">Select type…</option>
                   {publicationTypes.map((t) => (
                     <option key={t} value={t}>
                       {t.charAt(0).toUpperCase() + t.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Year" name="year" required>
-                <input
+                <Input
                   id="year"
                   name="year"
                   type="number"
@@ -78,19 +88,17 @@ export function NewPublicationForm({
                   min={1900}
                   max={2100}
                   required
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
 
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="Full title of the publication"
-                className={inputClass}
               />
             </FormField>
 
@@ -107,10 +115,10 @@ export function NewPublicationForm({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Journal" name="journal" helpText="For journal articles.">
-                <input id="journal" name="journal" type="text" placeholder="e.g. Nature" className={inputClass} />
+                <Input id="journal" name="journal" type="text" placeholder="e.g. Nature" />
               </FormField>
               <FormField label="Conference" name="conference" helpText="For conference papers.">
-                <input id="conference" name="conference" type="text" placeholder="e.g. IEEE ICASSP" className={inputClass} />
+                <Input id="conference" name="conference" type="text" placeholder="e.g. IEEE ICASSP" />
               </FormField>
             </FieldGrid>
 
@@ -119,32 +127,32 @@ export function NewPublicationForm({
             </FormField>
 
             <FormField label="DOI" name="doi" helpText="Digital Object Identifier.">
-              <input id="doi" name="doi" type="text" placeholder="10.1000/xyz123" className={inputClass} />
+              <Input id="doi" name="doi" type="text" placeholder="10.1000/xyz123" />
             </FormField>
 
             <FieldGrid cols={3}>
               <FormField label="Volume" name="volume">
-                <input id="volume" name="volume" type="text" placeholder="e.g. 42" className={inputClass} />
+                <Input id="volume" name="volume" type="text" placeholder="e.g. 42" />
               </FormField>
               <FormField label="Issue" name="issue">
-                <input id="issue" name="issue" type="text" placeholder="e.g. 3" className={inputClass} />
+                <Input id="issue" name="issue" type="text" placeholder="e.g. 3" />
               </FormField>
               <FormField label="Pages" name="pages">
-                <input id="pages" name="pages" type="text" placeholder="e.g. 123–145" className={inputClass} />
+                <Input id="pages" name="pages" type="text" placeholder="e.g. 123–145" />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="ISBN" name="isbn" helpText="For books.">
-                <input id="isbn" name="isbn" type="text" placeholder="978-0-00-000000-0" className={inputClass} />
+                <Input id="isbn" name="isbn" type="text" placeholder="978-0-00-000000-0" />
               </FormField>
               <FormField label="ISSN" name="issn" helpText="For journals.">
-                <input id="issn" name="issn" type="text" placeholder="0000-0000" className={inputClass} />
+                <Input id="issn" name="issn" type="text" placeholder="0000-0000" />
               </FormField>
             </FieldGrid>
 
             <FormField label="Patent Number" name="patentNumber" helpText="For patents.">
-              <input id="patentNumber" name="patentNumber" type="text" placeholder="e.g. US 9,999,999 B2" className={inputClass} />
+              <Input id="patentNumber" name="patentNumber" type="text" placeholder="e.g. US 9,999,999 B2" />
             </FormField>
           </CardContent>
         </Card>
@@ -158,12 +166,12 @@ export function NewPublicationForm({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Abstract" name="abstract" helpText="A brief summary: goals, methods, key findings, and conclusions.">
-              <textarea
+              <Textarea
                 id="abstract"
                 name="abstract"
                 rows={12}
                 placeholder={"Write a comprehensive abstract including:\n\n• Background & Objectives\n• Methods\n• Key Results\n• Conclusions & Recommendations"}
-                className={`${textareaClass} min-h-[200px] leading-relaxed`}
+                className="min-h-[200px] leading-relaxed"
               />
             </FormField>
           </CardContent>
@@ -175,41 +183,41 @@ export function NewPublicationForm({
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Keywords" name="keywords" helpText="Comma-separated. 4–8 searchable terms.">
-              <textarea
+              <Textarea
                 id="keywords"
                 name="keywords"
                 rows={3}
                 placeholder="keyword1, keyword2, keyword3, keyword4"
-                className={`${textareaClass} min-h-[80px]`}
+                className="min-h-[80px]"
               />
             </FormField>
 
             <FormField label="Research Domains" name="researchDomains" helpText="Comma-separated.">
-              <input id="researchDomains" name="researchDomains" type="text" placeholder="domain1, domain2" className={inputClass} />
+              <Input id="researchDomains" name="researchDomains" type="text" placeholder="domain1, domain2" />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Repository" name="repository" helpText="e.g. arXiv, Zenodo">
-                <input id="repository" name="repository" type="text" placeholder="e.g. arXiv" className={inputClass} />
+                <Input id="repository" name="repository" type="text" placeholder="e.g. arXiv" />
               </FormField>
               <FormField label="License" name="license">
-                <input id="license" name="license" type="text" placeholder="e.g. CC-BY-4.0" className={inputClass} />
+                <Input id="license" name="license" type="text" placeholder="e.g. CC-BY-4.0" />
               </FormField>
             </FieldGrid>
 
             <FieldGrid cols={2}>
               <FormField label="Language" name="language" helpText="ISO 639-1 code.">
-                <select id="language" name="language" defaultValue="en" className={selectClass}>
+                <NativeSelect id="language" name="language" defaultValue="en" className="w-full">
                   <option value="en">English</option>
                   <option value="fr">French</option>
                   <option value="de">German</option>
                   <option value="es">Spanish</option>
                   <option value="pt">Portuguese</option>
                   <option value="other">Other</option>
-                </select>
+                </NativeSelect>
               </FormField>
               <FormField label="Citation Count" name="citationCount">
-                <input id="citationCount" name="citationCount" type="number" min={0} defaultValue={0} className={inputClass} />
+                <Input id="citationCount" name="citationCount" type="number" min={0} defaultValue={0} />
               </FormField>
             </FieldGrid>
 
@@ -235,16 +243,103 @@ export function NewPublicationForm({
         </CardHeader>
         <CardContent className="space-y-5">
           <FieldGrid cols={2}>
-            <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
-              <UploadImage endpoint="entityImage" inputName="imageUrl" />
+            <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+              <MediaUpload endpoint="gallery" inputName="gallery" />
             </FormField>
-            <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-              <PdfUpload inputName="pdfUrl" />
+            <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+              <MediaUpload endpoint="documents" inputName="documents" />
             </FormField>
           </FieldGrid>
 
-          <FormField label="Source Data URL" name="sourceDataUrl" helpText="Link to raw data or a repository.">
-            <input id="sourceDataUrl" name="sourceDataUrl" type="url" placeholder="https://..." className={inputClass} />
+          <FormField label="Source data" name="sourceDataUrl" helpText="Upload a dataset or supplementary data file (CSV, Excel, ZIP, DOCX…).">
+            <input type="hidden" name="sourceDataUrl" value={sourceDataUrl} />
+            {sourceDataUrl ? (
+              <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3">
+                <FileText className="size-5 shrink-0 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {decodeURIComponent(sourceDataUrl.split("/").pop() ?? sourceDataUrl).split("?")[0]}
+                  </p>
+                  <a
+                    href={sourceDataUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  >
+                    Open file
+                    <ExternalLink className="size-3" />
+                  </a>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const removed = sourceDataUrl;
+                    setSourceDataUrl("");
+                    setSourceDataError(null);
+                    if (removed) void deleteUpload(removed);
+                  }}
+                  aria-label="Remove file"
+                  className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-rose-50 hover:text-rose-700 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            ) : (
+              <UploadDropzone<OurFileRouter, "dataFile">
+                endpoint="dataFile"
+                config={{ mode: "manual" }}
+                uploadProgressGranularity="fine"
+                onChange={(files) => setSourceDataPending(files)}
+                onUploadBegin={() => setSourceDataProgress(0)}
+                onUploadProgress={(p) => setSourceDataProgress(p)}
+                onClientUploadComplete={(res) => {
+                  const file = res?.[0];
+                  if (file?.url) {
+                    setSourceDataUrl(file.url);
+                    setSourceDataError(null);
+                  }
+                  setSourceDataPending([]);
+                  setSourceDataProgress(null);
+                }}
+                onUploadError={(err) => {
+                  setSourceDataError(err.message);
+                  setSourceDataProgress(null);
+                }}
+                appearance={{
+                  container: (args) =>
+                    cn(
+                      "cursor-pointer rounded-xl border-2 border-dashed border-border bg-muted/30 transition-colors",
+                      "hover:border-ring hover:bg-muted/50",
+                      args.isDragActive && "border-primary bg-primary/5",
+                      args.isUploading && "border-primary/50 opacity-80",
+                    ),
+                  label: (args) =>
+                    cn(
+                      "text-sm font-medium text-muted-foreground",
+                      args.isDragActive && "text-primary",
+                      args.isUploading && "text-primary",
+                    ),
+                  allowedContent: "text-xs text-muted-foreground/80",
+                  button: (args) =>
+                    cn(
+                      "rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors",
+                      "hover:bg-primary/90 disabled:opacity-60",
+                    ),
+                }}
+              />
+            )}
+            {sourceDataPending.length > 0 && !sourceDataUrl && (
+              <p className="text-xs font-medium text-muted-foreground">
+                {sourceDataPending.length} file{sourceDataPending.length === 1 ? "" : "s"} selected ·{" "}
+                {formatBytes(sourceDataPendingSize)}
+              </p>
+            )}
+            {sourceDataProgress !== null && !sourceDataUrl && (
+              <UploadProgress progress={sourceDataProgress} totalBytes={sourceDataPendingSize} />
+            )}
+            {sourceDataError && (
+              <p className="text-xs text-destructive">{sourceDataError}</p>
+            )}
           </FormField>
         </CardContent>
       </Card>

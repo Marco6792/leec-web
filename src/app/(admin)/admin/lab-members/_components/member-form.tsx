@@ -5,10 +5,10 @@ import { UploadImage } from "@/components/admin/upload-image";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
 
 export interface LabOption {
   id: string;
@@ -61,7 +61,7 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
   const isEdit = Boolean(initial);
 
   return (
-    <form action={action} className="space-y-6 max-w-4xl">
+    <form action={action} className="grid gap-6 lg:grid-cols-2 max-w-6xl">
       {(saved === "true" || error) && (
         <div
           className={
@@ -116,60 +116,56 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
         <CardContent className="space-y-5">
           <FieldGrid cols={2}>
             <FormField label="Full name" name="fullName" required>
-              <input
+              <Input
                 id="fullName"
                 name="fullName"
                 type="text"
                 required
                 defaultValue={initial?.fullName ?? ""}
                 placeholder="e.g. Prof. Pierre Tsafack"
-                className={inputClass}
               />
             </FormField>
             <FormField label="Title / Position" name="title">
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={initial?.title ?? ""}
                 placeholder="e.g. Full Professor, PhD Student, Technician"
-                className={inputClass}
               />
             </FormField>
           </FieldGrid>
 
           {isEdit ? (
             <FormField label="Email" name="email" helpText="Email is managed by the auth provider and cannot be changed here.">
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 defaultValue={initial?.email ?? ""}
                 disabled
-                className={`${inputClass} opacity-60`}
+                className="opacity-60"
               />
             </FormField>
           ) : (
             <FieldGrid cols={2}>
               <FormField label="Email" name="email" required>
-                <input
+                <Input
                   id="email"
                   name="email"
                   type="email"
                   required
                   placeholder="member@leec.ubuea.cm"
-                  className={inputClass}
                 />
               </FormField>
               <FormField label="Password" name="password" required helpText="Temporary password, min. 8 characters. The member can change it after first login.">
-                <input
+                <Input
                   id="password"
                   name="password"
                   type="password"
                   required
                   minLength={8}
                   placeholder="••••••••"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -185,41 +181,41 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
         <CardContent className="space-y-5">
           <FieldGrid cols={3}>
             <FormField label="Role" name="role" required>
-              <select
+              <NativeSelect
                 id="role"
                 name="role"
                 required
                 defaultValue={initial?.role ?? "researcher"}
-                className={selectClass}
+                className="w-full"
               >
                 {roles.map((r) => (
                   <option key={r} value={r}>
                     {roleLabels[r] ?? r.charAt(0).toUpperCase() + r.slice(1).replace("_", " ")}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </FormField>
             <FormField label="Status" name="status">
-              <select
+              <NativeSelect
                 id="status"
                 name="status"
                 defaultValue={initial?.status ?? "active"}
-                className={selectClass}
+                className="w-full"
               >
                 {statuses.map((s) => (
                   <option key={s} value={s}>
                     {s.charAt(0).toUpperCase() + s.slice(1)}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </FormField>
             <FormField label="Lab / Center" name="labId" required>
-              <select
+              <NativeSelect
                 id="labId"
                 name="labId"
                 required
                 defaultValue={initial?.labId ?? "default"}
-                className={selectClass}
+                className="w-full"
               >
                 {initial?.labId ? null : <option value="default">LEEC (default)</option>}
                 {labs.map((lab) => (
@@ -227,29 +223,27 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
                     {lab.name}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </FormField>
           </FieldGrid>
 
           <FieldGrid cols={2}>
             <FormField label="Institution" name="institution">
-              <input
+              <Input
                 id="institution"
                 name="institution"
                 type="text"
                 defaultValue={initial?.institution ?? ""}
                 placeholder="University of Buea"
-                className={inputClass}
               />
             </FormField>
             <FormField label="Department" name="department">
-              <input
+              <Input
                 id="department"
                 name="department"
                 type="text"
                 defaultValue={initial?.department ?? ""}
                 placeholder="Electrical and Electronic Engineering"
-                className={inputClass}
               />
             </FormField>
           </FieldGrid>
@@ -263,24 +257,22 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
         </CardHeader>
         <CardContent className="space-y-5">
           <FormField label="Biography" name="biography" helpText="Short academic and research background — shown on the people page.">
-            <textarea
+            <Textarea
               id="biography"
               name="biography"
               rows={4}
               defaultValue={initial?.biography ?? ""}
               placeholder="Brief academic and professional background..."
-              className={textareaClass}
             />
           </FormField>
 
           <FormField label="Research interests" name="researchInterests" helpText="Comma-separated.">
-            <input
+            <Input
               id="researchInterests"
               name="researchInterests"
               type="text"
               defaultValue={initial?.researchInterests?.join(", ") ?? ""}
               placeholder="Power electronics, Energy harvesting, IoT"
-              className={inputClass}
             />
           </FormField>
         </CardContent>
@@ -294,63 +286,57 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
         <CardContent className="space-y-5">
           <FieldGrid cols={2}>
             <FormField label="ORCID" name="orcid">
-              <input
+              <Input
                 id="orcid"
                 name="orcid"
                 type="text"
                 defaultValue={initial?.orcid ?? ""}
                 placeholder="0000-0002-..."
-                className={inputClass}
               />
             </FormField>
             <FormField label="Google Scholar" name="googleScholar">
-              <input
+              <Input
                 id="googleScholar"
                 name="googleScholar"
                 type="url"
                 defaultValue={initial?.googleScholar ?? ""}
                 placeholder="https://scholar.google.com/..."
-                className={inputClass}
               />
             </FormField>
             <FormField label="ResearchGate" name="researchGate">
-              <input
+              <Input
                 id="researchGate"
                 name="researchGate"
                 type="url"
                 defaultValue={initial?.researchGate ?? ""}
                 placeholder="https://researchgate.net/profile/..."
-                className={inputClass}
               />
             </FormField>
             <FormField label="LinkedIn" name="linkedIn">
-              <input
+              <Input
                 id="linkedIn"
                 name="linkedIn"
                 type="url"
                 defaultValue={initial?.linkedIn ?? ""}
                 placeholder="https://linkedin.com/in/..."
-                className={inputClass}
               />
             </FormField>
             <FormField label="Website" name="website">
-              <input
+              <Input
                 id="website"
                 name="website"
                 type="url"
                 defaultValue={initial?.website ?? ""}
                 placeholder="https://example.com"
-                className={inputClass}
               />
             </FormField>
             <FormField label="Phone" name="phone">
-              <input
+              <Input
                 id="phone"
                 name="phone"
                 type="tel"
                 defaultValue={initial?.phone ?? ""}
                 placeholder="+237 6XX XXX XXX"
-                className={inputClass}
               />
             </FormField>
           </FieldGrid>
@@ -371,7 +357,7 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
       </Card>
 
       {/* Submit */}
-      <div className="flex items-center justify-end gap-3 pb-8">
+      <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
         <a
           href="/admin/lab-members"
           className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

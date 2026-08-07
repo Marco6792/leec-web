@@ -5,12 +5,11 @@ import { createEvent } from "../actions";
 import {
   FormField,
   FieldGrid,
-  inputClass,
-  selectClass,
-  textareaClass,
 } from "../../_components/form-field";
-import { UploadImage } from "@/components/admin/upload-image";
-import { PdfUpload } from "@/components/admin/pdf-upload";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { NativeSelect } from "@/components/ui/native-select";
+import { MediaUpload } from "@/components/admin/media-upload";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +27,7 @@ export default async function NewEventPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Event</h1>
@@ -55,51 +54,48 @@ export default async function NewEventPage({
         </div>
       )}
 
-      <form action={createEvent} className="space-y-6">
+      <form action={createEvent} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Event Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FormField label="Title" name="title" required>
-              <input
+              <Input
                 id="title"
                 name="title"
                 type="text"
                 required
                 placeholder="e.g. Distinguished Seminar: Advances in Power Electronics"
-                className={inputClass}
               />
             </FormField>
 
             <FormField label="Description" name="description">
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 rows={3}
                 placeholder="Event description..."
-                className={textareaClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
               <FormField label="Event Type" name="eventType">
-                <select id="eventType" name="eventType" defaultValue="seminar" className={selectClass}>
+                <NativeSelect id="eventType" name="eventType" defaultValue="seminar" className="w-full">
                   {eventTypes.map((t) => (
                     <option key={t} value={t}>
                       {t.charAt(0).toUpperCase() + t.slice(1)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </FormField>
 
               <FormField label="Location" name="location" helpText="Physical venue or 'Online'">
-                <input
+                <Input
                   id="location"
                   name="location"
                   type="text"
                   placeholder="e.g. Lab 201, Engineering Building"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -113,20 +109,18 @@ export default async function NewEventPage({
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
               <FormField label="Start Date" name="startDate" required>
-                <input
+                <Input
                   id="startDate"
                   name="startDate"
                   type="date"
                   required
-                  className={inputClass}
                 />
               </FormField>
               <FormField label="End Date" name="endDate">
-                <input
+                <Input
                   id="endDate"
                   name="endDate"
                   type="date"
-                  className={inputClass}
                 />
               </FormField>
             </FieldGrid>
@@ -151,31 +145,29 @@ export default async function NewEventPage({
             </div>
 
             <FormField label="Meeting URL" name="meetingUrl" helpText="Zoom, Google Meet, etc.">
-              <input
+              <Input
                 id="meetingUrl"
                 name="meetingUrl"
                 type="url"
                 placeholder="https://..."
-                className={inputClass}
               />
             </FormField>
 
             <FieldGrid cols={2}>
-              <FormField label="Cover image" name="imageUrl" helpText="Uploaded via UploadThing.">
-                <UploadImage endpoint="entityImage" inputName="imageUrl" />
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
               </FormField>
-              <FormField label="PDF document" name="pdfUrl" helpText="Uploaded to Supabase Storage with inline preview.">
-                <PdfUpload inputName="pdfUrl" />
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
               </FormField>
             </FieldGrid>
 
             <FormField label="Registration URL" name="registrationUrl">
-              <input
+              <Input
                 id="registrationUrl"
                 name="registrationUrl"
                 type="url"
                 placeholder="https://..."
-                className={inputClass}
               />
             </FormField>
           </CardContent>
@@ -200,7 +192,7 @@ export default async function NewEventPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-end gap-3 pb-8">
+        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
           <Link
             href="/admin/events"
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"

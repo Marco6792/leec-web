@@ -2,6 +2,7 @@
 
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { NativeSelect } from "@/components/ui/native-select";
 import { DeleteButton } from "../_components/delete-button";
 import { updateLabMemberRole, deleteLabMember } from "./actions";
 
@@ -125,19 +126,19 @@ function MemberRoleSelect({ userId, role }: { userId: string; role: string }) {
   const action = updateLabMemberRole.bind(null, userId);
   return (
     <form action={action}>
-      <select
+      <NativeSelect
         name="role"
         defaultValue={role}
         onChange={(e) => e.target.form?.requestSubmit()}
         title="Change role"
-        className="cursor-pointer rounded-lg border border-border bg-background px-2 py-1 text-xs text-muted-foreground outline-none transition-colors hover:border-ring focus:border-ring focus:ring-2 focus:ring-ring/50"
+        size="sm"
       >
         {roles.map((r) => (
           <option key={r} value={r}>
             {roleLabels[r] ?? r.charAt(0).toUpperCase() + r.slice(1).replace("_", " ")}
           </option>
         ))}
-      </select>
+      </NativeSelect>
     </form>
   );
 }
