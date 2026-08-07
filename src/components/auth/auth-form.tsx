@@ -30,6 +30,7 @@ type ResearcherType = "academic" | "corporate" | "medical" | "not-researcher" | 
 interface AuthFormProps {
   mode: "login" | "signup";
   action: (formData: FormData) => Promise<{ error?: string; success?: boolean; message?: string } | undefined>;
+  redirectTo?: string;
   oauthActions?: {
     google?: () => Promise<{ error?: string } | undefined>;
     microsoft?: () => Promise<{ error?: string } | undefined>;
@@ -63,7 +64,7 @@ const researcherTypes = [
   },
 ];
 
-export function AuthForm({ mode, action, oauthActions }: AuthFormProps) {
+export function AuthForm({ mode, action, redirectTo, oauthActions }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -122,6 +123,9 @@ export function AuthForm({ mode, action, oauthActions }: AuthFormProps) {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {redirectTo && (
+              <input type="hidden" name="redirect" value={redirectTo} />
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
