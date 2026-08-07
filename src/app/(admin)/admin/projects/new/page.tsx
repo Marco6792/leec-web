@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
@@ -23,6 +23,9 @@ export default async function NewProjectPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Projects", href: "/admin/projects" }, { label: "Create Project" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Project</h1>
@@ -30,12 +33,6 @@ export default async function NewProjectPage({
             Add a new research project to the lab.
           </p>
         </div>
-        <Link
-          href="/admin/projects"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to projects
-        </Link>
       </div>
 
       <ProjectForm action={createProject} profiles={allProfiles} error={params.error} />

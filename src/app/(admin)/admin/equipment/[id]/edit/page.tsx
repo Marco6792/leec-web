@@ -12,9 +12,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
-import { UploadImage } from "@/components/admin/upload-image";
+import { MediaUpload } from "@/components/admin/media-upload";
 import { PdfUpload } from "@/components/admin/pdf-upload";
 import { DeleteButton } from "../../../_components/delete-button";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { ViewPublicPage } from "../../../_components/view-public-page";
 import { deleteEquipment } from "../../actions";
 
@@ -54,7 +55,10 @@ export default async function EditEquipmentPage({
   const boundAction = updateEquipment.bind(null, id);
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Equipment", href: "/admin/equipment" }, { label: "Edit Equipment" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Equipment</h1>
@@ -62,15 +66,7 @@ export default async function EditEquipmentPage({
             Editing: {item.name}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ViewPublicPage href={`/equipment/${item.slug}`} />
-          <a
-            href="/admin/equipment"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to equipment
-          </a>
-        </div>
+        <ViewPublicPage href={`/equipment/${item.slug}`} />
       </div>
 
       {/* Saved banner */}
@@ -218,9 +214,22 @@ export default async function EditEquipmentPage({
               </FormField>
             </FieldGrid>
 
+          </CardContent>
+        </Card>
+
+        {/* Photos & Documents — full width so uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
             <FieldGrid cols={2}>
-              <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
-                <UploadImage endpoint="entityImage" inputName="imageUrl" value={item.imageUrl ?? ""} />
+              <FormField label="Equipment photos" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload
+                  endpoint="gallery"
+                  inputName="gallery"
+                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
+                />
               </FormField>
               <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded via UploadThing with inline preview.">
                 <PdfUpload inputName="pdfUrl" value={item.pdfUrl ?? ""} />

@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { equipment } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { EquipmentView } from "./equipment-view";
 import { FilterSelect } from "../_components/filter-select";
 
@@ -47,6 +48,7 @@ export default async function AdminEquipmentPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Equipment" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Equipment</h1>

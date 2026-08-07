@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { SiteImage } from "@/components/site-image";
 import {
   ArrowLeft,
   Calendar,
@@ -63,11 +64,12 @@ export default async function NewsDetailPage({
       </Link>
 
       {item.imageUrl && (
-        <div className="rounded-2xl overflow-hidden border aspect-video mb-8">
-          <img
+        <div className="relative rounded-2xl overflow-hidden border aspect-video mb-8">
+          <SiteImage
             src={item.imageUrl}
             alt={item.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 896px"
           />
         </div>
       )}
@@ -162,11 +164,12 @@ export default async function NewsDetailPage({
                 rel="noreferrer"
                 className="group relative aspect-video overflow-hidden rounded-xl border"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SiteImage
                   src={url}
                   alt={`${item.title} — image ${i + 1}`}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="transition-transform duration-300 group-hover:scale-105"
                 />
               </a>
             ))}

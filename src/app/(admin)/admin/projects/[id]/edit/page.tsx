@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { projects, profiles } from "@/db/schema";
@@ -7,6 +6,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { ProjectForm, type ProjectInitial } from "../../_components/project-form";
 import { updateProject, deleteProject } from "../../actions";
 import { DeleteButton } from "../../../_components/delete-button";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
@@ -57,6 +57,9 @@ export default async function EditProjectPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Projects", href: "/admin/projects" }, { label: "Edit Project" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Project</h1>
@@ -64,15 +67,7 @@ export default async function EditProjectPage({
             Editing: {item.title}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ViewPublicPage href={`/projects/${item.slug}`} />
-          <Link
-            href="/admin/projects"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to projects
-          </Link>
-        </div>
+        <ViewPublicPage href={`/projects/${item.slug}`} />
       </div>
 
       <ProjectForm

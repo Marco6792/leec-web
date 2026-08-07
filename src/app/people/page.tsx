@@ -4,6 +4,7 @@ import { labMembers, profiles } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 
 export const revalidate = 60;
 
@@ -87,10 +88,12 @@ export default async function PeoplePage() {
                 <div className="relative mb-4">
                   <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   {member.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <SiteImage
                       src={member.avatarUrl}
                       alt={member.name}
+                      width={96}
+                      height={96}
+                      sizes="96px"
                       className="relative size-24 rounded-full object-cover border border-border shadow-sm"
                     />
                   ) : (

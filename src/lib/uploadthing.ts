@@ -23,6 +23,12 @@ export const ourFileRouter = {
     })
     .onUploadComplete(({ file }) => ({ url: file.url })),
 
+  coverImage: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .middleware(async () => {
+      return { uploadedBy: "admin" };
+    })
+    .onUploadComplete(({ file }) => ({ url: file.url })),
+
   entityImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(async () => {
       return { uploadedBy: "admin" };

@@ -24,6 +24,7 @@ export interface MemberInitial {
   status: string | null;
   labId: string | null;
   avatarUrl: string | null;
+  coverUrl: string | null;
   institution: string | null;
   department: string | null;
   biography: string | null;
@@ -61,7 +62,7 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
   const isEdit = Boolean(initial);
 
   return (
-    <form action={action} className="grid gap-6 lg:grid-cols-2 max-w-6xl">
+    <form action={action} className="grid gap-6 lg:grid-cols-2">
       {(saved === "true" || error) && (
         <div
           className={
@@ -103,6 +104,26 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
               endpoint="profileImage"
               inputName="avatarUrl"
               value={initial?.avatarUrl ?? ""}
+            />
+          </FormField>
+        </CardContent>
+      </Card>
+
+      {/* Cover photo */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Cover Photo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FormField
+            label="Cover photo"
+            name="coverUrl"
+            helpText="Wide banner shown at the top of the public profile page."
+          >
+            <UploadImage
+              endpoint="coverImage"
+              inputName="coverUrl"
+              value={initial?.coverUrl ?? ""}
             />
           </FormField>
         </CardContent>

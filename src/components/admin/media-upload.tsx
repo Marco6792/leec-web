@@ -57,7 +57,7 @@ export function MediaUpload({
       <input type="hidden" name={inputName} value={JSON.stringify(urls)} />
 
       {urls.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {urls.map((url) => (
             <div
               key={url}
@@ -68,10 +68,10 @@ export function MediaUpload({
                 <img
                   src={url}
                   alt="Uploaded image"
-                  className="h-24 w-full object-cover"
+                  className="h-28 w-full object-cover"
                 />
               ) : (
-                <div className="flex h-24 flex-col items-center justify-center gap-1 p-2 text-center">
+                <div className="flex h-28 flex-col items-center justify-center gap-1 p-2 text-center">
                   <FileText className="size-5 shrink-0 text-muted-foreground" />
                   <span className="line-clamp-2 w-full break-all text-[11px] text-muted-foreground">
                     {decodeURIComponent(url.split("/").pop() ?? url).split("?")[0]}
@@ -91,7 +91,7 @@ export function MediaUpload({
                 type="button"
                 onClick={() => remove(url)}
                 aria-label="Remove upload"
-                className="absolute right-1.5 top-1.5 rounded-full bg-background/90 p-1 text-muted-foreground opacity-0 shadow transition-all hover:text-destructive group-hover:opacity-100"
+                className="absolute right-1.5 top-1.5 rounded-full bg-background/90 p-1 text-muted-foreground shadow transition-all hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100"
               >
                 <X className="size-3.5" />
               </button>

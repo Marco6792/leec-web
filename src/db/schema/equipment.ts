@@ -70,6 +70,7 @@ export const equipment = pgTable("equipment", {
   location: text("location"),
   imageUrl: text("image_url"),
   pdfUrl: text("pdf_url"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
   status: equipmentStatusEnum("status").default("operational"),
   acquiredDate: date("acquired_date"),
   value: numeric("value"),

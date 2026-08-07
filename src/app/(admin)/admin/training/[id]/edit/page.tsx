@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { trainingSessions } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { updateTrainingSession } from "../../actions";
 import {
@@ -41,7 +42,10 @@ export default async function EditTrainingPage({
   const boundAction = updateTrainingSession.bind(null, id);
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Training", href: "/admin/training" }, { label: "Edit Session" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Training Session</h1>
@@ -49,12 +53,6 @@ export default async function EditTrainingPage({
             Editing: {session.title}
           </p>
         </div>
-        <a
-          href="/admin/training"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to training
-        </a>
       </div>
 
       {sp.saved === "true" && (

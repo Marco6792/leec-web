@@ -47,7 +47,7 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
   const isEdit = Boolean(initial);
 
   return (
-    <form action={action} className="grid gap-6 lg:grid-cols-2 max-w-6xl">
+    <form action={action} className="grid gap-6 lg:grid-cols-2">
       {(saved === "true" || error) && (
         <div
           className={

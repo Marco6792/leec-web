@@ -4,6 +4,7 @@ import { publications, publicationAuthors, profiles, publicationLikes, publicati
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SiteImage } from "@/components/site-image";
 import { ArrowRight, ExternalLink, BookOpen, FileText, Mic, GraduationCap, Newspaper, Rocket, Eye, Star, ThumbsUp, Download } from "lucide-react";
 
 const typeConfig: Record<string, { icon: typeof BookOpen; color: string }> = {
@@ -134,14 +135,15 @@ export async function PublicationsPreview() {
                             return (
                               <div
                                 key={author.id}
-                                className="size-9 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0"
+                                className="size-9 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
                                 title={author.fullName}
                               >
                                 {author.avatarUrl ? (
-                                  <img
+                                  <SiteImage
                                     src={author.avatarUrl}
                                     alt={author.fullName}
-                                    className="size-full object-cover"
+                                    fill
+                                    sizes="36px"
                                   />
                                 ) : (
                                   <div className="size-full flex items-center justify-center text-[10px] font-bold text-muted-foreground">

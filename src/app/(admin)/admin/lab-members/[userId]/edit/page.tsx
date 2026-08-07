@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { profiles, labMembers, researchCenters } from "@/db/schema";
@@ -6,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { MemberForm, type MemberInitial } from "../../_components/member-form";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { updateLabMember, deleteLabMember } from "../../actions";
 import { DeleteButton } from "../../../_components/delete-button";
 import { ViewPublicPage } from "../../../_components/view-public-page";
@@ -60,6 +60,7 @@ export default async function EditLabMemberPage({
     status: membership?.status ?? "active",
     labId: membership?.labId ?? null,
     avatarUrl: profile.avatarUrl,
+    coverUrl: profile.coverUrl,
     institution: profile.institution,
     department: profile.department,
     biography: profile.biography,
@@ -78,6 +79,9 @@ export default async function EditLabMemberPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Lab Members", href: "/admin/lab-members" }, { label: "Edit Member" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Lab Member</h1>
@@ -85,15 +89,7 @@ export default async function EditLabMemberPage({
             Editing: {profile.fullName}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ViewPublicPage href={`/profile/${userId}`} />
-          <Link
-            href="/admin/lab-members"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to lab members
-          </Link>
-        </div>
+        <ViewPublicPage href={`/profile/${userId}`} />
       </div>
 
       <MemberForm action={boundAction} labs={labs} initial={initial} error={sp.error} saved={sp.saved} />

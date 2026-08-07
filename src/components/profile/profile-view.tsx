@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 
 import { signout } from "@/lib/auth/actions";
 import {
@@ -266,16 +267,26 @@ export function ProfileView({ profileId, currentUserId, initialProfile }: { prof
   // ─── Render ─────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 pb-16 sm:pb-24">
+      {profile.cover_url && (
+        <div className="relative mb-10 h-40 sm:h-56 overflow-hidden rounded-2xl border border-border bg-muted">
+          <SiteImage
+            src={profile.cover_url}
+            alt={`${profile.full_name} cover`}
+            fill
+            sizes="100vw"
+          />
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-8">
 
         {/* ─── Sidebar ──────────────────────────────────────────── */}
         <div className="lg:w-72 shrink-0 space-y-6">
           <div className="text-center">
             <div className="relative inline-block">
-              <div className="size-28 mx-auto rounded-2xl overflow-hidden border bg-muted">
+              <div className="relative size-28 mx-auto rounded-2xl overflow-hidden border bg-muted">
                 {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt={profile.full_name} className="size-full object-cover" />
+                  <SiteImage src={profile.avatar_url} alt={profile.full_name} fill sizes="112px" />
                 ) : (
                   <div className="size-full flex items-center justify-center text-3xl font-bold text-muted-foreground">{initials}</div>
                 )}

@@ -23,6 +23,7 @@ const equipmentSchema = z.object({
   location: z.string().optional(),
   imageUrl: z.string().url("Invalid URL.").optional().or(z.literal("")),
   pdfUrl: z.string().optional(),
+  gallery: z.string().optional(),
   status: z
     .enum(["operational", "maintenance", "repair", "calibration", "retired"])
     .optional(),
@@ -32,6 +33,16 @@ const equipmentSchema = z.object({
   isPublic: z.boolean().optional(),
   availableForTesting: z.boolean().optional(),
 });
+
+function parseJsonArray(value: string | undefined): string[] {
+  if (!value) return [];
+  try {
+    const arr = JSON.parse(value);
+    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
 
 function slugify(text: string): string {
   return text
@@ -48,7 +59,8 @@ export async function createEquipment(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(equipmentSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isPublic = formData.get("isPublic") === "on";
   raw.availableForTesting = formData.get("availableForTesting") === "on";
@@ -62,13 +74,16 @@ export async function createEquipment(formData: FormData) {
     redirect(`/admin/equipment/new?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { imageUrl, pdfUrl, acquiredDate, value, ...rest } = parsed.data;
+  const { imageUrl, pdfUrl, gallery, acquiredDate, value, ...rest } = parsed.data;
+
+  const galleryArray = parseJsonArray(gallery);
 
   await db.insert(equipment).values({
     ...rest,
     slug,
-    imageUrl: imageUrl || null,
+    imageUrl: (galleryArray[0] ?? imageUrl) || null,
     pdfUrl: pdfUrl || null,
+    gallery: galleryArray,
     acquiredDate: acquiredDate || null,
     value: value || null,
   });
@@ -84,7 +99,8 @@ export async function updateEquipment(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(equipmentSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isPublic = formData.get("isPublic") === "on";
   raw.availableForTesting = formData.get("availableForTesting") === "on";
@@ -98,15 +114,18 @@ export async function updateEquipment(id: string, formData: FormData) {
     redirect(`/admin/equipment/${id}/edit?error=${encodeURIComponent(firstError)}`);
   }
 
-  const { imageUrl, pdfUrl, acquiredDate, value, ...rest } = parsed.data;
+  const { imageUrl, pdfUrl, gallery, acquiredDate, value, ...rest } = parsed.data;
+
+  const galleryArray = parseJsonArray(gallery);
 
   await db
     .update(equipment)
     .set({
       ...rest,
       slug,
-      imageUrl: imageUrl || null,
+      imageUrl: (galleryArray[0] ?? imageUrl) || null,
       pdfUrl: pdfUrl || null,
+      gallery: galleryArray,
       acquiredDate: acquiredDate || null,
       value: value || null,
       updatedAt: new Date(),

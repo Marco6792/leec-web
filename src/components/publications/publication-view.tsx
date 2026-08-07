@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 import Link from "next/link";
 import {
   ExternalLink,
@@ -295,11 +296,12 @@ export function PublicationView({
         <div className="flex-1 min-w-0 space-y-6">
           {/* Cover image */}
           {publication.imageUrl && (
-            <div className="rounded-2xl overflow-hidden border aspect-video">
-              <img
+            <div className="relative rounded-2xl overflow-hidden border aspect-video">
+              <SiteImage
                 src={publication.imageUrl}
                 alt={publication.title}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 66vw"
               />
             </div>
           )}
@@ -319,11 +321,12 @@ export function PublicationView({
                     rel="noopener noreferrer"
                     className="group relative aspect-video overflow-hidden rounded-xl border"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SiteImage
                       src={url}
                       alt={`${publication.title} — image ${i + 1}`}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="transition-transform duration-300 group-hover:scale-105"
                     />
                   </a>
                 ))}
@@ -394,12 +397,13 @@ export function PublicationView({
                         className="group/av flex items-center gap-3 p-3 rounded-xl border hover:shadow-md transition-all duration-200"
                       >
                         <div className="relative">
-                          <div className="size-12 rounded-full overflow-hidden border-2 border-background bg-muted">
+                          <div className="relative size-12 rounded-full overflow-hidden border-2 border-background bg-muted">
                             {author.avatarUrl ? (
-                              <img
+                              <SiteImage
                                 src={author.avatarUrl}
                                 alt={author.fullName}
-                                className="size-full object-cover"
+                                fill
+                                sizes="48px"
                               />
                             ) : (
                               <div className="size-full flex items-center justify-center text-sm font-bold text-muted-foreground">
@@ -624,12 +628,13 @@ export function PublicationView({
                         key={comment.id}
                         className="flex gap-3 p-4 rounded-xl border"
                       >
-                        <div className="size-9 rounded-full overflow-hidden bg-muted shrink-0">
+                        <div className="relative size-9 rounded-full overflow-hidden bg-muted shrink-0">
                           {user?.avatarUrl ? (
-                            <img
+                            <SiteImage
                               src={user.avatarUrl}
                               alt={user.fullName}
-                              className="size-full object-cover"
+                              fill
+                              sizes="36px"
                             />
                           ) : (
                             <div className="size-full flex items-center justify-center text-xs font-bold text-muted-foreground">
@@ -761,12 +766,13 @@ export function PublicationView({
                       <Card key={review.id}>
                         <CardContent className="p-4">
                           <div className="flex items-start gap-3 mb-3">
-                            <div className="size-9 rounded-full overflow-hidden bg-muted shrink-0">
+                            <div className="relative size-9 rounded-full overflow-hidden bg-muted shrink-0">
                               {user?.avatarUrl ? (
-                                <img
+                                <SiteImage
                                   src={user.avatarUrl}
                                   alt={user.fullName}
-                                  className="size-full object-cover"
+                                  fill
+                                  sizes="36px"
                                 />
                               ) : (
                                 <div className="size-full flex items-center justify-center text-xs font-bold text-muted-foreground">

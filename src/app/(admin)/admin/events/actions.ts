@@ -43,7 +43,8 @@ export async function createEvent(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(eventSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isOnline = formData.get("isOnline") === "on";
   raw.published = formData.get("published") === "on";
@@ -83,7 +84,8 @@ export async function updateEvent(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(eventSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.isOnline = formData.get("isOnline") === "on";
   raw.published = formData.get("published") === "on";

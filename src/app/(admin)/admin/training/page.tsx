@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { trainingSessions, trainingEnrollments } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { TrainingView } from "./training-view";
 import { FilterSelect } from "../_components/filter-select";
 import { count } from "drizzle-orm";
@@ -58,6 +59,7 @@ export default async function AdminTrainingPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Training" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Training Sessions</h1>

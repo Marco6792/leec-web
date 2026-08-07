@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
 import { MediaUpload } from "@/components/admin/media-upload";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +54,10 @@ export default async function EditEventPage({
     : "";
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Events", href: "/admin/events" }, { label: "Edit Event" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Event</h1>
@@ -61,15 +65,7 @@ export default async function EditEventPage({
             Editing: {item.title}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ViewPublicPage href={`/events/${item.id}`} />
-          <Link
-            href="/admin/events"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to events
-          </Link>
-        </div>
+        <ViewPublicPage href={`/events/${item.id}`} />
       </div>
 
       {sp.saved === "true" && (
@@ -143,7 +139,7 @@ export default async function EditEventPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Date &amp; Time</CardTitle>
+            <CardTitle>Date, Time &amp; Online</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
@@ -165,14 +161,7 @@ export default async function EditEventPage({
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Online &amp; Media</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
             <div className="flex items-center gap-3">
               <input
                 id="isOnline"
@@ -195,6 +184,36 @@ export default async function EditEventPage({
               />
             </FormField>
 
+            <FormField label="Registration URL" name="registrationUrl">
+              <Input
+                id="registrationUrl"
+                name="registrationUrl"
+                type="url"
+                defaultValue={item.registrationUrl ?? ""}
+              />
+            </FormField>
+
+            <div className="flex items-center gap-3">
+              <input
+                id="published"
+                name="published"
+                type="checkbox"
+                defaultChecked={item.published ?? false}
+                className="size-4 rounded border-border accent-primary"
+              />
+              <label htmlFor="published" className="text-sm">
+                Published on website
+              </label>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
             <FieldGrid cols={2}>
               <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
                 <MediaUpload
@@ -211,35 +230,6 @@ export default async function EditEventPage({
                 />
               </FormField>
             </FieldGrid>
-
-            <FormField label="Registration URL" name="registrationUrl">
-              <Input
-                id="registrationUrl"
-                name="registrationUrl"
-                type="url"
-                defaultValue={item.registrationUrl ?? ""}
-              />
-            </FormField>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-3">
-              <input
-                id="published"
-                name="published"
-                type="checkbox"
-                defaultChecked={item.published ?? false}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="published" className="text-sm">
-                Published on website
-              </label>
-            </div>
           </CardContent>
         </Card>
 

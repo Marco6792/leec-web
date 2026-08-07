@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createNews } from "../actions";
 import {
@@ -22,7 +23,10 @@ export default async function NewNewsPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "News", href: "/admin/news" }, { label: "Create Article" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create News Article</h1>
@@ -30,12 +34,6 @@ export default async function NewNewsPage({
             Write a new news article for the lab website.
           </p>
         </div>
-        <Link
-          href="/admin/news"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to news
-        </Link>
       </div>
 
       {params.error && (
@@ -87,18 +85,9 @@ export default async function NewNewsPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Media &amp; Metadata</CardTitle>
+            <CardTitle>Publication Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <FieldGrid cols={2}>
-              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
-                <MediaUpload endpoint="gallery" inputName="gallery" />
-              </FormField>
-              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
-                <MediaUpload endpoint="documents" inputName="documents" />
-              </FormField>
-            </FieldGrid>
-
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt" helpText="Leave empty to use current date when published.">
                 <Input
@@ -117,14 +106,7 @@ export default async function NewNewsPage({
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -147,6 +129,23 @@ export default async function NewNewsPage({
                 Pin to top of news list
               </label>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
+              </FormField>
+            </FieldGrid>
           </CardContent>
         </Card>
 

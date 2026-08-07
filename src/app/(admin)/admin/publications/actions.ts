@@ -79,7 +79,8 @@ export async function createPublication(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(publicationSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.openAccess = formData.get("openAccess") === "on";
 
@@ -140,7 +141,8 @@ export async function updatePublication(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(publicationSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.openAccess = formData.get("openAccess") === "on";
 

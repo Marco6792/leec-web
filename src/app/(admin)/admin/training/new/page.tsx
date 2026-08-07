@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createTrainingSession } from "../actions";
 import {
@@ -22,7 +23,10 @@ export default async function NewTrainingPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Training", href: "/admin/training" }, { label: "Create Session" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Training Session</h1>
@@ -30,12 +34,6 @@ export default async function NewTrainingPage({
             Create a new training session for lab researchers.
           </p>
         </div>
-        <a
-          href="/admin/training"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to training
-        </a>
       </div>
 
       {params.error && (

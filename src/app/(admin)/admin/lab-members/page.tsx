@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { labMembers, profiles, researchCenters } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { LabMembersView } from "./lab-members-view";
 import { FilterSelect } from "../_components/filter-select";
 
@@ -55,6 +56,7 @@ export default async function AdminLabMembersPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Lab Members" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Lab Members</h1>

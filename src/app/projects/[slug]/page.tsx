@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { SiteImage } from "@/components/site-image";
 import {
   ArrowLeft,
   Calendar,
@@ -94,9 +95,12 @@ export default async function ProjectDetailPage({
         {/* Image */}
         <div className="rounded-2xl overflow-hidden border">
           {item.imageUrl ? (
-            <img
+            <SiteImage
               src={item.imageUrl}
               alt={item.title}
+              width={1200}
+              height={800}
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="w-full h-full max-h-[480px] object-cover"
             />
           ) : (

@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MediaUpload } from "@/components/admin/media-upload";
+import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { ViewPublicPage } from "../../../_components/view-public-page";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +46,10 @@ export default async function EditNewsPage({
     : "";
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "News", href: "/admin/news" }, { label: "Edit Article" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit News Article</h1>
@@ -53,15 +57,7 @@ export default async function EditNewsPage({
             Editing: {item.title}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ViewPublicPage href={`/news/${item.slug}`} />
-          <Link
-            href="/admin/news"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to news
-          </Link>
-        </div>
+        <ViewPublicPage href={`/news/${item.slug}`} />
       </div>
 
       {sp.saved === "true" && (
@@ -125,26 +121,9 @@ export default async function EditNewsPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Media &amp; Metadata</CardTitle>
+            <CardTitle>Publication Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <FieldGrid cols={2}>
-              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
-                <MediaUpload
-                  endpoint="gallery"
-                  inputName="gallery"
-                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
-                />
-              </FormField>
-              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
-                <MediaUpload
-                  endpoint="documents"
-                  inputName="documents"
-                  value={item.documents?.length ? item.documents : item.pdfUrl ? [item.pdfUrl] : []}
-                />
-              </FormField>
-            </FieldGrid>
-
             <FieldGrid cols={2}>
               <FormField label="Published Date" name="publishedAt">
                 <Input
@@ -165,14 +144,7 @@ export default async function EditNewsPage({
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -197,6 +169,31 @@ export default async function EditNewsPage({
                 Pinned to top
               </label>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload
+                  endpoint="gallery"
+                  inputName="gallery"
+                  value={item.gallery?.length ? item.gallery : item.imageUrl ? [item.imageUrl] : []}
+                />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload
+                  endpoint="documents"
+                  inputName="documents"
+                  value={item.documents?.length ? item.documents : item.pdfUrl ? [item.pdfUrl] : []}
+                />
+              </FormField>
+            </FieldGrid>
           </CardContent>
         </Card>
 

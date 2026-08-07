@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { SiteImage } from "@/components/site-image";
 import {
   ArrowLeft,
   Boxes,
@@ -125,9 +126,12 @@ export default async function EquipmentDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
         {/* Image */}
         <div className="rounded-2xl overflow-hidden border">
-          <img
+          <SiteImage
             src={item.imageUrl ?? "/photos/lab-interior.jpg"}
             alt={item.name}
+            width={1200}
+            height={800}
+            sizes="(max-width: 1024px) 100vw, 50vw"
             className="w-full h-full max-h-[480px] object-cover"
           />
         </div>
@@ -192,6 +196,37 @@ export default async function EquipmentDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Gallery thumbnails */}
+      {(item.gallery?.length ?? 0) > 1 && (
+        <>
+          <Separator className="my-14" />
+          <div className="max-w-4xl">
+            <h2 className="text-2xl font-bold tracking-tight mb-6">
+              Photo Gallery
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {(item.gallery ?? []).map((url, i) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group relative aspect-[4/3] overflow-hidden rounded-xl border"
+                >
+                  <SiteImage
+                    src={url}
+                    alt={`${item.name} — photo ${i + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="transition-transform duration-300 group-hover:scale-105"
+                  />
+                </a>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Specifications */}
       {item.specifications && (

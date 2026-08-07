@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { partners } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { PartnersView } from "./partners-view";
 import { FilterSelect } from "../_components/filter-select";
 
@@ -54,6 +55,7 @@ export default async function AdminPartnersPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Partners" }]} />
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Partners</h1>
         <p className="text-sm text-muted-foreground mt-1">

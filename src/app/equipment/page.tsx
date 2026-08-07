@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { equipment } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 import { FileText } from "lucide-react";
 
 export const revalidate = 60;
@@ -58,11 +59,13 @@ export default async function EquipmentPage() {
             href={`/equipment/${item.slug}`}
             className="group rounded-xl border overflow-hidden hover:shadow-md transition-all duration-200 block"
           >
-            <div className="aspect-video overflow-hidden">
-              <img
+            <div className="relative aspect-video overflow-hidden">
+              <SiteImage
                 src={item.imageUrl ?? "/photos/lab-interior.jpg"}
                 alt={item.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="group-hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="p-5">

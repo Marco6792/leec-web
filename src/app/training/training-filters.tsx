@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
+import { SiteImage } from "@/components/site-image";
 import { cn } from "@/lib/utils";
 import {
   GraduationCap,
@@ -242,11 +243,13 @@ export default function TrainingFilters({ sessions, allEquipmentNames }: Props) 
                     className="group rounded-xl border bg-card overflow-hidden hover:shadow-lg hover:border-foreground/20 transition-all duration-300 flex flex-col"
                   >
                     {/* Image */}
-                    <div className="aspect-[16/9] overflow-hidden bg-muted">
-                      <img
+                    <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+                      <SiteImage
                         src={session.imageUrl ?? "/photos/lab-interior.jpg"}
                         alt={session.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
 

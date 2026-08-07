@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { SiteImage } from "@/components/site-image";
 import { ArrowLeft } from "lucide-react";
 
 export default function ElectromagneticNDTPage() {
@@ -91,11 +92,14 @@ export default function ElectromagneticNDTPage() {
             key={img.src}
             className="rounded-lg border overflow-hidden bg-muted/30"
           >
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="w-full aspect-[4/3] object-cover"
-            />
+            <div className="relative aspect-[4/3]">
+              <SiteImage
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
             <figcaption className="px-3 py-2 text-xs text-muted-foreground">
               {img.caption}
             </figcaption>

@@ -48,7 +48,8 @@ export async function createNews(formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(newsSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.published = formData.get("published") === "on";
   raw.pinned = formData.get("pinned") === "on";
@@ -93,7 +94,8 @@ export async function updateNews(id: string, formData: FormData) {
 
   const raw: Record<string, unknown> = {};
   for (const key of Object.keys(newsSchema.shape)) {
-    raw[key] = formData.get(key);
+    const value = formData.get(key);
+    if (value !== null) raw[key] = value;
   }
   raw.published = formData.get("published") === "on";
   raw.pinned = formData.get("pinned") === "on";

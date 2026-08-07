@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { events } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SiteImage } from "@/components/site-image";
 import { ArrowRight, FileText } from "lucide-react";
 
 export const revalidate = 60;
@@ -115,9 +116,12 @@ function EventCard({
       <div className="md:flex">
         {item.imageUrl && (
           <div className="md:w-1/4 aspect-video md:aspect-auto overflow-hidden">
-            <img
+            <SiteImage
               src={item.imageUrl}
               alt={item.title}
+              width={640}
+              height={360}
+              sizes="(max-width: 768px) 100vw, 25vw"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { projects, profiles } from "@/db/schema";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SiteImage } from "@/components/site-image";
 import { ArrowRight, CircleDollarSign, FileText, User } from "lucide-react";
 
 function formatAmount(value: string | null, currency: string | null) {
@@ -65,10 +66,12 @@ export async function ProjectsPreview() {
               >
                 <div className="relative aspect-video overflow-hidden">
                   {item.imageUrl ? (
-                    <img
+                    <SiteImage
                       src={item.imageUrl}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                      className="group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-muted flex items-center justify-center">

@@ -21,6 +21,7 @@ export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey(),
   fullName: text("full_name").notNull(),
   avatarUrl: text("avatar_url"),
+  coverUrl: text("cover_url"),
   researcherType: text("researcher_type"),
   institution: text("institution"),
   department: text("department"),

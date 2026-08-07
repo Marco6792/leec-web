@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { ProjectsView } from "./projects-view";
 import { FilterSelect } from "../_components/filter-select";
 
@@ -40,6 +41,7 @@ export default async function AdminProjectsPage({
 
   return (
     <div className="space-y-6">
+      <AdminBreadcrumbs items={[{ label: "Projects" }]} />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Projects</h1>

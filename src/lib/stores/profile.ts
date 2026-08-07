@@ -7,6 +7,7 @@ export interface ProfileData {
   id: string;
   full_name: string;
   avatar_url: string | null;
+  cover_url: string | null;
   institution: string | null;
   department: string | null;
   title: string | null;

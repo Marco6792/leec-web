@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createEvent } from "../actions";
 import {
@@ -27,7 +28,10 @@ export default async function NewEventPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Events", href: "/admin/events" }, { label: "Create Event" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Create Event</h1>
@@ -35,12 +39,6 @@ export default async function NewEventPage({
             Add a new event to the lab calendar.
           </p>
         </div>
-        <Link
-          href="/admin/events"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to events
-        </Link>
       </div>
 
       {params.error && (
@@ -104,7 +102,7 @@ export default async function NewEventPage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Date &amp; Time</CardTitle>
+            <CardTitle>Date, Time &amp; Online</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <FieldGrid cols={2}>
@@ -124,14 +122,7 @@ export default async function NewEventPage({
                 />
               </FormField>
             </FieldGrid>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Online &amp; Media</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
             <div className="flex items-center gap-3">
               <input
                 id="isOnline"
@@ -153,15 +144,6 @@ export default async function NewEventPage({
               />
             </FormField>
 
-            <FieldGrid cols={2}>
-              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
-                <MediaUpload endpoint="gallery" inputName="gallery" />
-              </FormField>
-              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
-                <MediaUpload endpoint="documents" inputName="documents" />
-              </FormField>
-            </FieldGrid>
-
             <FormField label="Registration URL" name="registrationUrl">
               <Input
                 id="registrationUrl"
@@ -170,14 +152,7 @@ export default async function NewEventPage({
                 placeholder="https://..."
               />
             </FormField>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Publication</CardTitle>
-          </CardHeader>
-          <CardContent>
             <div className="flex items-center gap-3">
               <input
                 id="published"
@@ -189,6 +164,23 @@ export default async function NewEventPage({
                 Publish on website
               </label>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Media — full width so the uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldGrid cols={2}>
+              <FormField label="Images" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
+              </FormField>
+              <FormField label="Documents" name="documents" helpText="Upload one or more PDFs or documents. The first is shown inline on the page.">
+                <MediaUpload endpoint="documents" inputName="documents" />
+              </FormField>
+            </FieldGrid>
           </CardContent>
         </Card>
 

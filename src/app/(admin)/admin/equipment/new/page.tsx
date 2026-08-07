@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/auth/admin";
+import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createEquipment } from "../actions";
 import {
@@ -8,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
-import { UploadImage } from "@/components/admin/upload-image";
+import { MediaUpload } from "@/components/admin/media-upload";
 import { PdfUpload } from "@/components/admin/pdf-upload";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +35,10 @@ export default async function NewEquipmentPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6">
+      <AdminBreadcrumbs
+        items={[{ label: "Equipment", href: "/admin/equipment" }, { label: "Register Equipment" }]}
+      />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Register Equipment</h1>
@@ -42,12 +46,6 @@ export default async function NewEquipmentPage({
             Add a new piece of equipment to the lab inventory.
           </p>
         </div>
-        <a
-          href="/admin/equipment"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to equipment
-        </a>
       </div>
 
       {/* Error banner */}
@@ -178,9 +176,18 @@ export default async function NewEquipmentPage({
               </FormField>
             </FieldGrid>
 
+          </CardContent>
+        </Card>
+
+        {/* Photos & Documents — full width so uploads aren't cramped */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Photos &amp; Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
             <FieldGrid cols={2}>
-              <FormField label="Equipment photo" name="imageUrl" helpText="Uploaded via UploadThing.">
-                <UploadImage endpoint="entityImage" inputName="imageUrl" />
+              <FormField label="Equipment photos" name="gallery" helpText="Upload one or more images. The first image is used as the cover.">
+                <MediaUpload endpoint="gallery" inputName="gallery" />
               </FormField>
               <FormField label="Datasheet PDF" name="pdfUrl" helpText="Uploaded via UploadThing with inline preview.">
                 <PdfUpload inputName="pdfUrl" />
