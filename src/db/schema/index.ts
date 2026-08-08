@@ -72,6 +72,15 @@ export {
   milestoneStatusEnum,
 } from "./partners";
 
+// ─── Site Pages (About, Contact, Privacy, Terms) ───────────────────────────
+export { sitePages } from "./pages";
+
+// ─── Settings ─────────────────────────────────────────────────────────────
+export { settings } from "./settings";
+
+// ─── Hero Quotes (rotating hero subtitles) ─────────────────────────────────
+export { heroQuotes } from "./hero-quotes";
+
 // ─── Compliance & Audit ──────────────────────────────────────────────────
 export {
   complianceRecords,

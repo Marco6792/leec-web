@@ -124,6 +124,24 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["equipment"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["equipment"]["Row"]>;
       };
+      research_domains: {
+        Row: {
+          id: string;
+          lab_id: string | null;
+          slug: string;
+          name: string;
+          description: string | null;
+          icon: string | null;
+          lead_researcher_id: string | null;
+          featured_image_url: string | null;
+          tags: string[] | null;
+          sort_order: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["research_domains"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["research_domains"]["Row"]>;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

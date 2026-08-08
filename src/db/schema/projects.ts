@@ -46,6 +46,7 @@ export const researchDomains = pgTable("research_domains", {
     onDelete: "set null",
   }),
   featuredImageUrl: text("featured_image_url"),
+  tags: text("tags").array().default([]),
   sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
