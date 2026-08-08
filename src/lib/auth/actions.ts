@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { safeRedirect } from "@/lib/auth/safe-redirect";
 
 /**
  * Sign in with email and password.
@@ -27,15 +28,8 @@ export async function login(formData: FormData) {
 
   revalidatePath("/", "layout");
 
-  const redirectTo = formData.get("redirect");
-  const target =
-    typeof redirectTo === "string" &&
-    redirectTo.startsWith("/") &&
-    !redirectTo.startsWith("//") &&
-    !/[\\\n\r]/.test(redirectTo)
-      ? redirectTo
-      : "/";
-  redirect(target);
+  const redirectTo = safeRedirect(formData.get("redirect") as string | undefined);
+  redirect(redirectTo ?? "/");
 }
 
 /**
@@ -56,7 +50,7 @@ export async function signup(formData: FormData) {
   const title = formData.get("title") as string;
   const speciality = formData.get("speciality") as string;
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -74,6 +68,16 @@ export async function signup(formData: FormData) {
 
   if (error) {
     return { error: error.message };
+  }
+
+  // If the session was created immediately (auto-confirmed accounts), send
+  // the new user back to the page they originally wanted (e.g. a
+  // publication they were about to comment on). Otherwise they must confirm
+  // their email first, so show the confirmation message instead.
+  if (data.session) {
+    revalidatePath("/", "layout");
+    const redirectTo = safeRedirect(formData.get("redirect") as string | undefined);
+    redirect(redirectTo ?? "/");
   }
 
   return {

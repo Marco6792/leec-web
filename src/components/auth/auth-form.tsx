@@ -271,6 +271,9 @@ export function AuthForm({ mode, action, redirectTo, oauthActions }: AuthFormPro
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="hidden" name="researcher_type" value={researcherType ?? ""} />
+          {redirectTo && (
+            <input type="hidden" name="redirect" value={redirectTo} />
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="full_name">Full name</Label>
