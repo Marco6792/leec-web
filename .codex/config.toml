@@ -1,0 +1,5 @@
+# TokenRouter provider for this project (leec-web)
+# Provider + model_provider now live in ~/.codex/config.toml (user-level),
+# because this Codex version ignores those keys in project-local config.
+
+model = "moonshotai/kimi-k3-free"
