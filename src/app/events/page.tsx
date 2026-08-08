@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SiteImage } from "@/components/site-image";
 import { ArrowRight, FileText } from "lucide-react";
+import { stripHtml } from "@/lib/strip-html";
 
 export const revalidate = 60;
 
@@ -115,18 +116,18 @@ function EventCard({
     >
       <div className="md:flex">
         {item.imageUrl && (
-          <div className="md:w-1/4 aspect-video md:aspect-auto overflow-hidden">
+          <div className="md:w-2/5 aspect-video md:aspect-auto overflow-hidden">
             <SiteImage
               src={item.imageUrl}
               alt={item.title}
-              width={640}
-              height={360}
-              sizes="(max-width: 768px) 100vw, 25vw"
+              width={960}
+              height={540}
+              sizes="(max-width: 768px) 100vw, 40vw"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
-        <div className={`p-5 ${item.imageUrl ? "md:w-3/4" : "md:w-full"}`}>
+        <div className={`p-7 ${item.imageUrl ? "md:w-3/5" : "md:w-full"}`}>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
             <span className="font-medium text-foreground">
               {new Date(item.startDate).toLocaleDateString("en-US", {
@@ -162,13 +163,13 @@ function EventCard({
             )}
           </div>
 
-          <h3 className="font-semibold text-lg mb-2 leading-snug group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-xl mb-2 leading-snug group-hover:text-primary transition-colors">
             {item.title}
           </h3>
 
           {item.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-              {item.description}
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+              {stripHtml(item.description)}
             </p>
           )}
 

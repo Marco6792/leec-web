@@ -53,30 +53,30 @@ export default async function NewsPage() {
             >
               <div className="md:flex">
                 {item.imageUrl && (
-                  <div className="md:w-1/3 aspect-video md:aspect-auto overflow-hidden">
+                  <div className="md:w-2/5 aspect-video md:aspect-auto overflow-hidden">
                     <SiteImage
                       src={item.imageUrl}
                       alt={item.title}
-                      width={800}
-                      height={450}
+                      width={960}
+                      height={540}
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}
-                <div className={`p-5 ${item.imageUrl ? "md:w-2/3" : "md:w-full"}`}>
+                <div className={`p-7 ${item.imageUrl ? "md:w-3/5" : "md:w-full"}`}>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                    {item.publishedAt && (
-                      <span>{new Date(item.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
-                    )}
-                    {item.pinned && (
-                      <>
-                        <span className="text-border">|</span>
-                        <span className="text-amber-600 dark:text-amber-400 font-medium">Pinned</span>
-                      </>
-                    )}
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                     {item.publishedAt && (
+                       <span>{new Date(item.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                     )}
+                     {item.pinned && (
+                       <>
+                         <span className="text-border">|</span>
+                         <span className="text-amber-600 dark:text-amber-400 font-medium">Pinned</span>
+                       </>
+                     )}
+                   </div>
+                   <h3 className="font-semibold text-xl mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.excerpt && (

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SiteImage } from "@/components/site-image";
 import { ArrowRight, FileText, CircleDollarSign } from "lucide-react";
+import { stripHtml } from "@/lib/strip-html";
 
 export const revalidate = 60;
 
@@ -116,13 +117,13 @@ export default async function ProjectsPage() {
                     </span>
                   )}
                 </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-lg mb-2 leading-snug group-hover:text-primary transition-colors">
+                <div className="p-7">
+                  <h3 className="font-semibold text-xl mb-2 leading-snug group-hover:text-primary transition-colors">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                      {item.description}
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                      {stripHtml(item.description)}
                     </p>
                   )}
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground mt-4">

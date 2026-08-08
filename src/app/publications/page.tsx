@@ -107,17 +107,17 @@ export default async function PublicationsPage() {
               <Link
                 key={pub.id}
                 href={`/publications/${pub.id}`}
-                className="group block p-7 rounded-2xl border bg-card hover:shadow-lg hover:border-foreground/20 transition-all duration-300"
+                className="group block p-9 rounded-2xl border bg-card hover:shadow-lg hover:border-foreground/20 transition-all duration-300"
               >
                 <div className="flex flex-col sm:flex-row gap-5">
                   {pub.imageUrl && (
-                    <div className="sm:w-44 shrink-0 overflow-hidden rounded-xl border aspect-video sm:aspect-auto">
+                    <div className="sm:w-56 shrink-0 overflow-hidden rounded-xl border aspect-video sm:aspect-auto">
                       <SiteImage
                         src={pub.imageUrl}
                         alt={pub.title}
-                        width={352}
-                        height={198}
-                        sizes="(max-width: 640px) 100vw, 176px"
+                        width={448}
+                        height={252}
+                        sizes="(max-width: 640px) 100vw, 224px"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -138,7 +138,7 @@ export default async function PublicationsPage() {
                         </span>
                       )}
                     </div>
-                    <h3 className="font-semibold text-lg mb-2 leading-snug group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-xl mb-2 leading-snug group-hover:text-primary transition-colors">
                       {pub.title}
                     </h3>
 
@@ -156,17 +156,17 @@ export default async function PublicationsPage() {
                             return (
                               <div
                                 key={author.id}
-                                className="size-8 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
+                                className="size-9 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
                               >
                                 {author.avatarUrl ? (
                                   <SiteImage
                                     src={author.avatarUrl}
                                     alt={author.fullName}
                                     fill
-                                    sizes="32px"
+                                    sizes="36px"
                                   />
                                 ) : (
-                                  <div className="size-full flex items-center justify-center text-[10px] font-bold text-muted-foreground">
+                                  <div className="size-full flex items-center justify-center text-xs font-bold text-muted-foreground">
                                     {initials}
                                   </div>
                                 )}

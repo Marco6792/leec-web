@@ -77,10 +77,17 @@ export default async function ProjectDetailPage({
   const status = statusStyles[item.status ?? ""] ?? statusStyles.active;
   const funding = formatCurrency(item.fundingAmount, item.currency);
 
-  const paragraphs = (item.description ?? "")
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const descriptionHtml = item.description ?? "";
+
+  // Plain-text intro teaser (strip HTML tags, collapse whitespace, take the
+  // first sentence) so the hero stays clean while the body keeps full
+  // rich-text formatting below.
+  const introText =
+    descriptionHtml
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(/(?<=[.!?])\s+/)[0] ?? "";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
@@ -133,7 +140,7 @@ export default async function ProjectDetailPage({
           </h1>
 
           <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-            {paragraphs[0] ?? item.description}
+            {introText}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 rounded-xl border p-6">
@@ -201,23 +208,14 @@ export default async function ProjectDetailPage({
       </div>
 
       {/* Full description */}
-      {paragraphs.length > 1 && (
+      {descriptionHtml && (
         <>
           <Separator className="my-14" />
           <div className="max-w-4xl">
             <h2 className="text-2xl font-bold tracking-tight mb-6">
               About the project
             </h2>
-            <div className="space-y-6">
-              {paragraphs.slice(1).map((paragraph, index) => (
-                <p
-                  key={index}
-                  className="text-muted-foreground leading-relaxed"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <div className="prose-content max-w-4xl" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
           </div>
         </>
       )}

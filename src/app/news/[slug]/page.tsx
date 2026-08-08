@@ -7,15 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { DocumentPreview } from "@/components/document-preview";
 import { SiteImage } from "@/components/site-image";
-import {
-  ArrowLeft,
-  Calendar,
-  Pin,
-  User,
-  Tag,
-  FileText,
-} from "lucide-react";
+import { ArrowLeft, Calendar, Pin, User, Tag } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -109,26 +103,11 @@ export default async function NewsDetailPage({
 
       <Separator className="mb-8" />
 
-      {paragraphs.length > 0 ? (
-        <div className="space-y-6">
-          {paragraphs.map((paragraph, index) => {
-            const isHeading = index === 0 && /^[A-Z0-9]/.test(paragraph) && paragraph.length < 120;
-            return (
-              <p
-                key={index}
-                className={
-                  isHeading
-                    ? "text-foreground font-semibold leading-relaxed"
-                    : "text-muted-foreground leading-relaxed"
-                }
-              >
-                {paragraph}
-              </p>
-            );
-          })}
-        </div>
-      ) : (
-        <p className="text-muted-foreground leading-relaxed">{item.excerpt}</p>
+      {item.content && (
+        <div
+          className="prose-content text-muted-foreground leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: item.content }}
+        />
       )}
 
       {item.tags && item.tags.length > 0 && (
@@ -184,29 +163,19 @@ export default async function NewsDetailPage({
         </div>
       )}
 
-      {/* Additional documents */}
-      {(item.documents?.length ?? 0) > 1 && (
+      {/* Additional documents — inline PDF previews + file cards */}
+      {(item.documents?.length ?? 0) > 0 && (
         <div className="mt-12">
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
             Documents
           </h3>
-          <ul className="space-y-2">
+          <div className="space-y-4">
             {(item.documents ?? [])
               .filter((doc) => doc !== item.pdfUrl)
               .map((doc) => (
-                <li key={doc}>
-                  <a
-                    href={doc}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-muted transition-colors"
-                  >
-                    <FileText className="size-4 text-muted-foreground" />
-                    {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
-                  </a>
-                </li>
+                <DocumentPreview key={doc} url={doc} />
               ))}
-          </ul>
+          </div>
         </div>
       )}
 

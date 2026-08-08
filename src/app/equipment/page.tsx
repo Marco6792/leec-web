@@ -68,7 +68,7 @@ export default async function EquipmentPage() {
                 className="group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="p-5">
+            <div className="p-7">
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-[10px] uppercase tracking-wider">
                   {categoryLabels[item.category ?? ""] ?? item.category ?? "Other"}
@@ -81,7 +81,7 @@ export default async function EquipmentPage() {
                 )}
               </div>
               <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                <h3 className="font-semibold text-xl group-hover:text-primary transition-colors">
                   {item.name}
                 </h3>
                 {item.pdfUrl && (

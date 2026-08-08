@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { DocumentPreview } from "@/components/document-preview";
 import { SiteImage } from "@/components/site-image";
 import {
   ArrowLeft,
@@ -17,7 +18,6 @@ import {
   Globe,
   ExternalLink,
   CalendarPlus,
-  FileText,
 } from "lucide-react";
 
 export const revalidate = 60;
@@ -89,11 +89,6 @@ export default async function EventDetailPage({
     !item.endDate ||
     item.endDate.toISOString() === item.startDate.toISOString();
 
-  const paragraphs = (item.description ?? "")
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
       <Link
@@ -136,21 +131,11 @@ export default async function EventDetailPage({
 
             <Separator className="mb-8" />
 
-            {paragraphs.length > 0 ? (
-              <div className="space-y-6">
-                {paragraphs.map((paragraph, index) => (
-                  <p
-                    key={index}
-                    className="text-muted-foreground leading-relaxed"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+            {item.description && (
+              <div
+                className="prose-content text-muted-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: item.description }}
+              />
             )}
 
             {/* Gallery */}
@@ -188,29 +173,19 @@ export default async function EventDetailPage({
               </div>
             )}
 
-            {/* Additional documents */}
-            {(item.documents?.length ?? 0) > 1 && (
+            {/* Additional documents — inline PDF previews + file cards */}
+            {(item.documents?.length ?? 0) > 0 && (
               <div className="mt-10">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                   Documents
                 </h3>
-                <ul className="space-y-2">
+                <div className="space-y-4">
                   {(item.documents ?? [])
                     .filter((doc) => doc !== item.pdfUrl)
                     .map((doc) => (
-                      <li key={doc}>
-                        <a
-                          href={doc}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-muted transition-colors"
-                        >
-                          <FileText className="size-4 text-muted-foreground" />
-                          {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
-                        </a>
-                      </li>
+                      <DocumentPreview key={doc} url={doc} />
                     ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>

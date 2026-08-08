@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { createClient } from "@/lib/supabase/client";
 import { signout } from "@/lib/auth/actions";
 import { useAuthStore } from "@/lib/stores/auth";
-import { Menu, X, Search } from "lucide-react";
+import { useSearchStore } from "@/lib/stores/search";
+import { Menu, X, Search, LayoutDashboard } from "lucide-react";
 
 const navItems = [
   {
@@ -40,37 +41,76 @@ const navItems = [
   { href: "/training", label: "Training" },
   { href: "/news", label: "News" },
   { href: "/events", label: "Events" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, avatarUrl, fullName, setUser, clear } = useAuthStore();
+  const userRef = useRef(user);
+  userRef.current = user;
   const pathname = usePathname();
+  const toggleSearch = useSearchStore((s) => s.toggle);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        toggleSearch();
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [toggleSearch]);
 
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) return;
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.user) return;
-      const meta = session.user.user_metadata;
+    /** Populate the store with the given user + their profile row. */
+    function applyUser(authUser: {
+      id: string;
+      email?: string | undefined;
+      user_metadata?: Record<string, unknown> | undefined;
+    }) {
+      const meta = authUser.user_metadata ?? {};
+      const storeUser = { id: authUser.id, email: authUser.email };
       setUser(
-        session.user,
-        meta?.avatar_url ?? null,
-        meta?.full_name ?? meta?.name ?? "",
+        storeUser,
+        (meta.avatar_url as string | undefined) ?? null,
+        (meta.full_name as string | undefined) ??
+        (meta.name as string | undefined) ??
+        "",
       );
 
-      supabase
+      supabase!
         .from("profiles")
         .select("avatar_url, full_name")
-        .eq("id", session.user.id)
+        .eq("id", authUser.id)
         .single<{ avatar_url: string | null; full_name: string }>()
         .then(({ data, error }) => {
           if (data && !error) {
-            setUser(session!.user, data.avatar_url, data.full_name);
+            setUser(storeUser, data.avatar_url, data.full_name);
           }
         });
-    });
+    }
+
+    async function syncSession() {
+      const {
+        data: { session },
+      } = await supabase!.auth.getSession();
+      if (!session?.user) {
+        // No session on this route — if we previously had one, it's a logout.
+        if (userRef.current) clear();
+        return;
+      }
+      applyUser(session.user);
+    }
+
+    // Re-sync on every navigation so auth performed on another page (e.g. a
+    // server-action login that set the session cookies and redirected) is
+    // reflected in the navbar without a manual refresh.
+    syncSession();
 
     const {
       data: { subscription },
@@ -79,27 +119,11 @@ export function Navbar() {
         clear();
         return;
       }
-      const meta = session.user.user_metadata;
-      setUser(
-        session.user,
-        meta?.avatar_url ?? null,
-        meta?.full_name ?? meta?.name ?? "",
-      );
-
-      supabase
-        .from("profiles")
-        .select("avatar_url, full_name")
-        .eq("id", session.user.id)
-        .single<{ avatar_url: string | null; full_name: string }>()
-        .then(({ data, error }) => {
-          if (data && !error) {
-            setUser(session!.user, data.avatar_url, data.full_name);
-          }
-        });
+      applyUser(session.user);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [pathname, setUser, clear]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -111,15 +135,15 @@ export function Navbar() {
   const profileHref = user ? `/profile/${user.id}` : "/profile";
 
   return (
-    <header className="fixed top-[38px] left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border border-border md:max-w-7xl mx-auto md:rounded-full">
+    <header className="fixed top-[0.5rem] left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border border-border md:max-w-7xl mx-auto md:rounded-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           <Link href="/" className="flex items-center group shrink-0">
             <div className="w-[13rem] pt-0 pb-0">
               <img
                 src="/logo-leec.jpeg"
                 alt="LEEC Logo"
-                className="h-full sm:h-14 w-full object-contain"
+                className="h-full sm:h-12 w-full object-contain"
               />
             </div>
           </Link>
@@ -178,10 +202,25 @@ export function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
+            <Link
+              href="/admin"
+              aria-label="Admin dashboard"
+              className="inline-flex"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                className="cursor-pointer gap-1.5"
+              >
+                <LayoutDashboard className="size-4" />
+                <span className="hidden md:inline">Admin</span>
+              </Button>
+            </Link>
+            <Button variant="ghost" size="icon" className="hidden sm:flex" onClick={toggleSearch}>
               <Search className="h-4 w-4" />
+              <span className="sr-only">Search</span>
             </Button>
 
             {user ? (

@@ -88,7 +88,7 @@ export async function PublicationsPreview() {
             No publications yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {pubs.map((pub) => {
               const TypeIcon = typeConfig[pub.type]?.icon || FileText;
               const venue = pub.journal || pub.conference || pub.publisher || "";
@@ -100,7 +100,7 @@ export async function PublicationsPreview() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                  <div className="p-7 flex flex-col gap-4 relative z-10">
+                  <div className="p-9 flex flex-col gap-4 relative z-10">
                     <div className="flex items-center justify-between">
                       <Badge
                         variant="secondary"
@@ -117,7 +117,7 @@ export async function PublicationsPreview() {
                       )}
                     </div>
 
-                    <h3 className="font-semibold text-lg leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-3">
+                    <h3 className="font-semibold text-xl leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-3">
                       {pub.title}
                     </h3>
 
@@ -135,7 +135,7 @@ export async function PublicationsPreview() {
                             return (
                               <div
                                 key={author.id}
-                                className="size-9 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
+                                className="size-10 rounded-full overflow-hidden border-2 border-background bg-muted shrink-0 relative"
                                 title={author.fullName}
                               >
                                 {author.avatarUrl ? (
@@ -166,7 +166,7 @@ export async function PublicationsPreview() {
 
                     {/* Abstract preview */}
                     {pub.abstract && (
-                      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                         {pub.abstract}
                       </p>
                     )}

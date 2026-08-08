@@ -58,7 +58,7 @@ export async function EventsPreview() {
             No events scheduled yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {eventList.map((item) => (
               <Link
                 key={item.id}
@@ -76,7 +76,7 @@ export async function EventsPreview() {
                     />
                   </div>
                 )}
-                <div className="p-5">
+                <div className="p-6">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                     <span className="font-medium text-foreground">
                       {new Date(item.startDate).toLocaleDateString("en-US", {
@@ -91,11 +91,11 @@ export async function EventsPreview() {
                       {eventTypeLabels[item.eventType ?? ""] ?? item.eventType ?? "Other"}
                     </span>
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                  <h3 className="font-semibold text-xl mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                       {item.description}
                     </p>
                   )}
