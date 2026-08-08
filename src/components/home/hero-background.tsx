@@ -5,8 +5,8 @@ import { SiteImage } from "@/components/site-image";
 
 /**
  * Slow cinematic Ken Burns effect: the hero image zooms in while panning
- * horizontally, so it feels like a subtle video — while remaining a
- * full-cover background. Respects prefers-reduced-motion.
+ * horizontally and vertically, so it feels like a subtle video — while
+ * remaining a full-cover background. Respects prefers-reduced-motion.
  */
 export function HeroBackground() {
   const reduceMotion = useReducedMotion();
@@ -20,6 +20,7 @@ export function HeroBackground() {
           : {
               scale: 1.12,
               x: 0,
+              y: 0,
             }
       }
       animate={
@@ -28,6 +29,7 @@ export function HeroBackground() {
           : {
               scale: [1.12, 1.28, 1.12],
               x: [0, -120, 0, 120, 0],
+              y: [0, -40, 0, 40, 0],
             }
       }
       transition={{
