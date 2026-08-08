@@ -9,6 +9,11 @@ const researchAreas = [
       "Battery management systems for solar photovoltaic generation, power grid preventive maintenance, and low-cost power conversion.",
     icon: Cpu,
     href: "/research/power-electronics",
+    color: "bg-[#2563eb]",
+    lightColor: "bg-blue-50",
+    textColor: "text-blue-600",
+    borderColor: "border-blue-100",
+    hoverBorderColor: "group-hover:border-blue-300",
   },
   {
     title: "Electromagnetic NDT",
@@ -16,6 +21,11 @@ const researchAreas = [
       "Non-destructive testing and material characterization using magnetic needle probes, Barkhausen noise, and eddy current methods.",
     icon: Waves,
     href: "/research/electromagnetic-ndt",
+    color: "bg-[#7c3aed]",
+    lightColor: "bg-purple-50",
+    textColor: "text-purple-600",
+    borderColor: "border-purple-100",
+    hoverBorderColor: "group-hover:border-purple-300",
   },
   {
     title: "Electrical Energy Harvesting",
@@ -23,6 +33,11 @@ const researchAreas = [
       "Energy harvesting from organic wastes, water distribution systems, and ambient radio, TV and telephone signals.",
     icon: Zap,
     href: "/research/energy-harvesting",
+    color: "bg-[#059669]",
+    lightColor: "bg-emerald-50",
+    textColor: "text-emerald-600",
+    borderColor: "border-emerald-100",
+    hoverBorderColor: "group-hover:border-emerald-300",
   },
   {
     title: "Sensors, IoT & Smart Agriculture",
@@ -30,6 +45,11 @@ const researchAreas = [
       "Sensor nodes for soil classification, pesticide monitoring, leak detection in water networks, and smart attendance systems.",
     icon: Leaf,
     href: "/research/sensors-iot",
+    color: "bg-[#0891b2]",
+    lightColor: "bg-cyan-50",
+    textColor: "text-cyan-600",
+    borderColor: "border-cyan-100",
+    hoverBorderColor: "group-hover:border-cyan-300",
   },
 ];
 
@@ -47,27 +67,30 @@ export function ResearchAreas() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {researchAreas.map((area) => (
-            <Link key={area.href} href={area.href}>
-              <Card className="h-full hover:shadow-md hover:border-foreground/20 transition-all duration-200 group cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground/10 transition-colors">
-                    <area.icon className="h-5 w-5 text-foreground" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-foreground/80 transition-colors">
-                    {area.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {area.description}
-                  </p>
-                  <div className="flex items-center gap-1 text-sm font-medium text-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity">
-                    Learn more <ArrowRight className="h-3.5 w-3.5" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {researchAreas.map((area) => {
+            const Icon = area.icon;
+            return (
+              <Link key={area.href} href={area.href} className="group">
+                <Card className={`h-full hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border-2 ${area.borderColor} ${area.hoverBorderColor}`}>
+                  <CardContent className="p-7">
+                    <div className={`w-14 h-14 rounded-2xl ${area.color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="h-7 w-7 text-white" />
+                    </div>
+                    <h3 className={`font-semibold text-xl mb-3 ${area.textColor} transition-colors`}>
+                      {area.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                      {area.description}
+                    </p>
+                    <div className={`flex items-center gap-1.5 text-sm font-semibold ${area.textColor} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                      Learn more <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

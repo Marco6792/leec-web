@@ -95,7 +95,7 @@ export async function createLabMember(formData: FormData) {
   for (const key of Object.keys(memberSchema.shape)) {
     raw[key] = formData.get(key);
   }
-  raw.isPublic = formData.get("isPublic") === "on";
+  raw.isPublic = formData.get("isPublic") === "true";
   raw.status = (formData.get("status") as string) || "active";
 
   const email = (formData.get("email") as string)?.trim().toLowerCase() || "";
@@ -215,7 +215,7 @@ export async function updateLabMember(userId: string, formData: FormData) {
   for (const key of Object.keys(memberSchema.shape)) {
     raw[key] = formData.get(key);
   }
-  raw.isPublic = formData.get("isPublic") === "on";
+  raw.isPublic = formData.get("isPublic") === "true";
   raw.status = (formData.get("status") as string) || "active";
 
   const parsed = memberSchema.safeParse(raw);
@@ -326,7 +326,7 @@ export async function updateLabMemberRole(userId: string, formData: FormData) {
 
   revalidatePath("/admin/lab-members");
   revalidatePath("/people");
-  redirect("/admin/lab-members");
+  redirect("/admin/lab-members?saved=true");
 }
 
 // ─── Delete ────────────────────────────────────────────────────────────────
@@ -347,5 +347,5 @@ export async function deleteLabMember(userId: string) {
 
   revalidatePath("/admin/lab-members");
   revalidatePath("/people");
-  redirect("/admin/lab-members");
+  redirect("/admin/lab-members?deleted=true");
 }

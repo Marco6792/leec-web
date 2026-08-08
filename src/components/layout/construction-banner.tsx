@@ -9,19 +9,15 @@ export function ConstructionBanner() {
   if (dismissed) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] h-9 bg-amber-500 text-amber-950 dark:bg-amber-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center gap-2 text-xs sm:text-sm font-medium">
-        <Construction className="size-4 shrink-0" />
-        <span className="truncate">
-          This website is under construction — content is being added regularly.
-        </span>
+    <div className="fixed top-0 left-0 right-0 z-[60] h-9 bg-amber-500 text-amber-950">
+      <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-center gap-2">
+        <span>Under Construction</span>
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          aria-label="Dismiss notice"
-          className="shrink-0 rounded-md p-1 hover:bg-amber-600/30 dark:hover:bg-amber-500/30 transition-colors"
+          className="cursor-pointer rounded-md p-2 border-2 border-black"
         >
-          <X className="size-3.5" />
+          <X className="size-4" />
         </button>
       </div>
     </div>

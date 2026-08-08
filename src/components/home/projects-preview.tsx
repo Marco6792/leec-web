@@ -57,7 +57,7 @@ export async function ProjectsPreview() {
             No active projects right now. Check back soon.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projectList.map((item) => (
               <Link
                 key={item.id}
@@ -93,12 +93,12 @@ export async function ProjectsPreview() {
                     </span>
                   )}
                 </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                <div className="p-6">
+                  <h3 className="font-semibold text-xl mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                       {item.description}
                     </p>
                   )}

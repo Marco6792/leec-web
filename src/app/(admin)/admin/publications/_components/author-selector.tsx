@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { X, GripVertical, Mail } from "lucide-react";
+import { X, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 export interface AuthorEntry {
   profileId: string;
@@ -89,22 +90,26 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
               className="flex items-center gap-2 rounded-lg border bg-muted/30 p-2.5"
             >
               <div className="flex flex-col gap-0.5">
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon-xs"
                   onClick={() => moveUp(i)}
                   disabled={i === 0}
-                  className="text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
+                  aria-label="Move up"
                 >
                   <GripVertical className="h-3 w-3 rotate-180" />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon-xs"
                   onClick={() => moveDown(i)}
                   disabled={i === value.length - 1}
-                  className="text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
+                  aria-label="Move down"
                 >
                   <GripVertical className="h-3 w-3" />
-                </button>
+                </Button>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
@@ -119,25 +124,21 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
                   className="mt-1 h-6 px-2 text-xs"
                 />
               </div>
-              <button
+              <Switch
+                checked={author.corresponding}
+                onCheckedChange={() => toggleCorresponding(author.profileId)}
+                aria-label="Corresponding author"
+              />
+              <Button
                 type="button"
-                onClick={() => toggleCorresponding(author.profileId)}
-                className={`shrink-0 rounded p-1.5 transition-colors cursor-pointer ${
-                  author.corresponding
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted"
-                }`}
-                title="Corresponding author"
-              >
-                <Mail className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
+                variant="ghost"
+                size="icon-xs"
                 onClick={() => removeAuthor(author.profileId)}
-                className="shrink-0 rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                className="text-muted-foreground hover:text-destructive"
+                aria-label="Remove author"
               >
                 <X className="h-3.5 w-3.5" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -160,20 +161,21 @@ export function AuthorSelector({ value = [], onChange, profiles }: AuthorSelecto
         {showDropdown && filtered.length > 0 && (
           <div className="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-popover p-1 shadow-md">
             {filtered.map((p) => (
-              <button
+              <Button
                 key={p.id}
                 type="button"
+                variant="ghost"
+                className="w-full justify-start"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   addAuthor(p);
                 }}
-                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer"
               >
                 <span className="truncate">{p.fullName}</span>
                 {p.title && (
                   <span className="ml-auto text-xs text-muted-foreground shrink-0">{p.title}</span>
                 )}
-              </button>
+              </Button>
             ))}
           </div>
         )}

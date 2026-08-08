@@ -62,8 +62,8 @@ export async function createEquipment(formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.isPublic = formData.get("isPublic") === "on";
-  raw.availableForTesting = formData.get("availableForTesting") === "on";
+  raw.isPublic = formData.get("isPublic") === "true";
+  raw.availableForTesting = formData.get("availableForTesting") === "true";
 
   const name = (formData.get("name") as string) || "";
   const slug = slugify(name);
@@ -102,8 +102,8 @@ export async function updateEquipment(id: string, formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.isPublic = formData.get("isPublic") === "on";
-  raw.availableForTesting = formData.get("availableForTesting") === "on";
+  raw.isPublic = formData.get("isPublic") === "true";
+  raw.availableForTesting = formData.get("availableForTesting") === "true";
 
   const name = (formData.get("name") as string) || "";
   const slug = formData.get("slug") as string || slugify(name);
@@ -147,5 +147,5 @@ export async function deleteEquipment(id: string) {
   revalidatePath("/admin/equipment");
   revalidatePath("/");
   revalidatePath("/equipment");
-  redirect("/admin/equipment");
+  redirect("/admin/equipment?deleted=true");
 }

@@ -6,6 +6,7 @@ import {
 } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/admin";
 import { AdminBreadcrumbs } from "../_components/breadcrumbs";
+import { SubmitButton } from "../_components/submit-button";
 import { CollaborationView } from "./collaboration-view";
 import { approveRequest, rejectRequest } from "./actions";
 
@@ -123,24 +124,28 @@ export default async function AdminCollaborationPage({
                     })}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <form action={approveRequest.bind(null, req.id)}>
-                    <button
-                      type="submit"
-                      className="rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-emerald-500 transition-colors"
-                    >
-                      Approve
-                    </button>
-                  </form>
-                  <form action={rejectRequest.bind(null, req.id)}>
-                    <button
-                      type="submit"
-                      className="rounded-lg border border-rose-200 px-3.5 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:hover:bg-rose-950/30 transition-colors"
-                    >
-                      Decline
-                    </button>
-                  </form>
-                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                    <form action={approveRequest.bind(null, req.id)}>
+                      <SubmitButton
+                        variant="default"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-xs"
+                        pendingText="Approving…"
+                        size="sm"
+                      >
+                        Approve
+                      </SubmitButton>
+                    </form>
+                    <form action={rejectRequest.bind(null, req.id)}>
+                      <SubmitButton
+                        variant="outline"
+                        className="border-rose-200 text-xs text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/30"
+                        pendingText="Declining…"
+                        size="sm"
+                      >
+                        Decline
+                      </SubmitButton>
+                    </form>
+                  </div>
               </div>
             </div>
           ))}

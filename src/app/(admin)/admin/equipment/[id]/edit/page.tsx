@@ -1,15 +1,19 @@
+import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { equipment } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../../_components/submit-button";
 import { updateEquipment } from "../../actions";
 import {
   FormField,
   FieldGrid,
 } from "../../../_components/form-field";
 import { Input } from "@/components/ui/input";
+import { SwitchField } from "../../../_components/switch-field";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
 import { MediaUpload } from "@/components/admin/media-upload";
@@ -244,47 +248,27 @@ export default async function EditEquipmentPage({
             <CardTitle>Visibility &amp; Availability</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-3">
-              <input
-                id="isPublic"
-                name="isPublic"
-                type="checkbox"
-                defaultChecked={item.isPublic ?? false}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="isPublic" className="text-sm">
-                Visible on public website
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                id="availableForTesting"
-                name="availableForTesting"
-                type="checkbox"
-                defaultChecked={item.availableForTesting ?? false}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="availableForTesting" className="text-sm">
-                Available for external testing / collaboration
-              </label>
-            </div>
+            <SwitchField
+              id="isPublic"
+              name="isPublic"
+              label="Visible on public website"
+              defaultChecked={item.isPublic ?? false}
+            />
+            <SwitchField
+              id="availableForTesting"
+              name="availableForTesting"
+              label="Available for external testing / collaboration"
+              defaultChecked={item.availableForTesting ?? false}
+            />
           </CardContent>
         </Card>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-          <a
-            href="/admin/equipment"
-            className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-          >
+                <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
+          <Button render={<Link href="/admin/equipment" />} variant="outline">
             Cancel
-          </a>
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Save Changes
-          </button>
+          </Button>
+          <SubmitButton pendingText="Saving…">Save Changes</SubmitButton>
         </div>
       </form>
 

@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { SiteImage } from "@/components/site-image";
+import { DocumentPreview, isPdfUrl } from "@/components/document-preview";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ExternalLink,
   BookOpen,
@@ -34,6 +36,7 @@ import {
   Send,
   Eye,
   Maximize2,
+  Check,
 } from "lucide-react";
 
 export interface Author {
@@ -193,6 +196,33 @@ function StarRating({
   );
 }
 
+/**
+ * Shown to visitors who are not signed in, so they know they can join the
+ * discussion — with direct links back to this page after login/register.
+ */
+function AuthPrompt({ message }: { message: string }) {
+  const pathname = usePathname();
+  const redirectTo = encodeURIComponent(pathname);
+
+  return (
+    <div className="rounded-2xl border border-dashed bg-muted/30 p-6 text-center">
+      <p className="text-sm text-muted-foreground mb-4">{message}</p>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <Link href={`/login?redirect=${redirectTo}`}>
+          <Button size="sm" className="gap-1.5">
+            <Lock className="size-3.5" /> Sign in
+          </Button>
+        </Link>
+        <Link href={`/signup?redirect=${redirectTo}`}>
+          <Button size="sm" variant="outline" className="gap-1.5">
+            Create an account
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export function PublicationView({
   publication,
   initialLikes = 0,
@@ -219,8 +249,9 @@ export function PublicationView({
   const [avgRating, setAvgRating] = useState(initialAvgRating);
   const [totalRatings, setTotalRatings] = useState(initialTotalRatings);
   const [userRating, setUserRating] = useState(0);
-  const [showComments, setShowComments] = useState(false);
-  const [showReviews, setShowReviews] = useState(false);
+  // Open by default so visitors can see they can review & comment.
+  const [showComments, setShowComments] = useState(true);
+  const [showReviews, setShowReviews] = useState(true);
   const [newComment, setNewComment] = useState("");
   const [newReview, setNewReview] = useState({
     title: "",
@@ -230,6 +261,21 @@ export function PublicationView({
     cons: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  /**
+   * Guests get routed to the login page (with a way back to this page via
+   * `?redirect=`) instead of a silent no-op.
+   */
+  function requireAuth(): boolean {
+    if (currentUserId) return true;
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+    return false;
+  }
 
   const config = typeConfig[publication.type] || typeConfig.journal;
   const TypeIcon = config.icon;
@@ -239,7 +285,7 @@ export function PublicationView({
     ((publication.publisher ?? []).length > 0 ? publication.publisher![0] : "");
 
   async function handleLike() {
-    if (!currentUserId) return;
+    if (!requireAuth()) return;
     setLiked(!liked);
     setLikes(liked ? likes - 1 : likes + 1);
     await fetch(`/api/v1/publications/${publication.id}/like`, {
@@ -248,7 +294,8 @@ export function PublicationView({
   }
 
   async function handleComment() {
-    if (!newComment.trim() || !currentUserId) return;
+    if (!newComment.trim()) return;
+    if (!requireAuth()) return;
     setSubmitting(true);
     const res = await fetch(`/api/v1/publications/${publication.id}/comments`, {
       method: "POST",
@@ -264,7 +311,7 @@ export function PublicationView({
   }
 
   async function handleRate(rating: number) {
-    if (!currentUserId) return;
+    if (!requireAuth()) return;
     setUserRating(rating);
     await fetch(`/api/v1/publications/${publication.id}/rating`, {
       method: "POST",
@@ -273,8 +320,24 @@ export function PublicationView({
     });
   }
 
+  async function handleShare() {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: publication.title, url });
+        return;
+      }
+    } catch {
+      // User dismissed the share sheet — fall through to clipboard.
+    }
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   async function handleReview() {
-    if (!newReview.content.trim() || !currentUserId) return;
+    if (!newReview.content.trim()) return;
+    if (!requireAuth()) return;
     setSubmitting(true);
     const res = await fetch(`/api/v1/publications/${publication.id}/reviews`, {
       method: "POST",
@@ -447,9 +510,10 @@ export function PublicationView({
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Abstract
               </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-line">
-                {publication.abstract}
-              </p>
+              <div
+                className="text-sm leading-relaxed text-muted-foreground prose-content"
+                dangerouslySetInnerHTML={{ __html: publication.abstract }}
+              />
             </div>
           )}
 
@@ -517,7 +581,7 @@ export function PublicationView({
           {/* Other Links */}
           {(publication.doi ||
             publication.codeUrl ||
-            publication.sourceDataUrl) && (
+            (publication.sourceDataUrl && !isPdfUrl(publication.sourceDataUrl))) && (
             <div>
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Resources
@@ -543,7 +607,7 @@ export function PublicationView({
                     <ExternalLink className="h-4 w-4" /> Source Code
                   </a>
                 )}
-                {publication.sourceDataUrl && (
+                {publication.sourceDataUrl && !isPdfUrl(publication.sourceDataUrl) && (
                   <a
                     href={publication.sourceDataUrl}
                     target="_blank"
@@ -553,19 +617,29 @@ export function PublicationView({
                     <ExternalLink className="h-4 w-4" /> Dataset
                   </a>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Documents & Attachments — inline PDF previews + file cards */}
+          {(publication.documents?.length ?? 0) > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Documents &amp; Attachments
+              </h3>
+              <div className="space-y-4">
+                {(publication.sourceDataUrl && isPdfUrl(publication.sourceDataUrl)
+                  ? [publication.sourceDataUrl]
+                  : []
+                )
+                  .filter((doc) => !(publication.documents ?? []).includes(doc))
+                  .map((doc) => (
+                    <DocumentPreview key={doc} url={doc} title="Dataset" />
+                  ))}
                 {(publication.documents ?? [])
                   .filter((doc) => doc !== publication.pdfUrl)
                   .map((doc) => (
-                    <a
-                      key={doc}
-                      href={doc}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm hover:bg-muted transition-colors"
-                    >
-                      <FileText className="h-4 w-4" />
-                      {decodeURIComponent(doc.split("/").pop() ?? doc).split("?")[0]}
-                    </a>
+                    <DocumentPreview key={doc} url={doc} />
                   ))}
               </div>
             </div>
@@ -589,7 +663,7 @@ export function PublicationView({
             </button>
             {showComments && (
               <div className="mt-4 space-y-4">
-                {currentUserId && (
+                {currentUserId ? (
                   <div className="flex gap-2">
                     <Input
                       type="text"
@@ -608,6 +682,8 @@ export function PublicationView({
                       <Send className="h-3.5 w-3.5" />
                     </Button>
                   </div>
+                ) : (
+                  <AuthPrompt message="Sign in to join the discussion and leave a comment." />
                 )}
                 {comments.length === 0 ? (
                   <p className="text-sm text-muted-foreground italic py-4 text-center">
@@ -690,7 +766,7 @@ export function PublicationView({
             </button>
             {showReviews && (
               <div className="mt-4 space-y-4">
-                {currentUserId && (
+                {currentUserId ? (
                   <Card className="bg-muted/30">
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center gap-3">
@@ -747,6 +823,8 @@ export function PublicationView({
                       </Button>
                     </CardContent>
                   </Card>
+                ) : (
+                  <AuthPrompt message="Share your experience — sign in to rate and review this publication." />
                 )}
                 {reviews.length === 0 ? (
                   <p className="text-sm text-muted-foreground italic py-4 text-center">
@@ -902,7 +980,6 @@ export function PublicationView({
                 variant={liked ? "default" : "outline"}
                 className="w-full gap-2"
                 onClick={handleLike}
-                disabled={!currentUserId}
               >
                 <ThumbsUp
                   className={`h-4 w-4 ${liked ? "fill-current" : ""}`}
@@ -910,16 +987,29 @@ export function PublicationView({
                 {liked ? "Liked" : "Recommend"}
               </Button>
               <Button
+                variant={saved ? "default" : "outline"}
+                className="w-full gap-2"
+                onClick={() => {
+                  if (!requireAuth()) return;
+                  setSaved(!saved);
+                }}
+              >
+                <Bookmark
+                  className={`h-4 w-4 ${saved ? "fill-current" : ""}`}
+                />
+                {saved ? "Saved" : "Save to List"}
+              </Button>
+              <Button
                 variant="outline"
                 className="w-full gap-2"
-                disabled={!currentUserId}
+                onClick={handleShare}
               >
-                <Bookmark className="h-4 w-4" />
-                Save to List
-              </Button>
-              <Button variant="outline" className="w-full gap-2">
-                <Share2 className="h-4 w-4" />
-                Share
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Share2 className="h-4 w-4" />
+                )}
+                {copied ? "Link copied" : "Share"}
               </Button>
               {publication.pdfUrl && (
                 <a

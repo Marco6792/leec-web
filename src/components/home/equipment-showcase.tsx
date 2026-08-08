@@ -39,7 +39,7 @@ export async function EquipmentShowcase() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {equipmentList.map((item) => (
             <Link
               key={item.slug}
@@ -55,8 +55,8 @@ export async function EquipmentShowcase() {
                   className="group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <div className="p-5">
-                <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
+              <div className="p-6">
+                <h3 className="font-semibold text-xl mb-1">{item.name}</h3>
                 <p className="text-sm text-muted-foreground">{item.description}</p>
               </div>
             </Link>

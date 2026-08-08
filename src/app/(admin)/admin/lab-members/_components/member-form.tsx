@@ -6,9 +6,13 @@ import {
   FormField,
   FieldGrid,
 } from "../../_components/form-field";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { NativeSelect } from "@/components/ui/native-select";
+import { SwitchField } from "../../_components/switch-field";
 
 export interface LabOption {
   id: string;
@@ -362,35 +366,23 @@ export function MemberForm({ action, labs, initial, error, saved }: MemberFormPr
             </FormField>
           </FieldGrid>
 
-          <div className="flex items-center gap-3">
-            <input
-              id="isPublic"
-              name="isPublic"
-              type="checkbox"
-              defaultChecked={initial ? (initial.isPublic ?? true) : true}
-              className="size-4 rounded border-border accent-primary"
-            />
-            <label htmlFor="isPublic" className="text-sm">
-              Show this member on the public people page
-            </label>
-          </div>
+          <SwitchField
+            id="isPublic"
+            name="isPublic"
+            label="Show this member on the public people page"
+            defaultChecked={initial ? (initial.isPublic ?? true) : true}
+          />
         </CardContent>
       </Card>
 
       {/* Submit */}
-      <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-        <a
-          href="/admin/lab-members"
-          className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-        >
+            <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
+        <Button render={<Link href="/admin/lab-members" />} variant="outline">
           Cancel
-        </a>
-        <button
-          type="submit"
-          className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
+        </Button>
+        <SubmitButton pendingText="Saving…">
           {isEdit ? "Save Changes" : "Create Member"}
-        </button>
+        </SubmitButton>
       </div>
     </form>
   );

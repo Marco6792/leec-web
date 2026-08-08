@@ -1,20 +1,24 @@
 import Link from "next/link";
+import { asc, eq } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
-import { SiteImage } from "@/components/site-image";
+import { HeroBackground } from "@/components/home/hero-background";
+import { HeroSubtitle } from "@/components/home/hero-subtitle";
 import { ArrowRight } from "lucide-react";
+import { db } from "@/db";
+import { heroQuotes } from "@/db/schema";
 
-export function Hero() {
+export async function Hero() {
+  const quotes = await db
+    .select({ text: heroQuotes.text })
+    .from(heroQuotes)
+    .where(eq(heroQuotes.published, true))
+    .orderBy(asc(heroQuotes.sortOrder));
+
   return (
     <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-black">
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <SiteImage
-          src="/hero_page_image.jpeg"
-          alt="LEEC Research Poster"
-          fill
-          priority
-          sizes="100vw"
-        />
+      {/* Background image — slow Ken Burns zoom + horizontal pan */}
+      <div className="absolute inset-0 overflow-hidden">
+        <HeroBackground />
         <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-black/40" />
       </div>
 
@@ -30,12 +34,10 @@ export function Hero() {
             and Computing
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-lg sm:text-xl text-white/70 max-w-xl mx-auto leading-relaxed mb-10">
-            Research in Engineering Sciences for the Local Community. Advancing
-            African engineering through cutting-edge research, world-class
-            facilities, and international collaboration.
-          </p>
+          {/* Rotating subtitles — admin-managed quotes */}
+          <div className="mb-10">
+            <HeroSubtitle quotes={quotes.map((q) => q.text)} />
+          </div>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

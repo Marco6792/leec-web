@@ -41,7 +41,7 @@ export async function createTrainingSession(formData: FormData) {
   for (const key of Object.keys(trainingSchema.shape)) {
     raw[key] = formData.get(key);
   }
-  raw.published = formData.get("published") === "on";
+  raw.published = formData.get("published") === "true";
 
   const name = (formData.get("title") as string) || "";
   const slug = slugify(name);
@@ -77,7 +77,7 @@ export async function updateTrainingSession(id: string, formData: FormData) {
   for (const key of Object.keys(trainingSchema.shape)) {
     raw[key] = formData.get(key);
   }
-  raw.published = formData.get("published") === "on";
+  raw.published = formData.get("published") === "true";
 
   const slug = formData.get("slug") as string;
   const parsed = trainingSchema.safeParse(raw);
@@ -117,11 +117,12 @@ export async function validateTrainingSession(id: string) {
       publishedAt: new Date(),
       updatedAt: new Date(),
     })
-    .where(eq(trainingSessions.id, id));
+        .where(eq(trainingSessions.id, id));
 
   revalidatePath("/admin/training");
   revalidatePath("/training");
   revalidatePath("/admin/training/validation");
+  redirect("/admin/training/validation?approved=true");
 }
 
 export async function archiveTrainingSession(id: string) {

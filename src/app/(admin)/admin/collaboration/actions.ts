@@ -25,6 +25,7 @@ export async function approveRequest(requestId: string) {
     .where(eq(collaborationRequests.id, requestId));
 
   revalidatePath("/admin/collaboration");
+  redirect("/admin/collaboration?approved=true");
 }
 
 export async function rejectRequest(requestId: string) {
@@ -40,6 +41,7 @@ export async function rejectRequest(requestId: string) {
     .where(eq(collaborationRequests.id, requestId));
 
   revalidatePath("/admin/collaboration");
+  redirect("/admin/collaboration?rejected=true");
 }
 
 export async function createProject(formData: FormData) {

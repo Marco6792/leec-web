@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
+
 export function AdminHeader() {
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border bg-card px-4 md:px-6">
@@ -7,18 +10,18 @@ export function AdminHeader() {
       {/* Right side actions */}
       <div className="flex items-center gap-3">
         {/* Notifications bell */}
-        <button
+        <Button
           type="button"
-          className="relative flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          variant="ghost"
+          size="icon"
+          className="relative"
+          aria-label="Notifications"
         >
-          <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-          </svg>
+          <Bell className="size-5" />
           <span className="absolute -top-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-destructive text-[8px] font-bold text-destructive-foreground">
             3
           </span>
-        </button>
+        </Button>
 
         {/* Separator */}
         <div className="h-6 w-px bg-border" />
@@ -37,3 +40,4 @@ export function AdminHeader() {
     </header>
   );
 }
+

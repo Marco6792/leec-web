@@ -46,7 +46,7 @@ export async function NewsPreview() {
             No news articles published yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {articles.map((item) => (
               <Link
                 key={item.id}
@@ -64,7 +64,7 @@ export async function NewsPreview() {
                     />
                   </div>
                 )}
-                <div className="p-5">
+                <div className="p-6">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                     {item.publishedAt && (
                       <span>{new Date(item.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
@@ -76,11 +76,11 @@ export async function NewsPreview() {
                       </>
                     )}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors leading-snug">
+                  <h3 className="font-semibold text-xl mb-2 group-hover:text-primary transition-colors leading-snug">
                     {item.title}
                   </h3>
                   {item.excerpt && (
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                       {item.excerpt}
                     </p>
                   )}
