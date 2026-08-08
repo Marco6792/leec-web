@@ -5,6 +5,9 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { validateTrainingSession, deleteTrainingSession } from "../actions";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
+import Link from "next/link";
 import { ConfirmDeleteButton } from "./confirm-delete-button";
 
 export const dynamic = "force-dynamic";
@@ -116,21 +119,25 @@ export default async function ValidationQueuePage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                                    <div className="flex items-center gap-2 shrink-0">
                     <form action={validateTrainingSession.bind(null, session.id)}>
-                      <button
-                        type="submit"
-                        className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-medium text-white hover:bg-emerald-500 transition-colors"
+                      <SubmitButton
+                        variant="default"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-xs"
+                        pendingText="Approving…"
+                        size="sm"
                       >
                         Approve &amp; Publish
-                      </button>
+                      </SubmitButton>
                     </form>
-                    <a
-                      href={`/admin/training/${session.id}/edit`}
-                      className="rounded-lg border border-border px-4 py-2 text-xs font-medium hover:bg-muted transition-colors"
+                    <Button
+                      render={<Link href={`/admin/training/${session.id}/edit`} />}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
                     >
                       Edit
-                    </a>
+                    </Button>
                     <ConfirmDeleteButton
                       action={deleteTrainingSession.bind(null, session.id)}
                     />
@@ -172,13 +179,15 @@ export default async function ValidationQueuePage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <a
-                      href={`/admin/training/${session.id}/edit`}
-                      className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
+                                    <div className="flex items-center gap-2 shrink-0">
+                    <Button
+                      render={<Link href={`/admin/training/${session.id}/edit`} />}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
                     >
                       Edit
-                    </a>
+                    </Button>
                   </div>
                 </div>
               </div>

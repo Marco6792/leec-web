@@ -51,8 +51,8 @@ export async function createNews(formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.published = formData.get("published") === "on";
-  raw.pinned = formData.get("pinned") === "on";
+  raw.published = formData.get("published") === "true";
+  raw.pinned = formData.get("pinned") === "true";
 
   const title = (formData.get("title") as string) || "";
   const slug = slugify(title);
@@ -97,8 +97,8 @@ export async function updateNews(id: string, formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.published = formData.get("published") === "on";
-  raw.pinned = formData.get("pinned") === "on";
+  raw.published = formData.get("published") === "true";
+  raw.pinned = formData.get("pinned") === "true";
 
   const title = (formData.get("title") as string) || "";
   const slug = formData.get("slug") as string || slugify(title);
@@ -148,5 +148,5 @@ export async function deleteNews(id: string) {
   revalidatePath("/admin/news");
   revalidatePath("/");
   revalidatePath("/news");
-  redirect("/admin/news");
+  redirect("/admin/news?deleted=true");
 }

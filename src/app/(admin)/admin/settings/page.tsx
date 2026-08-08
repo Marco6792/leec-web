@@ -6,8 +6,10 @@ import { AdminBreadcrumbs } from "../_components/breadcrumbs";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { SwitchField } from "../_components/switch-field";
 import { Textarea } from "@/components/ui/textarea";
 import { updateProfile } from "./actions";
+import { SubmitButton } from "../_components/submit-button";
 
 export const dynamic = "force-dynamic";
 
@@ -248,29 +250,18 @@ export default async function AdminSettingsPage({
             </div>
 
             {/* Public profile toggle */}
-            <div className="flex items-center gap-3">
-              <input
-                id="isPublic"
-                name="isPublic"
-                type="checkbox"
-                defaultChecked={profile.isPublic ?? true}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="isPublic" className="text-sm">
-                Show my profile on the public website
-              </label>
-            </div>
+            <SwitchField
+              id="isPublic"
+              name="isPublic"
+              label="Show my profile on the public website"
+              defaultChecked={profile.isPublic ?? true}
+            />
           </CardContent>
         </Card>
 
         {/* Submit */}
         <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Save Changes
-          </button>
+          <SubmitButton pendingText="Saving…">Save Changes</SubmitButton>
         </div>
       </form>
     </div>

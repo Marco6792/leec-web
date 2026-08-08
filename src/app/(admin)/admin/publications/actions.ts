@@ -82,7 +82,7 @@ export async function createPublication(formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.openAccess = formData.get("openAccess") === "on";
+  raw.openAccess = formData.get("openAccess") === "true";
 
   const parsed = publicationSchema.safeParse(raw);
   if (!parsed.success) {
@@ -144,7 +144,7 @@ export async function updatePublication(id: string, formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.openAccess = formData.get("openAccess") === "on";
+  raw.openAccess = formData.get("openAccess") === "true";
 
   const parsed = publicationSchema.safeParse(raw);
   if (!parsed.success) {
@@ -210,5 +210,5 @@ export async function deletePublication(id: string) {
   revalidatePath("/admin/publications");
   revalidatePath("/");
   revalidatePath("/publications");
-  redirect("/admin/publications");
+  redirect("/admin/publications?deleted=true");
 }

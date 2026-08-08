@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { X, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface PublisherInputProps {
   value: string[];
@@ -48,16 +50,19 @@ export function PublisherInput({ value = [], onChange, suggestions = [] }: Publi
         {value.map((pub) => (
           <Badge key={pub} variant="secondary" className="gap-1 pr-1">
             {pub}
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-xs"
               onClick={() => removePublisher(pub)}
-              className="ml-0.5 rounded-full p-0.5 hover:bg-muted cursor-pointer"
+              aria-label={`Remove ${pub}`}
+              className="rounded-full"
             >
               <X className="h-3 w-3" />
-            </button>
+            </Button>
           </Badge>
         ))}
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={input}
@@ -68,25 +73,25 @@ export function PublisherInput({ value = [], onChange, suggestions = [] }: Publi
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           onKeyDown={handleKeyDown}
-          placeholder={value.length === 0 ? "Add publishers..." : ""}
-          className="min-w-[120px] flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+          className="min-w-[120px] flex-1 bg-transparent outline-none border-0 focus:ring-0 placeholder:text-muted-foreground"
         />
       </div>
       {showSuggestions && filtered.length > 0 && (
         <div className="max-h-40 overflow-y-auto rounded-lg border bg-popover p-1 shadow-md">
           {filtered.map((s) => (
-            <button
+            <Button
               key={s}
               type="button"
+              variant="ghost"
+              className="w-full justify-start"
               onMouseDown={(e) => {
                 e.preventDefault();
                 addPublisher(s);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5 text-muted-foreground" />
               {s}
-            </button>
+            </Button>
           ))}
         </div>
       )}

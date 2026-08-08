@@ -46,8 +46,8 @@ export async function createEvent(formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.isOnline = formData.get("isOnline") === "on";
-  raw.published = formData.get("published") === "on";
+  raw.isOnline = formData.get("isOnline") === "true";
+  raw.published = formData.get("published") === "true";
 
   const parsed = eventSchema.safeParse(raw);
   if (!parsed.success) {
@@ -87,8 +87,8 @@ export async function updateEvent(id: string, formData: FormData) {
     const value = formData.get(key);
     if (value !== null) raw[key] = value;
   }
-  raw.isOnline = formData.get("isOnline") === "on";
-  raw.published = formData.get("published") === "on";
+  raw.isOnline = formData.get("isOnline") === "true";
+  raw.published = formData.get("published") === "true";
 
   const parsed = eventSchema.safeParse(raw);
   if (!parsed.success) {
@@ -133,5 +133,5 @@ export async function deleteEvent(id: string) {
   revalidatePath("/admin/events");
   revalidatePath("/");
   revalidatePath("/events");
-  redirect("/admin/events");
+  redirect("/admin/events?deleted=true");
 }

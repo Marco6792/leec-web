@@ -116,5 +116,5 @@ export async function deleteProject(id: string) {
   revalidatePath("/admin/projects");
   revalidatePath("/");
   revalidatePath("/projects");
-  redirect("/admin/projects");
+  redirect("/admin/projects?deleted=true");
 }

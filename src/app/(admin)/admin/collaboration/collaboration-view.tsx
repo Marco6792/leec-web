@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AdminTable, type Column } from "../_components/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────
@@ -141,31 +142,31 @@ export function CollaborationView({ requests, projects }: CollaborationViewProps
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1 w-fit">
-        <button
+            <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1 w-fit">
+        <Button
           type="button"
-          onClick={() => setTab("requests")}
+          variant={tab === "requests" ? "default" : "ghost"}
+          size="sm"
           className={cn(
-            "rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors",
-            tab === "requests"
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground",
+            "text-sm font-medium",
+            tab === "requests" ? "" : "text-muted-foreground",
           )}
+          onClick={() => setTab("requests")}
         >
           Incoming Requests ({requests.length})
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          onClick={() => setTab("projects")}
+          variant={tab === "projects" ? "default" : "ghost"}
+          size="sm"
           className={cn(
-            "rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors",
-            tab === "projects"
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground",
+            "text-sm font-medium",
+            tab === "projects" ? "" : "text-muted-foreground",
           )}
+          onClick={() => setTab("projects")}
         >
           Active Projects ({projects.length})
-        </button>
+        </Button>
       </div>
 
       {/* Tab content */}

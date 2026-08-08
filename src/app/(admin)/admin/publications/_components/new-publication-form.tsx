@@ -12,10 +12,15 @@ import {
 } from "../../_components/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { SwitchField } from "../../_components/switch-field";
+import { RichTextEditorField } from "@/components/ui/rich-text-editor-field";
 import { NativeSelect } from "@/components/ui/native-select";
 import { cn, formatBytes } from "@/lib/utils";
 import { PublisherInput } from "../_components/publisher-input";
 import { AuthorSelector, type AuthorEntry } from "../_components/author-selector";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { MediaUpload } from "@/components/admin/media-upload";
 import { UploadProgress } from "@/components/admin/upload-progress";
 import { deleteUpload } from "@/lib/upload-delete";
@@ -165,13 +170,12 @@ export function NewPublicationForm({
             <CardTitle>Abstract &amp; Content</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <FormField label="Abstract" name="abstract" helpText="A brief summary: goals, methods, key findings, and conclusions.">
-              <Textarea
+            <FormField label="Abstract" name="abstract" helpText="A brief summary: goals, methods, key findings, and conclusions. Use the toolbar for formatting.">
+              <RichTextEditorField
                 id="abstract"
                 name="abstract"
-                rows={12}
+                defaultValue=""
                 placeholder={"Write a comprehensive abstract including:\n\n• Background & Objectives\n• Methods\n• Key Results\n• Conclusions & Recommendations"}
-                className="min-h-[200px] leading-relaxed"
               />
             </FormField>
           </CardContent>
@@ -222,15 +226,11 @@ export function NewPublicationForm({
             </FieldGrid>
 
             <div className="flex items-center gap-3">
-              <input
+              <SwitchField
                 id="openAccess"
                 name="openAccess"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
+                label="Open Access"
               />
-              <label htmlFor="openAccess" className="text-sm">
-                Open Access
-              </label>
             </div>
           </CardContent>
         </Card>
@@ -270,8 +270,9 @@ export function NewPublicationForm({
                     <ExternalLink className="size-3" />
                   </a>
                 </div>
-                <button
+                <Button
                   type="button"
+                  size="icon"
                   onClick={() => {
                     const removed = sourceDataUrl;
                     setSourceDataUrl("");
@@ -279,10 +280,10 @@ export function NewPublicationForm({
                     if (removed) void deleteUpload(removed);
                   }}
                   aria-label="Remove file"
-                  className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-rose-50 hover:text-rose-700 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
+                  className="text-muted-foreground hover:text-destructive"
                 >
                   <X className="size-4" />
-                </button>
+                </Button>
               </div>
             ) : (
               <UploadDropzone<OurFileRouter, "dataFile">
@@ -345,19 +346,11 @@ export function NewPublicationForm({
       </Card>
 
       {/* Submit */}
-      <div className="flex items-center justify-end gap-3 pb-8">
-        <a
-          href="/admin/publications"
-          className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-        >
+            <div className="flex items-center justify-end gap-3 pb-8">
+        <Button render={<Link href="/admin/publications" />} variant="outline">
           Cancel
-        </a>
-        <button
-          type="submit"
-          className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          Create Publication
-        </button>
+        </Button>
+        <SubmitButton pendingText="Creating…">Create Publication</SubmitButton>
       </div>
     </form>
   );

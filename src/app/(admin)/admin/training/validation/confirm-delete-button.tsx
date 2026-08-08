@@ -1,6 +1,30 @@
 "use client";
 
-export function ConfirmDeleteButton({ action }: { action: (formData: FormData) => Promise<void> }) {
+import { useFormStatus } from "react-dom";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+
+function ConfirmSubmit() {
+  const { pending } = useFormStatus();
+  return (
+    <Button
+      type="submit"
+      variant="outline"
+      size="sm"
+      disabled={pending}
+      className="text-xs text-destructive hover:text-destructive"
+    >
+      {pending && <Spinner />}
+      {pending ? "Deleting…" : "Delete"}
+    </Button>
+  );
+}
+
+export function ConfirmDeleteButton({
+  action,
+}: {
+  action: (formData: FormData) => void;
+}) {
   return (
     <form
       action={action}
@@ -10,12 +34,8 @@ export function ConfirmDeleteButton({ action }: { action: (formData: FormData) =
         }
       }}
     >
-      <button
-        type="submit"
-        className="rounded-lg border border-rose-200 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-900/50 dark:hover:bg-rose-950/30 transition-colors"
-      >
-        Delete
-      </button>
+      <ConfirmSubmit />
     </form>
   );
 }
+

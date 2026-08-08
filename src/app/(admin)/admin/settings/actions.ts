@@ -22,7 +22,7 @@ export async function updateProfile(formData: FormData) {
   const linkedIn = formData.get("linkedIn") as string;
   const website = formData.get("website") as string;
   const phone = formData.get("phone") as string;
-  const isPublic = formData.get("isPublic") === "on";
+  const isPublic = formData.get("isPublic") === "true";
 
   if (!fullName?.trim()) {
     redirect("/admin/settings?error=Full+name+is+required.");

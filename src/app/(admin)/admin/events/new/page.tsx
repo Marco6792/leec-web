@@ -1,5 +1,8 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { requireAdmin } from "@/lib/auth/admin";
+import { SwitchField } from "../../_components/switch-field";
 import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createEvent } from "../actions";
@@ -8,7 +11,7 @@ import {
   FieldGrid,
 } from "../../_components/form-field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditorField } from "@/components/ui/rich-text-editor-field";
 import { NativeSelect } from "@/components/ui/native-select";
 import { MediaUpload } from "@/components/admin/media-upload";
 
@@ -68,11 +71,11 @@ export default async function NewEventPage({
               />
             </FormField>
 
-            <FormField label="Description" name="description">
-              <Textarea
+            <FormField label="Description" name="description" helpText="Event description. Use the toolbar for formatting.">
+              <RichTextEditorField
                 id="description"
                 name="description"
-                rows={3}
+                defaultValue=""
                 placeholder="Event description..."
               />
             </FormField>
@@ -123,17 +126,11 @@ export default async function NewEventPage({
               </FormField>
             </FieldGrid>
 
-            <div className="flex items-center gap-3">
-              <input
-                id="isOnline"
-                name="isOnline"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="isOnline" className="text-sm">
-                Online event
-              </label>
-            </div>
+            <SwitchField
+              id="isOnline"
+              name="isOnline"
+              label="Online event"
+            />
 
             <FormField label="Meeting URL" name="meetingUrl" helpText="Zoom, Google Meet, etc.">
               <Input
@@ -153,17 +150,11 @@ export default async function NewEventPage({
               />
             </FormField>
 
-            <div className="flex items-center gap-3">
-              <input
-                id="published"
-                name="published"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="published" className="text-sm">
-                Publish on website
-              </label>
-            </div>
+            <SwitchField
+              id="published"
+              name="published"
+              label="Publish on website"
+            />
           </CardContent>
         </Card>
 
@@ -185,18 +176,10 @@ export default async function NewEventPage({
         </Card>
 
         <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-          <Link
-            href="/admin/events"
-            className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-          >
+          <Button render={<Link href="/admin/events" />} variant="outline">
             Cancel
-          </Link>
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Create Event
-          </button>
+          </Button>
+          <SubmitButton pendingText="Creating…">Create Event</SubmitButton>
         </div>
       </form>
     </div>

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { requireAdmin } from "@/lib/auth/admin";
 import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +11,9 @@ import {
 } from "../../_components/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditorField } from "@/components/ui/rich-text-editor-field";
 import { MediaUpload } from "@/components/admin/media-upload";
+import { SwitchField } from "../../_components/switch-field";
 
 export const dynamic = "force-dynamic";
 
@@ -72,12 +76,11 @@ export default async function NewNewsPage({
               />
             </FormField>
 
-            <FormField label="Content" name="content" helpText="Full article body. Supports plain text.">
-              <Textarea
+            <FormField label="Content" name="content" helpText="Full article body. Use the toolbar to format text.">
+              <RichTextEditorField
                 id="content"
                 name="content"
-                rows={12}
-                placeholder="Write your article content here..."
+                defaultValue=""
               />
             </FormField>
           </CardContent>
@@ -107,28 +110,16 @@ export default async function NewNewsPage({
               </FormField>
             </FieldGrid>
 
-            <div className="flex items-center gap-3">
-              <input
-                id="published"
-                name="published"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="published" className="text-sm">
-                Publish immediately
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                id="pinned"
-                name="pinned"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="pinned" className="text-sm">
-                Pin to top of news list
-              </label>
-            </div>
+            <SwitchField
+              id="published"
+              name="published"
+              label="Publish immediately"
+            />
+            <SwitchField
+              id="pinned"
+              name="pinned"
+              label="Pin to top of news list"
+            />
           </CardContent>
         </Card>
 
@@ -150,18 +141,10 @@ export default async function NewNewsPage({
         </Card>
 
         <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-          <Link
-            href="/admin/news"
-            className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-          >
+          <Button render={<Link href="/admin/news" />} variant="outline">
             Cancel
-          </Link>
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Create Article
-          </button>
+          </Button>
+          <SubmitButton pendingText="Creating…">Create Article</SubmitButton>
         </div>
       </form>
     </div>

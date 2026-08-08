@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../../_components/submit-button";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news } from "@/db/schema";
@@ -12,9 +14,11 @@ import {
 } from "../../../_components/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditorField } from "@/components/ui/rich-text-editor-field";
 import { MediaUpload } from "@/components/admin/media-upload";
 import { AdminBreadcrumbs } from "../../../_components/breadcrumbs";
 import { ViewPublicPage } from "../../../_components/view-public-page";
+import { SwitchField } from "../../../_components/switch-field";
 
 export const dynamic = "force-dynamic";
 
@@ -109,10 +113,9 @@ export default async function EditNewsPage({
             </FormField>
 
             <FormField label="Content" name="content">
-              <Textarea
+              <RichTextEditorField
                 id="content"
                 name="content"
-                rows={12}
                 defaultValue={item.content ?? ""}
               />
             </FormField>
@@ -145,30 +148,18 @@ export default async function EditNewsPage({
               </FormField>
             </FieldGrid>
 
-            <div className="flex items-center gap-3">
-              <input
-                id="published"
-                name="published"
-                type="checkbox"
-                defaultChecked={item.published ?? false}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="published" className="text-sm">
-                Published
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                id="pinned"
-                name="pinned"
-                type="checkbox"
-                defaultChecked={item.pinned ?? false}
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="pinned" className="text-sm">
-                Pinned to top
-              </label>
-            </div>
+            <SwitchField
+              id="published"
+              name="published"
+              label="Published"
+              defaultChecked={item.published ?? false}
+            />
+            <SwitchField
+              id="pinned"
+              name="pinned"
+              label="Pinned to top"
+              defaultChecked={item.pinned ?? false}
+            />
           </CardContent>
         </Card>
 
@@ -197,31 +188,26 @@ export default async function EditNewsPage({
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-between gap-3 pb-8 lg:col-span-2">
-          <form action={boundDelete}>
-            <button
-              type="submit"
-              className="rounded-lg border border-rose-200 px-4 py-2 text-sm text-rose-700 hover:bg-rose-50 transition-colors dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/30"
-            >
-              Delete Article
-            </button>
-          </form>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin/news"
-              className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
+                <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
+          <Button render={<Link href="/admin/news" />} variant="outline">
+            Cancel
+          </Button>
+          <SubmitButton pendingText="Saving…">Save Changes</SubmitButton>
         </div>
       </form>
+
+      {/* Delete (outside the main form to keep HTML valid) */}
+      <div className="flex items-center justify-end gap-3 border-t border-border pt-6 pb-8">
+        <form action={boundDelete}>
+          <SubmitButton
+            variant="outline"
+            className="text-xs text-destructive hover:text-destructive"
+            pendingText="Deleting…"
+          >
+            Delete Article
+          </SubmitButton>
+        </form>
+      </div>
     </div>
   );
 }

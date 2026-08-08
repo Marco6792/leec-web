@@ -1,4 +1,8 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { requireAdmin } from "@/lib/auth/admin";
+import { SwitchField } from "../../_components/switch-field";
 import { AdminBreadcrumbs } from "../../_components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createTrainingSession } from "../actions";
@@ -142,33 +146,19 @@ export default async function NewTrainingPage({
                 placeholder="quantum, measurement, beginner"
               />
             </FormField>
-            <div className="flex items-center gap-3">
-              <input
-                id="published"
-                name="published"
-                type="checkbox"
-                className="size-4 rounded border-border accent-primary"
-              />
-              <label htmlFor="published" className="text-sm">
-                Publish immediately (visible on public site)
-              </label>
-            </div>
+            <SwitchField
+              id="published"
+              name="published"
+              label="Publish immediately (visible on public site)"
+            />
           </CardContent>
         </Card>
 
         <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-          <a
-            href="/admin/training"
-            className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-          >
+          <Button render={<Link href="/admin/training" />} variant="outline">
             Cancel
-          </a>
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Create Session
-          </button>
+          </Button>
+          <SubmitButton pendingText="Creating…">Create Session</SubmitButton>
         </div>
       </form>
     </div>

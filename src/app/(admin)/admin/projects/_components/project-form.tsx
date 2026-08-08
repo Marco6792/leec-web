@@ -7,8 +7,11 @@ import {
   FormField,
   FieldGrid,
 } from "../../_components/form-field";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "../../_components/submit-button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditorField } from "@/components/ui/rich-text-editor-field";
 import { NativeSelect } from "@/components/ui/native-select";
 
 export interface ProfileOption {
@@ -123,11 +126,10 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
             </FormField>
           </FieldGrid>
 
-          <FormField label="Description" name="description">
-            <Textarea
+          <FormField label="Description" name="description" helpText="Project objectives, scope and impact. Use the toolbar for formatting.">
+            <RichTextEditorField
               id="description"
               name="description"
-              rows={4}
               defaultValue={initial?.description ?? ""}
               placeholder="Project objectives, scope and impact..."
             />
@@ -217,19 +219,13 @@ export function ProjectForm({ action, profiles, initial, error, saved }: Project
       </Card>
 
       {/* Submit */}
-      <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
-        <a
-          href="/admin/projects"
-          className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted transition-colors"
-        >
+            <div className="flex items-center justify-end gap-3 pb-8 lg:col-span-2">
+        <Button render={<Link href="/admin/projects" />} variant="outline">
           Cancel
-        </a>
-        <button
-          type="submit"
-          className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
+        </Button>
+        <SubmitButton pendingText="Saving…">
           {isEdit ? "Save Changes" : "Create Project"}
-        </button>
+        </SubmitButton>
       </div>
     </form>
   );
